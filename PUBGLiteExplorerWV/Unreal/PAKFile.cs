@@ -74,13 +74,13 @@ namespace PUBGLiteExplorerWV
 
         public PAKFileTable(Stream s, ulong size)
         {
+            entries = new List<PAKFileEntry>();
             byte[] data = new byte[size];
             for (ulong i = 0; i < size; i++)
                 data[i] = (byte)(s.ReadByte() ^ 0x79);
             MemoryStream m = new MemoryStream(data);
-            mPoint = Helper.ReadString(m);
+            mPoint = Helper.ReadString(m).Substring(9);
             uint count = Helper.ReadU32(m);
-            entries = new List<PAKFileEntry>();
             for (uint i = 0; i < count; i++)
                 entries.Add(new PAKFileEntry(m));
         }
