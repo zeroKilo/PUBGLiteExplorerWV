@@ -12,9 +12,16 @@ namespace PUBGLiteExplorerWV
 {
     public partial class ExportDialog : Form
     {
+        public bool _exit = false;
+
         public ExportDialog()
         {
             InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            _exit = true;
         }
     }
 }

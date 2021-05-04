@@ -240,8 +240,15 @@ namespace PUBGLiteExplorerWV
                             ex.pb2.Value = j + 1;
                             ex.label2.Text = "Current file " + (j + 1) + "/" + count + " : " + entry.path;
                             if ((j % 77) == 0)
+                            {
                                 Application.DoEvents();
-                            string output = fbd.SelectedPath + "\\" + file.table.mPoint.Replace("/", "\\") + entry.path.Replace("/", "\\");
+                                if (ex._exit)
+                                {
+                                    ex.Close();
+                                    return;
+                                }
+                            }
+                            string output = fbd.SelectedPath + "\\" + entry.path.Replace("/", "\\");
                             Directory.CreateDirectory(Path.GetDirectoryName(output));
                             File.WriteAllBytes(output, file.getEntryData(entry));
                         }

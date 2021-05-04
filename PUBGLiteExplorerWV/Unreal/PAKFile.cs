@@ -82,7 +82,7 @@ namespace PUBGLiteExplorerWV
             mPoint = Helper.ReadString(m).Substring(9);
             uint count = Helper.ReadU32(m);
             for (uint i = 0; i < count; i++)
-                entries.Add(new PAKFileEntry(m));
+                entries.Add(new PAKFileEntry(m, mPoint));
         }
     }
 
@@ -99,10 +99,10 @@ namespace PUBGLiteExplorerWV
         public byte encrypted;
         public uint cBlockSize;
 
-        public PAKFileEntry(Stream s)
+        public PAKFileEntry(Stream s, string mPoint)
         {
             _offset = s.Position;
-            path = Helper.ReadString(s);
+            path = mPoint + Helper.ReadString(s);
             pos = Helper.ReadU64(s);
             size = Helper.ReadU64(s);
             usize = Helper.ReadU64(s);
