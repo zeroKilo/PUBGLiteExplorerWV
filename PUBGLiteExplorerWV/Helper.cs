@@ -53,15 +53,12 @@ namespace PUBGLiteExplorerWV
 
         public static byte[] Decompress(byte[] data)
         {
-            MemoryStream source = new MemoryStream(data);
             byte[] result = null;
-            using (MemoryStream outStream = new MemoryStream())
+            using (InflaterInputStream inf = new InflaterInputStream(new MemoryStream(data)))
             {
-                using (InflaterInputStream inf = new InflaterInputStream(source))
-                {
-                    inf.CopyTo(outStream);
-                }
-                result = outStream.ToArray();
+                MemoryStream m = new MemoryStream();
+                inf.CopyTo(m);
+                result = m.ToArray();
             }
             return result;
         }

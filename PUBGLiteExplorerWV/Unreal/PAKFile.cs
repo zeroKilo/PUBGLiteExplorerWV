@@ -47,6 +47,15 @@ namespace PUBGLiteExplorerWV
             fs.Close();
             return m.ToArray();
         }
+
+        public void ExportData(PAKFileEntry e, string path)
+        {
+            FileStream fIn = new FileStream(myPath, FileMode.Open, FileAccess.Read);
+            FileStream fOut = new FileStream(path, FileMode.Create, FileAccess.Write);
+            e.CopyDecryptedData(fIn, fOut);
+            fIn.Close();
+            fOut.Close();
+        }
     }
 
 
@@ -122,7 +131,6 @@ namespace PUBGLiteExplorerWV
 
         public void CopyDecryptedData(Stream s, Stream o)
         {
-            MemoryStream m = new MemoryStream();
             byte[] buff;
             if (cMethod == 0)
             {
@@ -137,26 +145,23 @@ namespace PUBGLiteExplorerWV
                         buff[i] = (byte)(s.ReadByte() ^ 0x79);
                     else
                         buff[i] = (byte)(s.ReadByte());
-                o.Write(buff, 0, buff.Length);
 
             }
             if (cMethod == 1)
             {
                 foreach (PAKCompressionBlock b in cBlocks)
                 {
-                    ulong size = b.end - b.start;
+                    ulong bSize = b.end - b.start;
                     s.Seek((long)b.start, 0);
-                    buff = new byte[size];
-                    for (ulong i = 0; i < size; i++)
+                    buff = new byte[bSize];
+                    for (ulong i = 0; i < bSize; i++)
                         if (encrypted == 1)
                             buff[i] = (byte)(s.ReadByte() ^ 0x79);
                         else
                             buff[i] = (byte)(s.ReadByte());
-                    m.Write(buff, 0, (int)size);
+                    buff = Helper.Decompress(buff);
+                    o.Write(buff, 0, buff.Length);
                 }
-                buff = m.ToArray();
-                buff = Helper.Decompress(buff);
-                o.Write(buff, 0, buff.Length);
             }
         }
     }

@@ -239,7 +239,7 @@ namespace PUBGLiteExplorerWV
                             PAKFileEntry entry = file.table.entries[j];
                             ex.pb2.Value = j + 1;
                             ex.label2.Text = "Current file " + (j + 1) + "/" + count + " : " + entry.path;
-                            if ((j % 77) == 0)
+                            if ((j % 7) == 0)
                             {
                                 Application.DoEvents();
                                 if (ex._exit)
@@ -250,7 +250,7 @@ namespace PUBGLiteExplorerWV
                             }
                             string output = fbd.SelectedPath + "\\" + entry.path.Replace("/", "\\");
                             Directory.CreateDirectory(Path.GetDirectoryName(output));
-                            File.WriteAllBytes(output, file.getEntryData(entry));
+                            file.ExportData(entry, output);
                         }
                     }
                 }

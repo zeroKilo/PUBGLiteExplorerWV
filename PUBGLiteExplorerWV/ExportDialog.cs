@@ -23,5 +23,10 @@ namespace PUBGLiteExplorerWV
         {
             _exit = true;
         }
+
+        private void ExportDialog_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _exit = true;
+        }
     }
 }
