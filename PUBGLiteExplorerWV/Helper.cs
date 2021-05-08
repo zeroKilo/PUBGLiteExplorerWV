@@ -51,6 +51,13 @@ namespace PUBGLiteExplorerWV
             return sb.ToString();
         }
 
+        public static float ReadFloat(Stream s)
+        {
+            byte[] buff = new byte[4];
+            s.Read(buff, 0, 4);
+            return BitConverter.ToSingle(buff, 0);
+        }
+
         public static byte[] Decompress(byte[] data)
         {
             byte[] result = null;

@@ -26,6 +26,7 @@ namespace PUBGLiteExplorerWV
         public List<string> nameTable;
         public List<uint> nameTableHashes;
         public List<UExport> exportTable;
+        public List<UImport> importTable;
 
         public bool _isValid = false;
 
@@ -56,28 +57,38 @@ namespace PUBGLiteExplorerWV
             importCount = Helper.ReadU32(data);
             importOffset = Helper.ReadU32(data);
             ReadNameTable(data);
+            ReadImportTable(data);
             ReadExportTable(data, uexp);
             _isValid = true;
         }
 
-        public string GetDetails()
+        public string ParseProperties(UExport ex)
         {
+            MemoryStream m = new MemoryStream(ex._data);
             StringBuilder sb = new StringBuilder();
-            foreach (UExport exp in exportTable)
+            while ((ulong)m.Position < ex.dataSize)
             {
-                if (exp._name != null)
-                    sb.AppendLine("Export Name: " + exp._name);
-                else
-                    sb.AppendLine("Export Name: not found!");
-                sb.AppendLine(" Archetype    : " + exp.archType.ToString("X8"));
-                sb.AppendLine(" Flags        : " + exp.flags.ToString("X8"));
-                sb.Append(" Data Preview :");
-                if (exp._data != null)
-                    for (int i = 0; i < 16 && i < (int)exp.dataSize; i++)
-                        sb.Append(" " + exp._data[i].ToString("X2"));
-                sb.AppendLine(" ...");
+                long pos = m.Position;
+                UProperty p = new UProperty(m, this);
+                if (p.name == "None")
+                    break;
+                if (!p._isValid)
+                {
+                    sb.AppendLine("Error parsing at 0x" + pos.ToString("X") + " Name=" + p.name + " Type=" + p.type);
+                    break;
+                }
+                sb.AppendLine(p.prop.ToDetails(p.name));
             }
             return sb.ToString();
+        }
+
+        public string GetName(int idx)
+        {
+            if (idx >= 0 && idx < nameTable.Count)
+                return nameTable[idx];
+            if (idx < 0 && -idx <= importTable.Count)
+                return importTable[-idx - 1]._name;
+            return null;
         }
 
         private void ReadNameTable(Stream s)
@@ -101,8 +112,7 @@ namespace PUBGLiteExplorerWV
             for (int i = 0; i < exportCount; i++)
             {
                 UExport exp = exportTable[i];
-                if (exp.nameIdx > 0 && exp.nameIdx <= nameTable.Count)
-                    exp._name = nameTable[exp.nameIdx - 1];
+                exp._name = GetName(exp.nameIdx);
                 if (extra != null)
                 {
                     ulong offset = exportTable[i].dataOffset - fileSize;
@@ -113,6 +123,20 @@ namespace PUBGLiteExplorerWV
                         extra.Read(exp._data, 0, (int)exp.dataSize);
                     }
                 }
+            }
+        }
+
+        private void ReadImportTable(Stream s)
+        {
+            importTable = new List<UImport>();
+            s.Seek(importOffset, 0);
+            for (int i = 0; i < importCount; i++)
+                importTable.Add(new UImport(s));
+            for (int i = 0; i < importCount; i++)
+            {
+                UImport imp = importTable[i];
+                imp._className = GetName((int)imp.className);
+                imp._name = GetName((int)imp.objectName);
             }
         }
     }
@@ -146,6 +170,24 @@ namespace PUBGLiteExplorerWV
             dataOffset = Helper.ReadU64(s);
             unk = new byte[0x3C];
             s.Read(unk, 0, 0x3C);
+        }
+    }
+
+    public class UImport
+    {
+        public ulong classPackage;
+        public ulong className;
+        public int packageIdx;
+        public ulong objectName;
+
+        public string _className;
+        public string _name;
+        public UImport(Stream s)
+        {
+            classPackage = Helper.ReadU64(s);
+            className = Helper.ReadU64(s);
+            packageIdx = (int)Helper.ReadU32(s);
+            objectName = Helper.ReadU64(s);
         }
     }
 }

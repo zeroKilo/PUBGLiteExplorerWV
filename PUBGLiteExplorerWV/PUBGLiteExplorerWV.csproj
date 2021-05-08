@@ -54,6 +54,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unreal\UAsset.cs" />
+    <Compile Include="Unreal\UProperty.cs" />
     <EmbeddedResource Include="ExportDialog.resx">
       <DependentUpon>ExportDialog.cs</DependentUpon>
     </EmbeddedResource>
