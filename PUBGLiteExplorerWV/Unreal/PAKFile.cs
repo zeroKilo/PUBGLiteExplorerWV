@@ -88,7 +88,7 @@ namespace PUBGLiteExplorerWV
             for (ulong i = 0; i < size; i++)
                 data[i] = (byte)(s.ReadByte() ^ 0x79);
             MemoryStream m = new MemoryStream(data);
-            mPoint = Helper.ReadString(m).Substring(9);
+            mPoint = Helper.ReadUString(m).Substring(9);
             uint count = Helper.ReadU32(m);
             for (uint i = 0; i < count; i++)
                 entries.Add(new PAKFileEntry(m, mPoint));
@@ -111,7 +111,7 @@ namespace PUBGLiteExplorerWV
         public PAKFileEntry(Stream s, string mPoint)
         {
             _offset = s.Position;
-            path = mPoint + Helper.ReadString(s);
+            path = mPoint + Helper.ReadUString(s);
             pos = Helper.ReadU64(s);
             size = Helper.ReadU64(s);
             usize = Helper.ReadU64(s);

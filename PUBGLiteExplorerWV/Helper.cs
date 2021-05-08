@@ -32,7 +32,7 @@ namespace PUBGLiteExplorerWV
             return BitConverter.ToUInt64(buff, 0);
         }
 
-        public static string ReadString(Stream s)
+        public static string ReadUString(Stream s)
         {
             int len = (int)ReadU32(s);
             StringBuilder sb = new StringBuilder();

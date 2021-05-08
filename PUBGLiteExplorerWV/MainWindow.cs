@@ -145,8 +145,8 @@ namespace PUBGLiteExplorerWV
                     foreach (PAKFileEntry entry in file.table.entries)
                         if (entry.path == path)
                         {
-                            byte[] data = file.getEntryData(entry);
-                            hb1.ByteProvider = new DynamicByteProvider(data);
+                            LoadAsset(file, entry);
+                            break;
                         }
         }
 
@@ -160,10 +160,68 @@ namespace PUBGLiteExplorerWV
                     foreach (PAKFileEntry entry in file.table.entries)
                         if (entry.path == path)
                         {
-                            byte[] data = file.getEntryData(entry);
-                            hb1.ByteProvider = new DynamicByteProvider(data);
+                            LoadAsset(file, entry);
+                            break;
                         }
+        }
 
+        private void LoadAsset(PAKFile file, PAKFileEntry entry)
+        {
+            byte[] data = file.getEntryData(entry);
+            hb1.ByteProvider = new DynamicByteProvider(data);
+            string[] assetFiles = { ".uasset", ".umap" };
+            bool isAsset = false;
+            foreach(string check in assetFiles)
+                if (entry.path.ToLower().EndsWith(check))
+                {
+                    isAsset = true;
+                    break;
+                }
+            if (isAsset)
+            {
+                UAsset asset = null;
+                PAKFileEntry uexp = null;
+                string uexpPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".uexp";
+                uexpPath = uexpPath.Replace("\\", "/");
+                foreach (PAKFileEntry e in file.table.entries)
+                    if (e.path == uexpPath)
+                    {
+                        uexp = e;
+                        break;
+                    }
+                byte[] uexpData = null;
+                if (uexp != null)
+                {
+                    uexpData = file.getEntryData(uexp);
+                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), null);
+                }
+                else
+                {
+                    PAKFileEntry ubulk = null;
+                    string ubulkPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".ubulk";
+                    ubulkPath = ubulkPath.Replace("\\", "/");
+                    foreach (PAKFileEntry e in file.table.entries)
+                        if (e.path == ubulkPath)
+                        {
+                            ubulk = e;
+                            break;
+                        }
+                    byte[] ubulkData = null;
+                    if (ubulk != null)
+                    {
+                        ubulkData = file.getEntryData(uexp);
+                        asset = new UAsset(new MemoryStream(data), null, new MemoryStream(ubulkData));
+                    }
+                    else
+                        asset = new UAsset(new MemoryStream(data), null, null);
+                }
+                if (asset != null && asset._isValid)
+                    rtb1.Text = asset.GetDetails();
+                else
+                    rtb1.Text = "";
+            }
+            else
+                rtb1.Text = "";
         }
 
         private string getSelectedPath()
