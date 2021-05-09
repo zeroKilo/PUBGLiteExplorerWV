@@ -65,6 +65,9 @@ namespace PUBGLiteExplorerWV
                 case "NameProperty":
                     prop = new UNameProperty(s, asset);
                     break;
+                case "LazyObjectProperty":
+                    prop = new ULazyObjectProperty(s, asset);
+                    break;
                 default:
                     return false;
             }
@@ -189,8 +192,8 @@ namespace PUBGLiteExplorerWV
         {
             uint size = Helper.ReadU32(s);
             uint flags = Helper.ReadU32(s);
-            s.ReadByte();
             value = s.ReadByte() == 1;
+            s.ReadByte();
         }
 
         public override string ToDetails(string name)
@@ -213,7 +216,7 @@ namespace PUBGLiteExplorerWV
             type = asset.GetName((int)Helper.ReadU64(s));
             s.ReadByte();
             value = (byte)s.ReadByte();
-            s.Seek(7, SeekOrigin.Current);
+            s.Seek(size - 1, SeekOrigin.Current);
         }
 
         public override string ToDetails(string name)
@@ -326,6 +329,30 @@ namespace PUBGLiteExplorerWV
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(name + " NameProperty = " + value);
+            return sb.ToString();
+        }
+    }
+
+    public class ULazyObjectProperty : UProp
+    {
+        public byte[] value;
+
+        public ULazyObjectProperty(Stream s, UAsset asset)
+        {
+            uint size = Helper.ReadU32(s);
+            uint flags = Helper.ReadU32(s);
+            s.ReadByte();
+            value = new byte[size];
+            s.Read(value, 0, (int)size);
+        }
+
+        public override string ToDetails(string name)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(name + " LazyObjectProperty = {");
+            foreach (byte b in value)
+                sb.Append(b.ToString("X2") + " ");
+            sb.Append("}");
             return sb.ToString();
         }
     }
