@@ -16,11 +16,13 @@ namespace PUBGLiteExplorerWV
     {
         public List<PAKFile> files = new List<PAKFile>();
         public UAsset currentAsset = null;
+        public UTexture2D currentTex = null;
         public MainWindow()
         {
             InitializeComponent();
             toolStripComboBox1.SelectedIndex = 1;
             tabControl1.SelectedTab = tabPage2;
+            tabControl2.TabPages.Remove(tabPage6);
         }
 
         private void loadSinglePAKFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -170,10 +172,16 @@ namespace PUBGLiteExplorerWV
         private void LoadAsset(PAKFile file, PAKFileEntry entry)
         {
             currentAsset = null;
+            label2.Text = entry.path;
             listBox2.Items.Clear();
             listBox3.Items.Clear();
             listBox4.Items.Clear();
+            listBox5.Items.Clear();
+            rtb1.Text = "";           
             hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
+            hb3.ByteProvider = new DynamicByteProvider(new byte[0]);
+            if (tabControl2.TabPages.Contains(tabPage6))
+                tabControl2.TabPages.Remove(tabPage6);
             byte[] data = file.getEntryData(entry);
             hb1.ByteProvider = new DynamicByteProvider(data);
             string[] assetFiles = { ".uasset", ".umap" };
@@ -198,30 +206,25 @@ namespace PUBGLiteExplorerWV
                     }
                 byte[] uexpData = null;
                 if (uexp != null)
-                {
                     uexpData = file.getEntryData(uexp);
-                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), null);
-                }
-                else
-                {
-                    PAKFileEntry ubulk = null;
-                    string ubulkPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".ubulk";
-                    ubulkPath = ubulkPath.Replace("\\", "/");
-                    foreach (PAKFileEntry e in file.table.entries)
-                        if (e.path == ubulkPath)
-                        {
-                            ubulk = e;
-                            break;
-                        }
-                    byte[] ubulkData = null;
-                    if (ubulk != null)
+                PAKFileEntry ubulk = null;
+                string ubulkPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".ubulk";
+                ubulkPath = ubulkPath.Replace("\\", "/");
+                foreach (PAKFileEntry e in file.table.entries)
+                    if (e.path == ubulkPath)
                     {
-                        ubulkData = file.getEntryData(uexp);
-                        asset = new UAsset(new MemoryStream(data), null, new MemoryStream(ubulkData));
+                        ubulk = e;
+                        break;
                     }
-                    else
-                        asset = new UAsset(new MemoryStream(data), null, null);
-                }
+                byte[] ubulkData = null;
+                if (ubulk != null)
+                    ubulkData = file.getEntryData(ubulk);
+                if(uexpData != null && ubulkData != null)
+                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), new MemoryStream(ubulkData));
+                else if (uexpData != null)
+                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), null);
+                else
+                    asset = new UAsset(new MemoryStream(data), null, null);
                 if (asset != null && asset._isValid)
                 {
                     for (int i = 0; i < asset.nameCount; i++)
@@ -330,6 +333,9 @@ namespace PUBGLiteExplorerWV
 
         private void listBox4_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (tabControl2.TabPages.Contains(tabPage6))
+                tabControl2.TabPages.Remove(tabPage6);
+            currentTex = null;
             int n = listBox4.SelectedIndex;
             if (n == -1 || currentAsset == null)
                 return;
@@ -338,6 +344,22 @@ namespace PUBGLiteExplorerWV
             try
             {
                 rtb1.Text = currentAsset.ParseProperties(ex);
+                if (currentAsset.GetName(ex.classIdx) == "Texture2D")
+                {
+                    byte[] ubulkData = currentAsset._ubulkData;
+                    if(ubulkData != null)
+                        currentTex = new UTexture2D(new MemoryStream(ex._data), currentAsset, new MemoryStream(ubulkData));
+                    else
+                        currentTex = new UTexture2D(new MemoryStream(ex._data), currentAsset, null);
+                    if (currentTex.mips.Count > 0)
+                    {
+                        tabControl2.TabPages.Add(tabPage6);
+                        listBox5.Items.Clear();
+                        foreach (UTexture2DMipMap mip in currentTex.mips)
+                            listBox5.Items.Add("Mip " + mip.width + "x" + mip.height);
+                        label1.Text = n.ToString("X4") + " : " + ex._name;
+                    }
+                }
             }
             catch (Exception exc)
             {
@@ -358,6 +380,27 @@ namespace PUBGLiteExplorerWV
                 File.WriteAllBytes(d.FileName, currentAsset.exportTable[n]._data);
                 MessageBox.Show("Done.");
             }
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            if (currentTex == null)
+                return;
+            FolderBrowserDialog d = new FolderBrowserDialog();
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                for (int i = 0; i < currentTex.mips.Count; i++)
+                    File.WriteAllBytes(d.SelectedPath + "\\mip_" + i + ".bin", currentTex.mips[i].data);
+                MessageBox.Show("Done.");
+            }
+        }
+
+        private void listBox5_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int n = listBox5.SelectedIndex;
+            if (n == -1 || currentTex == null)
+                return;
+            hb3.ByteProvider = new DynamicByteProvider(currentTex.mips[n].data);
         }
     }
 }

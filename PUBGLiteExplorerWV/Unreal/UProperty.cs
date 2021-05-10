@@ -9,6 +9,7 @@ namespace PUBGLiteExplorerWV
 {
     public class UProperty
     {
+        public long _offset;
         public string name;
         public string type;
         public UProp prop;
@@ -17,9 +18,11 @@ namespace PUBGLiteExplorerWV
 
         public UProperty(Stream s, UAsset asset)
         {
+            _offset = s.Position;
             name = asset.GetName((int)Helper.ReadU64(s));
             if (name == "None")
             {
+                s.Seek(4, SeekOrigin.Current);
                 type = "None";
                 _isValid = true;
                 return;
@@ -77,7 +80,14 @@ namespace PUBGLiteExplorerWV
 
     public abstract class UProp
     {
+        public uint size;
+        public uint flags;
         public abstract string ToDetails(string name);
+        public void ReadSizeAndFlags(Stream s)
+        {
+            size = Helper.ReadU32(s);
+            flags = Helper.ReadU32(s);
+        }
     }
 
     public class UStructProperty : UProp
@@ -87,8 +97,7 @@ namespace PUBGLiteExplorerWV
 
         public UStructProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             structType = asset.GetName((int)Helper.ReadU64(s));
             byte[] unk = new byte[0x11];
             s.Read(unk, 0, 0x11);
@@ -125,8 +134,7 @@ namespace PUBGLiteExplorerWV
 
         public UObjectProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             s.ReadByte();
             value = (int)Helper.ReadU32(s);
             objName = "";
@@ -150,8 +158,7 @@ namespace PUBGLiteExplorerWV
 
         public UFloatProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             s.ReadByte();
             value = Helper.ReadFloat(s);
         }
@@ -170,8 +177,7 @@ namespace PUBGLiteExplorerWV
 
         public UStrProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             s.ReadByte();
             value = Helper.ReadUString(s);
         }
@@ -190,8 +196,7 @@ namespace PUBGLiteExplorerWV
 
         public UBoolProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             value = s.ReadByte() == 1;
             s.ReadByte();
         }
@@ -211,8 +216,7 @@ namespace PUBGLiteExplorerWV
 
         public UByteProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             type = asset.GetName((int)Helper.ReadU64(s));
             s.ReadByte();
             value = (byte)s.ReadByte();
@@ -233,8 +237,7 @@ namespace PUBGLiteExplorerWV
 
         public UIntProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             s.ReadByte();
             value = (int)Helper.ReadU32(s);
         }
@@ -253,8 +256,7 @@ namespace PUBGLiteExplorerWV
 
         public UUInt32Property(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             s.ReadByte();
             value = Helper.ReadU32(s);
         }
@@ -274,8 +276,7 @@ namespace PUBGLiteExplorerWV
 
         public UEnumProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             type = asset.GetName((int)Helper.ReadU64(s));
             s.ReadByte();
             value = asset.GetName((int)Helper.ReadU64(s));
@@ -297,8 +298,7 @@ namespace PUBGLiteExplorerWV
 
         public UArrayProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             type = asset.GetName((int)Helper.ReadU64(s));
             s.ReadByte();
             data = new byte[size];
@@ -319,8 +319,7 @@ namespace PUBGLiteExplorerWV
 
         public UNameProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             s.ReadByte();
             value = asset.GetName((int)Helper.ReadU64(s));
         }
@@ -339,8 +338,7 @@ namespace PUBGLiteExplorerWV
 
         public ULazyObjectProperty(Stream s, UAsset asset)
         {
-            uint size = Helper.ReadU32(s);
-            uint flags = Helper.ReadU32(s);
+            ReadSizeAndFlags(s);
             s.ReadByte();
             value = new byte[size];
             s.Read(value, 0, (int)size);

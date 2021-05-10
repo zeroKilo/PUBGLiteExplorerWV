@@ -23,10 +23,20 @@ namespace PUBGLiteExplorerWV
         public uint exportOffset;
         public uint importCount;
         public uint importOffset;
+        public uint dependsOffset;
+        public uint stringRefCount;
+        public uint stringRefOffset;
+        public uint searchableNamesOffset;
+        public uint thumbnailOffset;
+        public byte[] guid;
+        public ulong bulkDataStartOffset;
+
+
         public List<string> nameTable;
         public List<uint> nameTableHashes;
         public List<UExport> exportTable;
         public List<UImport> importTable;
+        public byte[] _ubulkData = null;
 
         public bool _isValid = false;
 
@@ -56,9 +66,21 @@ namespace PUBGLiteExplorerWV
             exportOffset = Helper.ReadU32(data);
             importCount = Helper.ReadU32(data);
             importOffset = Helper.ReadU32(data);
+            dependsOffset = Helper.ReadU32(data);
+            stringRefCount = Helper.ReadU32(data);
+            stringRefOffset = Helper.ReadU32(data);
+            searchableNamesOffset = Helper.ReadU32(data);
+            thumbnailOffset = Helper.ReadU32(data);
+            guid = new byte[16];
+            data.Read(guid, 0, 16);
+            uint genCount = Helper.ReadU32(data);
+            data.Seek(8 * genCount + 0x30, SeekOrigin.Current);
+            bulkDataStartOffset = Helper.ReadU64(data);
             ReadNameTable(data);
             ReadImportTable(data);
             ReadExportTable(data, uexp);
+            if (ubulk != null)
+                _ubulkData = ubulk.ToArray();
             _isValid = true;
         }
 
