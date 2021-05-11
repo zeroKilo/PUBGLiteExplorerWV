@@ -99,7 +99,7 @@ namespace PUBGLiteExplorerWV
                     sb.AppendLine("Error parsing at 0x" + pos.ToString("X") + " Name=" + p.name + " Type=" + p.type);
                     break;
                 }
-                sb.AppendLine(p.prop.ToDetails(p.name));
+                sb.AppendLine(p._offset.ToString("X8") + " : " + p.prop.ToDetails(p.name));
             }
             return sb.ToString();
         }

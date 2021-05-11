@@ -340,9 +340,9 @@ namespace PUBGLiteExplorerWV
             if (n == -1 || currentAsset == null)
                 return;
             UExport ex = currentAsset.exportTable[n];
-            hb2.ByteProvider = new DynamicByteProvider(ex._data);
             try
             {
+                hb2.ByteProvider = new DynamicByteProvider(ex._data);
                 rtb1.Text = currentAsset.ParseProperties(ex);
                 if (currentAsset.GetName(ex.classIdx) == "Texture2D")
                 {
@@ -401,6 +401,11 @@ namespace PUBGLiteExplorerWV
             if (n == -1 || currentTex == null)
                 return;
             hb3.ByteProvider = new DynamicByteProvider(currentTex.mips[n].data);
+            try
+            {
+                pic1.Image = currentTex.mips[n].MakeBitmap();
+            }
+            catch { }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -91,6 +92,15 @@ namespace PUBGLiteExplorerWV
             }
             width = Helper.ReadU32(s);
             height = Helper.ReadU32(s);
+        }
+
+        public Bitmap MakeBitmap()
+        {
+            Bitmap result = new Bitmap((int)width, (int)height);
+            for(int y = 0; y < height;y++)
+                for (int x = 0; x < width; x++)
+                    result.SetPixel(x, y, Color.FromArgb(BitConverter.ToInt32(data, (int)(y * width * 4 + x * 4))));
+            return result;
         }
     }
 }
