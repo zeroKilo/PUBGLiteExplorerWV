@@ -367,7 +367,20 @@ namespace PUBGLiteExplorerWV
             }
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void listBox5_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int n = listBox5.SelectedIndex;
+            if (n == -1 || currentTex == null)
+                return;
+            hb3.ByteProvider = new DynamicByteProvider(currentTex.mips[n].data);
+            try
+            {
+                pic1.Image = currentTex.mips[n].MakeBitmap();
+            }
+            catch { }
+        }
+
+        private void previewInExportTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = listBox4.SelectedIndex;
             if (n == -1 || currentAsset == null)
@@ -382,7 +395,7 @@ namespace PUBGLiteExplorerWV
             }
         }
 
-        private void button2_Click_1(object sender, EventArgs e)
+        private void mipsInTexture2DTabToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (currentTex == null)
                 return;
@@ -395,17 +408,70 @@ namespace PUBGLiteExplorerWV
             }
         }
 
-        private void listBox5_SelectedIndexChanged(object sender, EventArgs e)
+        private UProp findPropByName(List<UProperty>list, string name)
         {
-            int n = listBox5.SelectedIndex;
-            if (n == -1 || currentTex == null)
+            foreach (UProperty p in list)
+                if (p.name == name)
+                    return p.prop;
+            return null;
+        }
+
+        private void landscapeToTerrainRawToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentAsset == null)
                 return;
-            hb3.ByteProvider = new DynamicByteProvider(currentTex.mips[n].data);
-            try
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "*.raw|*.raw";
+            if (d.ShowDialog() == DialogResult.OK)
             {
-                pic1.Image = currentTex.mips[n].MakeBitmap();
+                List<ULandscapeComponent> lcs = new List<ULandscapeComponent>();
+                foreach (UExport exp in currentAsset.exportTable)
+                    if (currentAsset.GetName(exp.classIdx) == "LandscapeComponent")
+                        lcs.Add(new ULandscapeComponent(new MemoryStream(exp._data), currentAsset));
+                if (lcs.Count != 16 || lcs[0].data.Length != 0x7E02)
+                {
+                    MessageBox.Show("Cant export,\nexpected lcs=16, found=" + lcs.Count + "\nexpected datasize=0x7E02, actual size=0x" + lcs[0].data.Length.ToString("X4"));
+                    return;
+                }
+                while(true)
+                {
+                    bool found = false;
+                    for(int i = 0; i < 15; i++)
+                    {
+                        UProp x1 = findPropByName(lcs[i].props, "SectionBaseX");
+                        UProp y1 = findPropByName(lcs[i].props, "SectionBaseY");
+                        UProp x2 = findPropByName(lcs[i + 1].props, "SectionBaseX");
+                        UProp y2 = findPropByName(lcs[i + 1].props, "SectionBaseY");
+                        int posX1, posX2, posY1, posY2;
+                        posX1 = posX2 = posY1 = posY2 = 0;
+                        if (x1 != null) posX1 = ((UIntProperty)x1).value;
+                        if (y1 != null) posY1 = ((UIntProperty)y1).value;
+                        if (x2 != null) posX2 = ((UIntProperty)x2).value;
+                        if (y2 != null) posY2 = ((UIntProperty)y2).value;
+                        if (posY1 > posY2 || ( posY1 == posY2 && posX1 > posX2))
+                        {
+                            ULandscapeComponent tmp = lcs[i];
+                            lcs[i] = lcs[i + 1];
+                            lcs[i + 1] = tmp;
+                            found = true;
+                        }
+                    }
+                    if (!found)
+                        break;
+                }
+                MemoryStream result = new MemoryStream();
+                for (int ty = 0; ty < 4; ty++)
+                    for (int y = 0; y < 127; y++)
+                    {
+                        for (int tx = 0; tx < 4; tx++)
+                        {
+                            ULandscapeComponent lc = lcs[ty * 4 + tx];
+                            result.Write(lc.data, 254 * y, 254);
+                        }
+                    }
+                File.WriteAllBytes(d.FileName, result.ToArray());
+                MessageBox.Show("Done.");
             }
-            catch { }
         }
     }
 }

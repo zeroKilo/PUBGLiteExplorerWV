@@ -35,6 +35,9 @@
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previewInExportTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mipsInTexture2DTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -56,19 +59,18 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.hb2 = new Be.Windows.Forms.HexBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.listBox5 = new System.Windows.Forms.ListBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.splitContainer5 = new System.Windows.Forms.SplitContainer();
+            this.pic1 = new System.Windows.Forms.PictureBox();
+            this.hb3 = new Be.Windows.Forms.HexBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.splitContainer5 = new System.Windows.Forms.SplitContainer();
-            this.hb3 = new Be.Windows.Forms.HexBox();
-            this.pic1 = new System.Windows.Forms.PictureBox();
+            this.landscapeToTerrainRawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -95,19 +97,20 @@
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).BeginInit();
             this.splitContainer5.Panel1.SuspendLayout();
             this.splitContainer5.Panel2.SuspendLayout();
             this.splitContainer5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contentToolStripMenuItem,
-            this.exportToolStripMenuItem});
+            this.exportToolStripMenuItem,
+            this.dumpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(993, 24);
@@ -159,6 +162,30 @@
             this.exportAllToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.exportAllToolStripMenuItem.Text = "Export all...";
             this.exportAllToolStripMenuItem.Click += new System.EventHandler(this.exportAllToolStripMenuItem_Click);
+            // 
+            // dumpToolStripMenuItem
+            // 
+            this.dumpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.previewInExportTableToolStripMenuItem,
+            this.mipsInTexture2DTabToolStripMenuItem,
+            this.landscapeToTerrainRawToolStripMenuItem});
+            this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
+            this.dumpToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.dumpToolStripMenuItem.Text = "Dump";
+            // 
+            // previewInExportTableToolStripMenuItem
+            // 
+            this.previewInExportTableToolStripMenuItem.Name = "previewInExportTableToolStripMenuItem";
+            this.previewInExportTableToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.previewInExportTableToolStripMenuItem.Text = "Preview in Export Table...";
+            this.previewInExportTableToolStripMenuItem.Click += new System.EventHandler(this.previewInExportTableToolStripMenuItem_Click);
+            // 
+            // mipsInTexture2DTabToolStripMenuItem
+            // 
+            this.mipsInTexture2DTabToolStripMenuItem.Name = "mipsInTexture2DTabToolStripMenuItem";
+            this.mipsInTexture2DTabToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.mipsInTexture2DTabToolStripMenuItem.Text = "Mips in Texture2D tab...";
+            this.mipsInTexture2DTabToolStripMenuItem.Click += new System.EventHandler(this.mipsInTexture2DTabToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -398,7 +425,6 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.hb2);
-            this.splitContainer3.Panel2.Controls.Add(this.button1);
             this.splitContainer3.Size = new System.Drawing.Size(434, 373);
             this.splitContainer3.SplitterDistance = 243;
             this.splitContainer3.TabIndex = 0;
@@ -423,31 +449,19 @@
             this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(0, 23);
+            this.hb2.Location = new System.Drawing.Point(0, 0);
             this.hb2.Name = "hb2";
             this.hb2.ReadOnly = true;
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(434, 103);
+            this.hb2.Size = new System.Drawing.Size(434, 126);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 6;
             this.hb2.UseFixedBytesPerLine = true;
             this.hb2.VScrollBarVisible = true;
             // 
-            // button1
-            // 
-            this.button1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.button1.Location = new System.Drawing.Point(0, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(434, 23);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "Dump...";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
-            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.splitContainer4);
-            this.tabPage6.Controls.Add(this.button2);
             this.tabPage6.Controls.Add(this.label1);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
@@ -470,7 +484,7 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.splitContainer5);
-            this.splitContainer4.Size = new System.Drawing.Size(657, 327);
+            this.splitContainer4.Size = new System.Drawing.Size(657, 350);
             this.splitContainer4.SplitterDistance = 219;
             this.splitContainer4.TabIndex = 0;
             // 
@@ -484,20 +498,53 @@
             this.listBox5.Location = new System.Drawing.Point(0, 0);
             this.listBox5.Name = "listBox5";
             this.listBox5.ScrollAlwaysVisible = true;
-            this.listBox5.Size = new System.Drawing.Size(219, 327);
+            this.listBox5.Size = new System.Drawing.Size(219, 350);
             this.listBox5.TabIndex = 3;
             this.listBox5.SelectedIndexChanged += new System.EventHandler(this.listBox5_SelectedIndexChanged);
             // 
-            // button2
+            // splitContainer5
             // 
-            this.button2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.button2.Location = new System.Drawing.Point(3, 353);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(657, 23);
-            this.button2.TabIndex = 9;
-            this.button2.Text = "Dump All Texture Mips...";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            this.splitContainer5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer5.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer5.Name = "splitContainer5";
+            this.splitContainer5.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer5.Panel1
+            // 
+            this.splitContainer5.Panel1.Controls.Add(this.pic1);
+            // 
+            // splitContainer5.Panel2
+            // 
+            this.splitContainer5.Panel2.Controls.Add(this.hb3);
+            this.splitContainer5.Size = new System.Drawing.Size(434, 350);
+            this.splitContainer5.SplitterDistance = 154;
+            this.splitContainer5.TabIndex = 0;
+            // 
+            // pic1
+            // 
+            this.pic1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pic1.Location = new System.Drawing.Point(0, 0);
+            this.pic1.Name = "pic1";
+            this.pic1.Size = new System.Drawing.Size(434, 154);
+            this.pic1.TabIndex = 0;
+            this.pic1.TabStop = false;
+            // 
+            // hb3
+            // 
+            this.hb3.BoldFont = null;
+            this.hb3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb3.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb3.LineInfoVisible = true;
+            this.hb3.Location = new System.Drawing.Point(0, 0);
+            this.hb3.Name = "hb3";
+            this.hb3.ReadOnly = true;
+            this.hb3.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb3.Size = new System.Drawing.Size(434, 192);
+            this.hb3.StringViewVisible = true;
+            this.hb3.TabIndex = 3;
+            this.hb3.UseFixedBytesPerLine = true;
+            this.hb3.VScrollBarVisible = true;
             // 
             // label1
             // 
@@ -540,49 +587,12 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // splitContainer5
+            // landscapeToTerrainRawToolStripMenuItem
             // 
-            this.splitContainer5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer5.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer5.Name = "splitContainer5";
-            this.splitContainer5.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer5.Panel1
-            // 
-            this.splitContainer5.Panel1.Controls.Add(this.pic1);
-            // 
-            // splitContainer5.Panel2
-            // 
-            this.splitContainer5.Panel2.Controls.Add(this.hb3);
-            this.splitContainer5.Size = new System.Drawing.Size(434, 327);
-            this.splitContainer5.SplitterDistance = 144;
-            this.splitContainer5.TabIndex = 0;
-            // 
-            // hb3
-            // 
-            this.hb3.BoldFont = null;
-            this.hb3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb3.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb3.LineInfoVisible = true;
-            this.hb3.Location = new System.Drawing.Point(0, 0);
-            this.hb3.Name = "hb3";
-            this.hb3.ReadOnly = true;
-            this.hb3.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb3.Size = new System.Drawing.Size(434, 179);
-            this.hb3.StringViewVisible = true;
-            this.hb3.TabIndex = 3;
-            this.hb3.UseFixedBytesPerLine = true;
-            this.hb3.VScrollBarVisible = true;
-            // 
-            // pic1
-            // 
-            this.pic1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pic1.Location = new System.Drawing.Point(0, 0);
-            this.pic1.Name = "pic1";
-            this.pic1.Size = new System.Drawing.Size(434, 144);
-            this.pic1.TabIndex = 0;
-            this.pic1.TabStop = false;
+            this.landscapeToTerrainRawToolStripMenuItem.Name = "landscapeToTerrainRawToolStripMenuItem";
+            this.landscapeToTerrainRawToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.landscapeToTerrainRawToolStripMenuItem.Text = "Landscape to terrain raw...";
+            this.landscapeToTerrainRawToolStripMenuItem.Click += new System.EventHandler(this.landscapeToTerrainRawToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -624,13 +634,13 @@
             this.splitContainer4.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
             this.splitContainer4.ResumeLayout(false);
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.splitContainer5.Panel1.ResumeLayout(false);
             this.splitContainer5.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
             this.splitContainer5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -669,15 +679,17 @@
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.RichTextBox rtb1;
         private Be.Windows.Forms.HexBox hb2;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.SplitContainer splitContainer4;
         private System.Windows.Forms.ListBox listBox5;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.SplitContainer splitContainer5;
         private System.Windows.Forms.PictureBox pic1;
         private Be.Windows.Forms.HexBox hb3;
+        private System.Windows.Forms.ToolStripMenuItem dumpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem previewInExportTableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mipsInTexture2DTabToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem landscapeToTerrainRawToolStripMenuItem;
     }
 }

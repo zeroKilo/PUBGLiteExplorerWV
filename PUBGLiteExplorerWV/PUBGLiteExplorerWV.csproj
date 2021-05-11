@@ -54,6 +54,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unreal\UAsset.cs" />
+    <Compile Include="Unreal\ULandscapeComponent.cs" />
     <Compile Include="Unreal\UProperty.cs" />
     <Compile Include="Unreal\UTexture2D.cs" />
     <EmbeddedResource Include="ExportDialog.resx">

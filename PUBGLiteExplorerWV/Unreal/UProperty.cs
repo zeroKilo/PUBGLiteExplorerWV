@@ -138,8 +138,8 @@ namespace PUBGLiteExplorerWV
             s.ReadByte();
             value = (int)Helper.ReadU32(s);
             objName = "";
-            if (value > 0 && value <= asset.exportCount)
-                objName = asset.exportTable[(int)value - 1]._name;
+            if (value >= 0 && value < asset.exportCount)
+                objName = asset.exportTable[(int)value]._name;
             if (value < 0 && -value <= asset.importCount)
                 objName = asset.importTable[(int)-value - 1]._name;
         }
