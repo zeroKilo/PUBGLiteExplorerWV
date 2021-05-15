@@ -38,6 +38,7 @@
             this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewInExportTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mipsInTexture2DTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.landscapeToTerrainRawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -70,7 +71,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.landscapeToTerrainRawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.staticMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -168,7 +169,8 @@
             this.dumpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.previewInExportTableToolStripMenuItem,
             this.mipsInTexture2DTabToolStripMenuItem,
-            this.landscapeToTerrainRawToolStripMenuItem});
+            this.landscapeToTerrainRawToolStripMenuItem,
+            this.staticMeshToolStripMenuItem});
             this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
             this.dumpToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.dumpToolStripMenuItem.Text = "Dump";
@@ -186,6 +188,13 @@
             this.mipsInTexture2DTabToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.mipsInTexture2DTabToolStripMenuItem.Text = "Mips in Texture2D tab...";
             this.mipsInTexture2DTabToolStripMenuItem.Click += new System.EventHandler(this.mipsInTexture2DTabToolStripMenuItem_Click);
+            // 
+            // landscapeToTerrainRawToolStripMenuItem
+            // 
+            this.landscapeToTerrainRawToolStripMenuItem.Name = "landscapeToTerrainRawToolStripMenuItem";
+            this.landscapeToTerrainRawToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.landscapeToTerrainRawToolStripMenuItem.Text = "Landscape to terrain raw...";
+            this.landscapeToTerrainRawToolStripMenuItem.Click += new System.EventHandler(this.landscapeToTerrainRawToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -315,10 +324,10 @@
             this.tabControl2.Controls.Add(this.tabPage5);
             this.tabControl2.Controls.Add(this.tabPage6);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl2.Location = new System.Drawing.Point(3, 26);
+            this.tabControl2.Location = new System.Drawing.Point(3, 42);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(671, 405);
+            this.tabControl2.Size = new System.Drawing.Size(671, 389);
             this.tabControl2.TabIndex = 0;
             // 
             // tabPage3
@@ -375,7 +384,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(663, 379);
+            this.tabPage5.Size = new System.Drawing.Size(663, 363);
             this.tabPage5.TabIndex = 2;
             this.tabPage5.Text = "Export Table";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -393,7 +402,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer2.Size = new System.Drawing.Size(657, 373);
+            this.splitContainer2.Size = new System.Drawing.Size(657, 357);
             this.splitContainer2.SplitterDistance = 219;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -407,7 +416,7 @@
             this.listBox4.Location = new System.Drawing.Point(0, 0);
             this.listBox4.Name = "listBox4";
             this.listBox4.ScrollAlwaysVisible = true;
-            this.listBox4.Size = new System.Drawing.Size(219, 373);
+            this.listBox4.Size = new System.Drawing.Size(219, 357);
             this.listBox4.TabIndex = 2;
             this.listBox4.SelectedIndexChanged += new System.EventHandler(this.listBox4_SelectedIndexChanged);
             // 
@@ -425,8 +434,8 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.hb2);
-            this.splitContainer3.Size = new System.Drawing.Size(434, 373);
-            this.splitContainer3.SplitterDistance = 243;
+            this.splitContainer3.Size = new System.Drawing.Size(434, 357);
+            this.splitContainer3.SplitterDistance = 232;
             this.splitContainer3.TabIndex = 0;
             // 
             // rtb1
@@ -437,7 +446,7 @@
             this.rtb1.HideSelection = false;
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(434, 243);
+            this.rtb1.Size = new System.Drawing.Size(434, 232);
             this.rtb1.TabIndex = 0;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
@@ -453,7 +462,7 @@
             this.hb2.Name = "hb2";
             this.hb2.ReadOnly = true;
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(434, 126);
+            this.hb2.Size = new System.Drawing.Size(434, 121);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 6;
             this.hb2.UseFixedBytesPerLine = true;
@@ -562,9 +571,9 @@
             this.label2.Font = new System.Drawing.Font("Courier New", 8.25F);
             this.label2.Location = new System.Drawing.Point(3, 3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(671, 23);
+            this.label2.Size = new System.Drawing.Size(671, 39);
             this.label2.TabIndex = 11;
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // statusStrip1
             // 
@@ -587,12 +596,12 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // landscapeToTerrainRawToolStripMenuItem
+            // staticMeshToolStripMenuItem
             // 
-            this.landscapeToTerrainRawToolStripMenuItem.Name = "landscapeToTerrainRawToolStripMenuItem";
-            this.landscapeToTerrainRawToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.landscapeToTerrainRawToolStripMenuItem.Text = "Landscape to terrain raw...";
-            this.landscapeToTerrainRawToolStripMenuItem.Click += new System.EventHandler(this.landscapeToTerrainRawToolStripMenuItem_Click);
+            this.staticMeshToolStripMenuItem.Name = "staticMeshToolStripMenuItem";
+            this.staticMeshToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.staticMeshToolStripMenuItem.Text = "Static Mesh LODs...";
+            this.staticMeshToolStripMenuItem.Click += new System.EventHandler(this.staticMeshToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -691,5 +700,6 @@
         private System.Windows.Forms.ToolStripMenuItem previewInExportTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mipsInTexture2DTabToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem landscapeToTerrainRawToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem staticMeshToolStripMenuItem;
     }
 }

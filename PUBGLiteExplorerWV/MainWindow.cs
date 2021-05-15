@@ -17,6 +17,7 @@ namespace PUBGLiteExplorerWV
         public List<PAKFile> files = new List<PAKFile>();
         public UAsset currentAsset = null;
         public UTexture2D currentTex = null;
+        public UStaticMesh currentStatMesh = null;
         public MainWindow()
         {
             InitializeComponent();
@@ -172,7 +173,7 @@ namespace PUBGLiteExplorerWV
         private void LoadAsset(PAKFile file, PAKFileEntry entry)
         {
             currentAsset = null;
-            label2.Text = entry.path;
+            label2.Text = "PAK Path   = " + file.myPath + "\nAsset Path = " + entry.path;
             listBox2.Items.Clear();
             listBox3.Items.Clear();
             listBox4.Items.Clear();
@@ -360,6 +361,14 @@ namespace PUBGLiteExplorerWV
                         label1.Text = n.ToString("X4") + " : " + ex._name;
                     }
                 }
+                else if (currentAsset.GetName(ex.classIdx) == "StaticMesh")
+                {
+                    byte[] ubulkData = currentAsset._ubulkData;
+                    if (ubulkData != null)
+                        currentStatMesh = new UStaticMesh(new MemoryStream(ex._data), currentAsset, new MemoryStream(ubulkData));
+                    else
+                        currentStatMesh = new UStaticMesh(new MemoryStream(ex._data), currentAsset, null);
+                }
             }
             catch (Exception exc)
             {
@@ -470,6 +479,19 @@ namespace PUBGLiteExplorerWV
                         }
                     }
                 File.WriteAllBytes(d.FileName, result.ToArray());
+                MessageBox.Show("Done.");
+            }
+        }
+
+        private void staticMeshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentStatMesh == null)
+                return;
+            FolderBrowserDialog d = new FolderBrowserDialog();
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                for (int i = 0; i < currentStatMesh.lodRawData.Count; i++)
+                    File.WriteAllBytes(d.SelectedPath + "\\lod_" + i + "_static_mesh.bin", currentStatMesh.lodRawData[i]);
                 MessageBox.Show("Done.");
             }
         }

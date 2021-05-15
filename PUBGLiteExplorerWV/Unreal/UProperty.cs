@@ -108,11 +108,19 @@ namespace PUBGLiteExplorerWV
         public override string ToDetails(string name)
         {
             StringBuilder sb = new StringBuilder();
+            MemoryStream m;
             sb.Append(name + " (StructProperty " + structType + ") = {");
             switch (structType)
             {
                 case "Vector":
-                    MemoryStream m = new MemoryStream(data);
+                    m = new MemoryStream(data);
+                    sb.Append(Helper.ReadFloat(m) + "; ");
+                    sb.Append(Helper.ReadFloat(m) + "; ");
+                    sb.Append(Helper.ReadFloat(m));
+                    break;
+                case "Vector4":
+                    m = new MemoryStream(data);
+                    sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m));
