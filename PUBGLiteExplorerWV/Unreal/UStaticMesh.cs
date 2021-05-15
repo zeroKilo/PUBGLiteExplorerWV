@@ -12,6 +12,7 @@ namespace PUBGLiteExplorerWV
     {
         public List<UProperty> props = new List<UProperty>();
         public List<byte[]> lodRawData = new List<byte[]>();
+        public List<UStaticMeshLOD> lods = new List<UStaticMeshLOD>();
 
         public UStaticMesh(Stream s, UAsset asset, MemoryStream ubulk)
         {
@@ -40,6 +41,9 @@ namespace PUBGLiteExplorerWV
                 ubulk.Read(buff, 0, (int)size1);
                 lodRawData.Add(buff);
             }
+            lods = new List<UStaticMeshLOD>();
+            foreach (byte[] buff in lodRawData)
+                lods.Add(new UStaticMeshLOD(new MemoryStream(buff)));
         }
     }
 }

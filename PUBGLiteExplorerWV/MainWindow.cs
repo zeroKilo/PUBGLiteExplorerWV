@@ -495,5 +495,18 @@ namespace PUBGLiteExplorerWV
                 MessageBox.Show("Done.");
             }
         }
+
+        private void staticMeshLODsAsPSKToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentStatMesh == null)
+                return;
+            FolderBrowserDialog d = new FolderBrowserDialog();
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                for (int i = 0; i < currentStatMesh.lods.Count; i++)
+                    File.WriteAllBytes(d.SelectedPath + "\\lod_" + i + "_static_mesh.psk", currentStatMesh.lods[i].MakePSK());
+                MessageBox.Show("Done.");
+            }
+        }
     }
 }

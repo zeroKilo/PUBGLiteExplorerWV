@@ -32,6 +32,13 @@ namespace PUBGLiteExplorerWV
             return BitConverter.ToUInt64(buff, 0);
         }
 
+        public static float ReadFloat(Stream s)
+        {
+            byte[] buff = new byte[4];
+            s.Read(buff, 0, 4);
+            return BitConverter.ToSingle(buff, 0);
+        }
+
         public static string ReadUString(Stream s)
         {
             int len = (int)ReadU32(s);
@@ -51,10 +58,40 @@ namespace PUBGLiteExplorerWV
             return sb.ToString();
         }
 
-        public static float ReadFloat(Stream s)
+        public static void WriteU16(Stream s, ushort u)
         {
-            byte[] buff = new byte[4];
-            s.Read(buff, 0, 4);
+            s.Write(BitConverter.GetBytes(u), 0, 2);
+        }
+
+        public static void WriteU32(Stream s, uint u)
+        {
+            s.Write(BitConverter.GetBytes(u), 0, 4);
+        }
+
+        public static void WriteU64(Stream s, ulong u)
+        {
+            s.Write(BitConverter.GetBytes(u), 0, 8);
+        }
+
+        public static void WriteFloat(Stream s, float f)
+        {
+            s.Write(BitConverter.GetBytes(f), 0, 4);
+        }
+
+        public static void WriteCString(Stream s, string str)
+        {
+            foreach(char c in str)
+                s.WriteByte((byte)c);
+        }
+
+        public static float Half2Float(ushort h)
+        {   
+	        int sign = (h >> 15) & 0x00000001;
+	        int exp  = (h >> 10) & 0x0000001F;
+	        int mant =  h        & 0x000003FF;
+	        exp  = exp + (127 - 15);
+	        uint tmp = (uint)((sign << 31) | (exp << 23) | (mant << 13));
+            byte[] buff = BitConverter.GetBytes(tmp);
             return BitConverter.ToSingle(buff, 0);
         }
 

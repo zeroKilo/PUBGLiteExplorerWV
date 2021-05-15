@@ -39,6 +39,7 @@
             this.previewInExportTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mipsInTexture2DTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.landscapeToTerrainRawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.staticMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -71,7 +72,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.staticMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.staticMeshLODsAsPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -170,7 +171,8 @@
             this.previewInExportTableToolStripMenuItem,
             this.mipsInTexture2DTabToolStripMenuItem,
             this.landscapeToTerrainRawToolStripMenuItem,
-            this.staticMeshToolStripMenuItem});
+            this.staticMeshToolStripMenuItem,
+            this.staticMeshLODsAsPSKToolStripMenuItem});
             this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
             this.dumpToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.dumpToolStripMenuItem.Text = "Dump";
@@ -195,6 +197,13 @@
             this.landscapeToTerrainRawToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.landscapeToTerrainRawToolStripMenuItem.Text = "Landscape to terrain raw...";
             this.landscapeToTerrainRawToolStripMenuItem.Click += new System.EventHandler(this.landscapeToTerrainRawToolStripMenuItem_Click);
+            // 
+            // staticMeshToolStripMenuItem
+            // 
+            this.staticMeshToolStripMenuItem.Name = "staticMeshToolStripMenuItem";
+            this.staticMeshToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.staticMeshToolStripMenuItem.Text = "Static Mesh LODs as raw...";
+            this.staticMeshToolStripMenuItem.Click += new System.EventHandler(this.staticMeshToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -336,7 +345,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(663, 379);
+            this.tabPage3.Size = new System.Drawing.Size(663, 363);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Name Table";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -351,7 +360,7 @@
             this.listBox2.Location = new System.Drawing.Point(3, 3);
             this.listBox2.Name = "listBox2";
             this.listBox2.ScrollAlwaysVisible = true;
-            this.listBox2.Size = new System.Drawing.Size(657, 373);
+            this.listBox2.Size = new System.Drawing.Size(657, 357);
             this.listBox2.TabIndex = 2;
             // 
             // tabPage4
@@ -360,7 +369,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(663, 379);
+            this.tabPage4.Size = new System.Drawing.Size(663, 363);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Import Table";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -375,7 +384,7 @@
             this.listBox3.Location = new System.Drawing.Point(3, 3);
             this.listBox3.Name = "listBox3";
             this.listBox3.ScrollAlwaysVisible = true;
-            this.listBox3.Size = new System.Drawing.Size(657, 373);
+            this.listBox3.Size = new System.Drawing.Size(657, 357);
             this.listBox3.TabIndex = 2;
             // 
             // tabPage5
@@ -475,7 +484,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(663, 379);
+            this.tabPage6.Size = new System.Drawing.Size(663, 363);
             this.tabPage6.TabIndex = 3;
             this.tabPage6.Text = "Texture2D";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -493,7 +502,7 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.splitContainer5);
-            this.splitContainer4.Size = new System.Drawing.Size(657, 350);
+            this.splitContainer4.Size = new System.Drawing.Size(657, 334);
             this.splitContainer4.SplitterDistance = 219;
             this.splitContainer4.TabIndex = 0;
             // 
@@ -507,7 +516,7 @@
             this.listBox5.Location = new System.Drawing.Point(0, 0);
             this.listBox5.Name = "listBox5";
             this.listBox5.ScrollAlwaysVisible = true;
-            this.listBox5.Size = new System.Drawing.Size(219, 350);
+            this.listBox5.Size = new System.Drawing.Size(219, 334);
             this.listBox5.TabIndex = 3;
             this.listBox5.SelectedIndexChanged += new System.EventHandler(this.listBox5_SelectedIndexChanged);
             // 
@@ -525,8 +534,8 @@
             // splitContainer5.Panel2
             // 
             this.splitContainer5.Panel2.Controls.Add(this.hb3);
-            this.splitContainer5.Size = new System.Drawing.Size(434, 350);
-            this.splitContainer5.SplitterDistance = 154;
+            this.splitContainer5.Size = new System.Drawing.Size(434, 334);
+            this.splitContainer5.SplitterDistance = 146;
             this.splitContainer5.TabIndex = 0;
             // 
             // pic1
@@ -534,7 +543,7 @@
             this.pic1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pic1.Location = new System.Drawing.Point(0, 0);
             this.pic1.Name = "pic1";
-            this.pic1.Size = new System.Drawing.Size(434, 154);
+            this.pic1.Size = new System.Drawing.Size(434, 146);
             this.pic1.TabIndex = 0;
             this.pic1.TabStop = false;
             // 
@@ -549,7 +558,7 @@
             this.hb3.Name = "hb3";
             this.hb3.ReadOnly = true;
             this.hb3.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb3.Size = new System.Drawing.Size(434, 192);
+            this.hb3.Size = new System.Drawing.Size(434, 184);
             this.hb3.StringViewVisible = true;
             this.hb3.TabIndex = 3;
             this.hb3.UseFixedBytesPerLine = true;
@@ -596,12 +605,12 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // staticMeshToolStripMenuItem
+            // staticMeshLODsAsPSKToolStripMenuItem
             // 
-            this.staticMeshToolStripMenuItem.Name = "staticMeshToolStripMenuItem";
-            this.staticMeshToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.staticMeshToolStripMenuItem.Text = "Static Mesh LODs...";
-            this.staticMeshToolStripMenuItem.Click += new System.EventHandler(this.staticMeshToolStripMenuItem_Click);
+            this.staticMeshLODsAsPSKToolStripMenuItem.Name = "staticMeshLODsAsPSKToolStripMenuItem";
+            this.staticMeshLODsAsPSKToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.staticMeshLODsAsPSKToolStripMenuItem.Text = "Static Mesh LODs as PSK...";
+            this.staticMeshLODsAsPSKToolStripMenuItem.Click += new System.EventHandler(this.staticMeshLODsAsPSKToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -701,5 +710,6 @@
         private System.Windows.Forms.ToolStripMenuItem mipsInTexture2DTabToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem landscapeToTerrainRawToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem staticMeshToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem staticMeshLODsAsPSKToolStripMenuItem;
     }
 }
