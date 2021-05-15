@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Be.Windows.Forms;
+using Microsoft.VisualBasic;
 
 namespace PUBGLiteExplorerWV
 {
@@ -18,6 +19,7 @@ namespace PUBGLiteExplorerWV
         public UAsset currentAsset = null;
         public UTexture2D currentTex = null;
         public UStaticMesh currentStatMesh = null;
+        public string currentStatMeshName = "";
         public MainWindow()
         {
             InitializeComponent();
@@ -368,6 +370,7 @@ namespace PUBGLiteExplorerWV
                         currentStatMesh = new UStaticMesh(new MemoryStream(ex._data), currentAsset, new MemoryStream(ubulkData));
                     else
                         currentStatMesh = new UStaticMesh(new MemoryStream(ex._data), currentAsset, null);
+                    currentStatMeshName = ex._name;
                 }
             }
             catch (Exception exc)
@@ -498,14 +501,19 @@ namespace PUBGLiteExplorerWV
 
         private void staticMeshLODsAsPSKToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (currentStatMesh == null)
+            if (currentStatMesh == null && currentStatMesh.lods.Count == 0)
                 return;
-            FolderBrowserDialog d = new FolderBrowserDialog();
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "*.psk|*.psk";
+            d.FileName = currentStatMeshName + ".psk";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                for (int i = 0; i < currentStatMesh.lods.Count; i++)
-                    File.WriteAllBytes(d.SelectedPath + "\\lod_" + i + "_static_mesh.psk", currentStatMesh.lods[i].MakePSK());
-                MessageBox.Show("Done.");
+                string uvSet = Interaction.InputBox("Which set of UV to export? (0-3)", "UV Set", "0");
+                if (uvSet != "")
+                {
+                    File.WriteAllBytes(d.FileName, currentStatMesh.lods[0].MakePSK(Convert.ToInt32(uvSet)));
+                    MessageBox.Show("Done.");
+                }
             }
         }
     }

@@ -79,7 +79,7 @@ namespace PUBGLiteExplorerWV
             _valid = true;
         }
 
-        public byte[] MakePSK()
+        public byte[] MakePSK(int uvset)
         {
             if(!_valid)
                 return new byte[0];
@@ -105,8 +105,8 @@ namespace PUBGLiteExplorerWV
             foreach (float[] uv in uvs)
             {
                 Helper.WriteU32(result, index++);
-                Helper.WriteFloat(result, uv[4]);
-                Helper.WriteFloat(result, uv[5]);
+                Helper.WriteFloat(result, uv[uvset * 2]);
+                Helper.WriteFloat(result, uv[uvset * 2 + 1]);
                 Helper.WriteU32(result, 0);
             }
             Helper.WriteCString(result, "FACE0000");
@@ -117,6 +117,7 @@ namespace PUBGLiteExplorerWV
             foreach (ushort[] sec in sections)
                 count += (uint)(sec.Length / 3);
             Helper.WriteU32(result, count);
+            byte count2 = 0;
             foreach (ushort[] sec in sections)
             {
                 count = (uint)sec.Length / 3;
@@ -125,20 +126,27 @@ namespace PUBGLiteExplorerWV
                     Helper.WriteU16(result, sec[i * 3]);
                     Helper.WriteU16(result, sec[i * 3 + 1]);
                     Helper.WriteU16(result, sec[i * 3 + 2]);
-                    Helper.WriteU16(result, 0);
+                    result.WriteByte(count2);
+                    result.WriteByte(0);
                     Helper.WriteU32(result, 1);
                 }
+                count2++;
             }
+            count2 = 0;
             Helper.WriteCString(result, "MATT0000");
             Helper.WriteU64(result, 0);
             Helper.WriteU64(result, 0);
             Helper.WriteU32(result, 0x58);
-            Helper.WriteU32(result, 1);
-            string matName = "material_0";
-            byte[] buff = new byte[0x58];
-            for (int i = 0; i < matName.Length; i++)
-                buff[i] = (byte)matName[i];
-            result.Write(buff, 0, 0x58);
+            Helper.WriteU32(result, (uint)sections.Count);
+            foreach (ushort[] sec in sections)
+            {
+                string matName = "material_"+ count2;
+                byte[] buff = new byte[0x58];
+                for (int i = 0; i < matName.Length; i++)
+                    buff[i] = (byte)matName[i];
+                result.Write(buff, 0, 0x58);
+                count2++;
+            }
             Helper.WriteCString(result, "REFSKELT");
             Helper.WriteU64(result, 0);
             Helper.WriteU64(result, 0);

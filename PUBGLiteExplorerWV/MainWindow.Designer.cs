@@ -40,6 +40,7 @@
             this.mipsInTexture2DTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.landscapeToTerrainRawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.staticMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.staticMeshLODsAsPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -48,7 +49,6 @@
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.hb1 = new Be.Windows.Forms.HexBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -60,19 +60,19 @@
             this.listBox4 = new System.Windows.Forms.ListBox();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
-            this.hb2 = new Be.Windows.Forms.HexBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.listBox5 = new System.Windows.Forms.ListBox();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
             this.pic1 = new System.Windows.Forms.PictureBox();
-            this.hb3 = new Be.Windows.Forms.HexBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.staticMeshLODsAsPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hb1 = new Be.Windows.Forms.HexBox();
+            this.hb2 = new Be.Windows.Forms.HexBox();
+            this.hb3 = new Be.Windows.Forms.HexBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -205,6 +205,14 @@
             this.staticMeshToolStripMenuItem.Text = "Static Mesh LODs as raw...";
             this.staticMeshToolStripMenuItem.Click += new System.EventHandler(this.staticMeshToolStripMenuItem_Click);
             // 
+            // staticMeshLODsAsPSKToolStripMenuItem
+            // 
+            this.staticMeshLODsAsPSKToolStripMenuItem.Name = "staticMeshLODsAsPSKToolStripMenuItem";
+            this.staticMeshLODsAsPSKToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.staticMeshLODsAsPSKToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.staticMeshLODsAsPSKToolStripMenuItem.Text = "Static Mesh as PSK...";
+            this.staticMeshLODsAsPSKToolStripMenuItem.Click += new System.EventHandler(this.staticMeshLODsAsPSKToolStripMenuItem_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -296,23 +304,6 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Hex View";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // hb1
-            // 
-            this.hb1.BoldFont = null;
-            this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb1.LineInfoVisible = true;
-            this.hb1.Location = new System.Drawing.Point(3, 3);
-            this.hb1.Name = "hb1";
-            this.hb1.ReadOnly = true;
-            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(671, 428);
-            this.hb1.StringViewVisible = true;
-            this.hb1.TabIndex = 1;
-            this.hb1.UseFixedBytesPerLine = true;
-            this.hb1.VScrollBarVisible = true;
             // 
             // tabPage2
             // 
@@ -460,23 +451,6 @@
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
             // 
-            // hb2
-            // 
-            this.hb2.BoldFont = null;
-            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(0, 0);
-            this.hb2.Name = "hb2";
-            this.hb2.ReadOnly = true;
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(434, 121);
-            this.hb2.StringViewVisible = true;
-            this.hb2.TabIndex = 6;
-            this.hb2.UseFixedBytesPerLine = true;
-            this.hb2.VScrollBarVisible = true;
-            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.splitContainer4);
@@ -547,23 +521,6 @@
             this.pic1.TabIndex = 0;
             this.pic1.TabStop = false;
             // 
-            // hb3
-            // 
-            this.hb3.BoldFont = null;
-            this.hb3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb3.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb3.LineInfoVisible = true;
-            this.hb3.Location = new System.Drawing.Point(0, 0);
-            this.hb3.Name = "hb3";
-            this.hb3.ReadOnly = true;
-            this.hb3.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb3.Size = new System.Drawing.Size(434, 184);
-            this.hb3.StringViewVisible = true;
-            this.hb3.TabIndex = 3;
-            this.hb3.UseFixedBytesPerLine = true;
-            this.hb3.VScrollBarVisible = true;
-            // 
             // label1
             // 
             this.label1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -605,12 +562,56 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // staticMeshLODsAsPSKToolStripMenuItem
+            // hb1
             // 
-            this.staticMeshLODsAsPSKToolStripMenuItem.Name = "staticMeshLODsAsPSKToolStripMenuItem";
-            this.staticMeshLODsAsPSKToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.staticMeshLODsAsPSKToolStripMenuItem.Text = "Static Mesh LODs as PSK...";
-            this.staticMeshLODsAsPSKToolStripMenuItem.Click += new System.EventHandler(this.staticMeshLODsAsPSKToolStripMenuItem_Click);
+            this.hb1.BoldFont = null;
+            this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb1.LineInfoVisible = true;
+            this.hb1.Location = new System.Drawing.Point(3, 3);
+            this.hb1.Name = "hb1";
+            this.hb1.ReadOnly = true;
+            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb1.Size = new System.Drawing.Size(671, 428);
+            this.hb1.StringViewVisible = true;
+            this.hb1.TabIndex = 1;
+            this.hb1.UseFixedBytesPerLine = true;
+            this.hb1.VScrollBarVisible = true;
+            // 
+            // hb2
+            // 
+            this.hb2.BoldFont = null;
+            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb2.LineInfoVisible = true;
+            this.hb2.Location = new System.Drawing.Point(0, 0);
+            this.hb2.Name = "hb2";
+            this.hb2.ReadOnly = true;
+            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb2.Size = new System.Drawing.Size(434, 121);
+            this.hb2.StringViewVisible = true;
+            this.hb2.TabIndex = 6;
+            this.hb2.UseFixedBytesPerLine = true;
+            this.hb2.VScrollBarVisible = true;
+            // 
+            // hb3
+            // 
+            this.hb3.BoldFont = null;
+            this.hb3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb3.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb3.LineInfoVisible = true;
+            this.hb3.Location = new System.Drawing.Point(0, 0);
+            this.hb3.Name = "hb3";
+            this.hb3.ReadOnly = true;
+            this.hb3.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb3.Size = new System.Drawing.Size(434, 184);
+            this.hb3.StringViewVisible = true;
+            this.hb3.TabIndex = 3;
+            this.hb3.UseFixedBytesPerLine = true;
+            this.hb3.VScrollBarVisible = true;
             // 
             // MainWindow
             // 

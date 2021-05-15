@@ -1,6 +1,0 @@
-D:\CODE\GitHub\PUBGLiteExplorerWV\Be.Windows.Forms.HexBox\bin\Release\Be.Windows.Forms.HexBox.dll
-D:\CODE\GitHub\PUBGLiteExplorerWV\Be.Windows.Forms.HexBox\obj\Release\Be.Windows.Forms.HexBox.csprojResolveAssemblyReference.cache
-D:\CODE\GitHub\PUBGLiteExplorerWV\Be.Windows.Forms.HexBox\obj\Release\Be.Windows.Forms.HexBox.resources
-D:\CODE\GitHub\PUBGLiteExplorerWV\Be.Windows.Forms.HexBox\obj\Release\Be.Windows.Forms.Properties.Resources.resources
-D:\CODE\GitHub\PUBGLiteExplorerWV\Be.Windows.Forms.HexBox\obj\Release\Be.Windows.Forms.HexBox.csproj.GenerateResource.Cache
-D:\CODE\GitHub\PUBGLiteExplorerWV\Be.Windows.Forms.HexBox\obj\Release\Be.Windows.Forms.HexBox.dll
