@@ -49,6 +49,7 @@
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.hb1 = new Be.Windows.Forms.HexBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -60,19 +61,19 @@
             this.listBox4 = new System.Windows.Forms.ListBox();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
+            this.hb2 = new Be.Windows.Forms.HexBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.listBox5 = new System.Windows.Forms.ListBox();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
             this.pic1 = new System.Windows.Forms.PictureBox();
+            this.hb3 = new Be.Windows.Forms.HexBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.hb1 = new Be.Windows.Forms.HexBox();
-            this.hb2 = new Be.Windows.Forms.HexBox();
-            this.hb3 = new Be.Windows.Forms.HexBox();
+            this.exportStaticMeshesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -146,7 +147,8 @@
             // 
             this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportSelectedToolStripMenuItem,
-            this.exportAllToolStripMenuItem});
+            this.exportAllToolStripMenuItem,
+            this.exportStaticMeshesToolStripMenuItem});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.exportToolStripMenuItem.Text = "Export";
@@ -154,14 +156,14 @@
             // exportSelectedToolStripMenuItem
             // 
             this.exportSelectedToolStripMenuItem.Name = "exportSelectedToolStripMenuItem";
-            this.exportSelectedToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.exportSelectedToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.exportSelectedToolStripMenuItem.Text = "Export selected...";
             this.exportSelectedToolStripMenuItem.Click += new System.EventHandler(this.exportSelectedToolStripMenuItem_Click);
             // 
             // exportAllToolStripMenuItem
             // 
             this.exportAllToolStripMenuItem.Name = "exportAllToolStripMenuItem";
-            this.exportAllToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.exportAllToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.exportAllToolStripMenuItem.Text = "Export all...";
             this.exportAllToolStripMenuItem.Click += new System.EventHandler(this.exportAllToolStripMenuItem_Click);
             // 
@@ -304,6 +306,23 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Hex View";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // hb1
+            // 
+            this.hb1.BoldFont = null;
+            this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb1.LineInfoVisible = true;
+            this.hb1.Location = new System.Drawing.Point(3, 3);
+            this.hb1.Name = "hb1";
+            this.hb1.ReadOnly = true;
+            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb1.Size = new System.Drawing.Size(671, 428);
+            this.hb1.StringViewVisible = true;
+            this.hb1.TabIndex = 1;
+            this.hb1.UseFixedBytesPerLine = true;
+            this.hb1.VScrollBarVisible = true;
             // 
             // tabPage2
             // 
@@ -451,6 +470,23 @@
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
             // 
+            // hb2
+            // 
+            this.hb2.BoldFont = null;
+            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb2.LineInfoVisible = true;
+            this.hb2.Location = new System.Drawing.Point(0, 0);
+            this.hb2.Name = "hb2";
+            this.hb2.ReadOnly = true;
+            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb2.Size = new System.Drawing.Size(434, 121);
+            this.hb2.StringViewVisible = true;
+            this.hb2.TabIndex = 6;
+            this.hb2.UseFixedBytesPerLine = true;
+            this.hb2.VScrollBarVisible = true;
+            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.splitContainer4);
@@ -521,6 +557,23 @@
             this.pic1.TabIndex = 0;
             this.pic1.TabStop = false;
             // 
+            // hb3
+            // 
+            this.hb3.BoldFont = null;
+            this.hb3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb3.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb3.LineInfoVisible = true;
+            this.hb3.Location = new System.Drawing.Point(0, 0);
+            this.hb3.Name = "hb3";
+            this.hb3.ReadOnly = true;
+            this.hb3.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb3.Size = new System.Drawing.Size(434, 184);
+            this.hb3.StringViewVisible = true;
+            this.hb3.TabIndex = 3;
+            this.hb3.UseFixedBytesPerLine = true;
+            this.hb3.VScrollBarVisible = true;
+            // 
             // label1
             // 
             this.label1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -562,56 +615,12 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // hb1
+            // exportStaticMeshesToolStripMenuItem
             // 
-            this.hb1.BoldFont = null;
-            this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb1.LineInfoVisible = true;
-            this.hb1.Location = new System.Drawing.Point(3, 3);
-            this.hb1.Name = "hb1";
-            this.hb1.ReadOnly = true;
-            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(671, 428);
-            this.hb1.StringViewVisible = true;
-            this.hb1.TabIndex = 1;
-            this.hb1.UseFixedBytesPerLine = true;
-            this.hb1.VScrollBarVisible = true;
-            // 
-            // hb2
-            // 
-            this.hb2.BoldFont = null;
-            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(0, 0);
-            this.hb2.Name = "hb2";
-            this.hb2.ReadOnly = true;
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(434, 121);
-            this.hb2.StringViewVisible = true;
-            this.hb2.TabIndex = 6;
-            this.hb2.UseFixedBytesPerLine = true;
-            this.hb2.VScrollBarVisible = true;
-            // 
-            // hb3
-            // 
-            this.hb3.BoldFont = null;
-            this.hb3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb3.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb3.LineInfoVisible = true;
-            this.hb3.Location = new System.Drawing.Point(0, 0);
-            this.hb3.Name = "hb3";
-            this.hb3.ReadOnly = true;
-            this.hb3.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb3.Size = new System.Drawing.Size(434, 184);
-            this.hb3.StringViewVisible = true;
-            this.hb3.TabIndex = 3;
-            this.hb3.UseFixedBytesPerLine = true;
-            this.hb3.VScrollBarVisible = true;
+            this.exportStaticMeshesToolStripMenuItem.Name = "exportStaticMeshesToolStripMenuItem";
+            this.exportStaticMeshesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.exportStaticMeshesToolStripMenuItem.Text = "Export StaticMeshes...";
+            this.exportStaticMeshesToolStripMenuItem.Click += new System.EventHandler(this.exportStaticMeshesToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -712,5 +721,6 @@
         private System.Windows.Forms.ToolStripMenuItem landscapeToTerrainRawToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem staticMeshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem staticMeshLODsAsPSKToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportStaticMeshesToolStripMenuItem;
     }
 }

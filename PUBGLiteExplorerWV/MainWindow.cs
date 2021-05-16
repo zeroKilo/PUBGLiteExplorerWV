@@ -508,12 +508,112 @@ namespace PUBGLiteExplorerWV
             d.FileName = currentStatMeshName + ".psk";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                string uvSet = Interaction.InputBox("Which set of UV to export? (0-3)", "UV Set", "0");
+                string uvSet = Interaction.InputBox("Which set of UV to export? (0-" + ((currentStatMesh.lods[0].uvs[0].Length / 2) - 1) + ")", "UV Set", "2");
                 if (uvSet != "")
                 {
                     File.WriteAllBytes(d.FileName, currentStatMesh.lods[0].MakePSK(Convert.ToInt32(uvSet)));
                     MessageBox.Show("Done.");
                 }
+            }
+        }
+
+        private void exportStaticMeshesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
+            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                ExportDialog ex = new ExportDialog();
+                ex.Show();
+                ex.pb1.Value = 0;
+                ex.pb1.Maximum = files.Count + 1;
+                for (int i = 0; i < files.Count; i++)
+                {
+                    PAKFile file = files[i];
+                    ex.pb1.Value = i + 1;
+                    ex.label1.Text = "PAK file " + (i + 1) + "/" + files.Count + " : " + Path.GetFileName(file.myPath);
+                    Application.DoEvents();
+                    if (file.isValid())
+                    {
+                        int count = file.table.entries.Count;
+                        ex.pb2.Value = 0;
+                        ex.pb2.Maximum = count + 1;
+                        for (int j = 0; j < count; j++)
+                        {
+                            PAKFileEntry entry = file.table.entries[j];
+                            ex.pb2.Value = j + 1;
+                            ex.label2.Text = "Current file " + (j + 1) + "/" + count + " : " + entry.path;
+                            if ((j % 7) == 0)
+                            {
+                                Application.DoEvents();
+                                if (ex._exit)
+                                {
+                                    ex.Close();
+                                    return;
+                                }
+                            }
+                            if (entry.path.EndsWith(".uasset"))
+                            {
+                                string exportPath = fbd.SelectedPath + "\\" + Path.GetDirectoryName(entry.path) + "\\";
+                                byte[] data = file.getEntryData(entry);
+                                UAsset asset = null;
+                                PAKFileEntry uexp = null;
+                                string uexpPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".uexp";
+                                uexpPath = uexpPath.Replace("\\", "/");
+                                foreach (PAKFileEntry en in file.table.entries)
+                                    if (en.path == uexpPath)
+                                    {
+                                        uexp = en;
+                                        break;
+                                    }
+                                byte[] uexpData = null;
+                                if (uexp != null)
+                                    uexpData = file.getEntryData(uexp);
+                                PAKFileEntry ubulk = null;
+                                string ubulkPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".ubulk";
+                                ubulkPath = ubulkPath.Replace("\\", "/");
+                                foreach (PAKFileEntry en in file.table.entries)
+                                    if (en.path == ubulkPath)
+                                    {
+                                        ubulk = en;
+                                        break;
+                                    }
+                                byte[] ubulkData = null;
+                                if (ubulk != null)
+                                    ubulkData = file.getEntryData(ubulk);
+                                if (uexpData != null && ubulkData != null)
+                                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), new MemoryStream(ubulkData));
+                                else if (uexpData != null)
+                                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), null);
+                                else
+                                    asset = new UAsset(new MemoryStream(data), null, null);
+                                if (asset != null && asset._isValid)
+                                {
+                                    foreach(UExport exp in asset.exportTable)
+                                        if(asset.GetName(exp.classIdx) == "StaticMesh")
+                                        {
+                                            UStaticMesh mesh;
+                                            if(ubulkData == null)
+                                                mesh = new UStaticMesh(new MemoryStream(exp._data), asset, null);
+                                            else
+                                                mesh = new UStaticMesh(new MemoryStream(exp._data), asset, new MemoryStream(ubulkData));
+                                            if (mesh.lods == null || mesh.lods.Count == 0)
+                                                return;
+                                            byte[] pskData = mesh.lods[0].MakePSK(2);
+                                            if(pskData.Length == 0)
+                                                return;
+                                            if (!Directory.Exists(exportPath))
+                                                Directory.CreateDirectory(exportPath);
+                                            string name = exp._name + ".psk";
+                                            File.WriteAllBytes(exportPath + name, pskData);
+                                        }
+                                }
+                            }
+                        }
+                    }
+                }
+                ex.Close();
+                MessageBox.Show("Done.");
             }
         }
     }
