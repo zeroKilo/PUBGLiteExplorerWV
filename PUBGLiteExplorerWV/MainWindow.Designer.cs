@@ -35,6 +35,7 @@
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportStaticMeshesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewInExportTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mipsInTexture2DTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,7 +74,6 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.exportStaticMeshesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -167,6 +167,13 @@
             this.exportAllToolStripMenuItem.Text = "Export all...";
             this.exportAllToolStripMenuItem.Click += new System.EventHandler(this.exportAllToolStripMenuItem_Click);
             // 
+            // exportStaticMeshesToolStripMenuItem
+            // 
+            this.exportStaticMeshesToolStripMenuItem.Name = "exportStaticMeshesToolStripMenuItem";
+            this.exportStaticMeshesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.exportStaticMeshesToolStripMenuItem.Text = "Export StaticMeshes...";
+            this.exportStaticMeshesToolStripMenuItem.Click += new System.EventHandler(this.exportStaticMeshesToolStripMenuItem_Click);
+            // 
             // dumpToolStripMenuItem
             // 
             this.dumpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -182,28 +189,29 @@
             // previewInExportTableToolStripMenuItem
             // 
             this.previewInExportTableToolStripMenuItem.Name = "previewInExportTableToolStripMenuItem";
-            this.previewInExportTableToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.previewInExportTableToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.previewInExportTableToolStripMenuItem.Text = "Preview in Export Table...";
             this.previewInExportTableToolStripMenuItem.Click += new System.EventHandler(this.previewInExportTableToolStripMenuItem_Click);
             // 
             // mipsInTexture2DTabToolStripMenuItem
             // 
             this.mipsInTexture2DTabToolStripMenuItem.Name = "mipsInTexture2DTabToolStripMenuItem";
-            this.mipsInTexture2DTabToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.mipsInTexture2DTabToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.mipsInTexture2DTabToolStripMenuItem.Text = "Mips in Texture2D tab...";
             this.mipsInTexture2DTabToolStripMenuItem.Click += new System.EventHandler(this.mipsInTexture2DTabToolStripMenuItem_Click);
             // 
             // landscapeToTerrainRawToolStripMenuItem
             // 
             this.landscapeToTerrainRawToolStripMenuItem.Name = "landscapeToTerrainRawToolStripMenuItem";
-            this.landscapeToTerrainRawToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.landscapeToTerrainRawToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.landscapeToTerrainRawToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.landscapeToTerrainRawToolStripMenuItem.Text = "Landscape to terrain raw...";
             this.landscapeToTerrainRawToolStripMenuItem.Click += new System.EventHandler(this.landscapeToTerrainRawToolStripMenuItem_Click);
             // 
             // staticMeshToolStripMenuItem
             // 
             this.staticMeshToolStripMenuItem.Name = "staticMeshToolStripMenuItem";
-            this.staticMeshToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.staticMeshToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.staticMeshToolStripMenuItem.Text = "Static Mesh LODs as raw...";
             this.staticMeshToolStripMenuItem.Click += new System.EventHandler(this.staticMeshToolStripMenuItem_Click);
             // 
@@ -211,7 +219,7 @@
             // 
             this.staticMeshLODsAsPSKToolStripMenuItem.Name = "staticMeshLODsAsPSKToolStripMenuItem";
             this.staticMeshLODsAsPSKToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.staticMeshLODsAsPSKToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.staticMeshLODsAsPSKToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.staticMeshLODsAsPSKToolStripMenuItem.Text = "Static Mesh as PSK...";
             this.staticMeshLODsAsPSKToolStripMenuItem.Click += new System.EventHandler(this.staticMeshLODsAsPSKToolStripMenuItem_Click);
             // 
@@ -614,13 +622,6 @@
             // 
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
-            // 
-            // exportStaticMeshesToolStripMenuItem
-            // 
-            this.exportStaticMeshesToolStripMenuItem.Name = "exportStaticMeshesToolStripMenuItem";
-            this.exportStaticMeshesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.exportStaticMeshesToolStripMenuItem.Text = "Export StaticMeshes...";
-            this.exportStaticMeshesToolStripMenuItem.Click += new System.EventHandler(this.exportStaticMeshesToolStripMenuItem_Click);
             // 
             // MainWindow
             // 

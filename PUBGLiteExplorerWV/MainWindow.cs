@@ -501,7 +501,7 @@ namespace PUBGLiteExplorerWV
 
         private void staticMeshLODsAsPSKToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (currentStatMesh == null && currentStatMesh.lods.Count == 0)
+            if (currentStatMesh == null || currentStatMesh.lods.Count == 0)
                 return;
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.psk|*.psk";

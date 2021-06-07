@@ -82,7 +82,15 @@ namespace PUBGLiteExplorerWV
     {
         public uint size;
         public uint flags;
-        public abstract string ToDetails(string name);
+        public abstract string ToDetails(int tabs, long offset, string name);
+
+        public string MakeTabs(int tabs)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < tabs; i++)
+                sb.Append('\t');
+            return sb.ToString();
+        }
         public void ReadSizeAndFlags(Stream s)
         {
             size = Helper.ReadU32(s);
@@ -94,6 +102,7 @@ namespace PUBGLiteExplorerWV
     {
         public string structType;
         public byte[] data;
+        public List<UProperty> subProps = new List<UProperty>();
 
         public UStructProperty(Stream s, UAsset asset)
         {
@@ -103,13 +112,22 @@ namespace PUBGLiteExplorerWV
             s.Read(unk, 0, 0x11);
             data = new byte[size];
             s.Read(data, 0, (int)size);
+            MemoryStream m = new MemoryStream(data);
+            while(m.Position < data.Length)
+            {
+                UProperty p = new UProperty(m, asset);
+                if (!p._isValid || p.name == "None")
+                    break;
+                subProps.Add(p);
+            }
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
             MemoryStream m;
-            sb.Append(name + " (StructProperty " + structType + ") = {");
+            sb.Append(MakeTabs(tabs));
+            sb.Append(offset.ToString("X8") + " : " + name + " (StructProperty " + structType + ") = {");
             switch (structType)
             {
                 case "Vector":
@@ -119,6 +137,7 @@ namespace PUBGLiteExplorerWV
                     sb.Append(Helper.ReadFloat(m));
                     break;
                 case "Vector4":
+                case "LinearColor":
                     m = new MemoryStream(data);
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m) + "; ");
@@ -130,7 +149,9 @@ namespace PUBGLiteExplorerWV
                         sb.Append(" " + b.ToString("X2"));
                     break;
             }
-            sb.Append("}");
+            sb.AppendLine("}");
+            foreach (UProperty p in subProps)
+                sb.Append(p.prop.ToDetails(tabs + 1, p._offset, p.name));
             return sb.ToString();
         }
     }
@@ -146,16 +167,19 @@ namespace PUBGLiteExplorerWV
             s.ReadByte();
             value = (int)Helper.ReadU32(s);
             objName = "";
-            if (value >= 0 && value < asset.exportCount)
-                objName = asset.exportTable[(int)value]._name;
+            if (value == 0)
+                objName = "None";
+            if (value > 0 && value <= asset.exportCount)
+                objName = asset.exportTable[(int)value - 1]._name;
             if (value < 0 && -value <= asset.importCount)
                 objName = asset.importTable[(int)-value - 1]._name;
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " ObjectProperty = 0x" + value.ToString("X8") + " (" + objName + ")");
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " ObjectProperty = 0x" + value.ToString("X8") + " (" + objName + ")");
             return sb.ToString();
         }
     }
@@ -171,10 +195,11 @@ namespace PUBGLiteExplorerWV
             value = Helper.ReadFloat(s);
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " FloatProperty = " + value);
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " FloatProperty = " + value);
             return sb.ToString();
         }
     }
@@ -190,10 +215,11 @@ namespace PUBGLiteExplorerWV
             value = Helper.ReadUString(s);
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " StrProperty = " + value);
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " StrProperty = " + value);
             return sb.ToString();
         }
     }
@@ -209,10 +235,11 @@ namespace PUBGLiteExplorerWV
             s.ReadByte();
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " BoolProperty = " + (value ? "True" : "False"));
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " BoolProperty = " + (value ? "True" : "False"));
             return sb.ToString();
         }
     }
@@ -231,10 +258,11 @@ namespace PUBGLiteExplorerWV
             s.Seek(size - 1, SeekOrigin.Current);
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " ByteProperty (" + type + ") = 0x" + value.ToString("X2"));
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " ByteProperty (" + type + ") = 0x" + value.ToString("X2"));
             return sb.ToString();
         }
     }
@@ -250,10 +278,11 @@ namespace PUBGLiteExplorerWV
             value = (int)Helper.ReadU32(s);
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " IntProperty = 0x" + value.ToString("X8") + " = " + value);
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " IntProperty = 0x" + value.ToString("X8") + " = " + value);
             return sb.ToString();
         }
     }
@@ -269,10 +298,11 @@ namespace PUBGLiteExplorerWV
             value = Helper.ReadU32(s);
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " UInt32Property = 0x" + value.ToString("X8") + " = " + value);
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " UInt32Property = 0x" + value.ToString("X8") + " = " + value);
             return sb.ToString();
         }
     }
@@ -290,10 +320,11 @@ namespace PUBGLiteExplorerWV
             value = asset.GetName((int)Helper.ReadU64(s));
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " EnumProperty (" + type + ") = " + value);
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " EnumProperty (" + type + ") = " + value);
             return sb.ToString();
         }
     }
@@ -302,7 +333,7 @@ namespace PUBGLiteExplorerWV
     {
         public string type;
         public byte[] data;
-
+        public List<UProperty> subProps = new List<UProperty>();
 
         public UArrayProperty(Stream s, UAsset asset)
         {
@@ -311,12 +342,26 @@ namespace PUBGLiteExplorerWV
             s.ReadByte();
             data = new byte[size];
             s.Read(data, 0, (int)size);
+            MemoryStream m = new MemoryStream(data);
+            uint count = Helper.ReadU32(m);
+            for (int i = 0; i < count; i++)
+            {
+                if (m.Position >= data.Length)
+                    break;
+                UProperty p = new UProperty(m, asset);
+                if (!p._isValid)
+                    break;
+                subProps.Add(p);
+            }
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " ArrayProperty (" + type + ") Size = 0x" + data.Length.ToString("X"));
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " ArrayProperty (" + type + ") Size = 0x" + data.Length.ToString("X"));
+            foreach (UProperty p in subProps)
+                sb.Append(p.prop.ToDetails(tabs + 1, p._offset, p.name));
             return sb.ToString();
         }
     }
@@ -332,10 +377,11 @@ namespace PUBGLiteExplorerWV
             value = asset.GetName((int)Helper.ReadU64(s));
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " NameProperty = " + value);
+            sb.Append(MakeTabs(tabs));
+            sb.AppendLine(offset.ToString("X8") + " : " + name + " NameProperty = " + value);
             return sb.ToString();
         }
     }
@@ -352,13 +398,14 @@ namespace PUBGLiteExplorerWV
             s.Read(value, 0, (int)size);
         }
 
-        public override string ToDetails(string name)
+        public override string ToDetails(int tabs, long offset, string name)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(name + " LazyObjectProperty = {");
+            sb.Append(MakeTabs(tabs));
+            sb.Append(offset.ToString("X8") + " : " + name + " LazyObjectProperty = {");
             foreach (byte b in value)
                 sb.Append(b.ToString("X2") + " ");
-            sb.Append("}");
+            sb.AppendLine("}");
             return sb.ToString();
         }
     }
