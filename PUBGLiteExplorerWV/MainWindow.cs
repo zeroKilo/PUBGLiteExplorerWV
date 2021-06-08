@@ -15,7 +15,7 @@ namespace PUBGLiteExplorerWV
 {
     public partial class MainWindow : Form
     {
-        public List<PAKFile> files = new List<PAKFile>();
+        public List<PAKFileLite> files = new List<PAKFileLite>();
         public UAsset currentAsset = null;
         public UTexture2D currentTex = null;
         public UStaticMesh currentStatMesh = null;
@@ -34,8 +34,8 @@ namespace PUBGLiteExplorerWV
             d.Filter = "*.pak|*.pak";
             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                files = new List<PAKFile>();
-                files.Add(new PAKFile(d.FileName));
+                files = new List<PAKFileLite>();
+                files.Add(new PAKFileLite(d.FileName));
                 RefreshFiles();
             }
         }
@@ -47,7 +47,7 @@ namespace PUBGLiteExplorerWV
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string[] paths = Directory.GetFiles(fbd.SelectedPath, "*.pak", SearchOption.TopDirectoryOnly);
-                files = new List<PAKFile>();
+                files = new List<PAKFileLite>();
                 pb1.Value = 0;
                 pb1.Maximum = paths.Length;
                 foreach (string path in paths)
@@ -55,7 +55,7 @@ namespace PUBGLiteExplorerWV
                     status.Text = "Loading " + path + " ...";
                     pb1.Value++;
                     Application.DoEvents();
-                    PAKFile file = new PAKFile(path);
+                    PAKFileLite file = new PAKFileLite(path);
                     if (file.isValid())
                         files.Add(file);
                 }
@@ -80,17 +80,17 @@ namespace PUBGLiteExplorerWV
             if (n == 0)
             {
                 listBox1.Items.Clear();
-                foreach (PAKFile file in files)
+                foreach (PAKFileLite file in files)
                     if (file.isValid())
-                        foreach (PAKFileEntry entry in file.table.entries)
+                        foreach (PAKFileEntryLite entry in file.table.entries)
                             listBox1.Items.Add(entry.path);
             }
             if (n == 1)
             {
                 TreeNode root = new TreeNode("ROOT");
-                foreach (PAKFile file in files)
+                foreach (PAKFileLite file in files)
                     if (file.isValid())
-                        foreach (PAKFileEntry entry in file.table.entries)
+                        foreach (PAKFileEntryLite entry in file.table.entries)
                             AddPathToNode(root, entry.path);
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(root);
@@ -147,9 +147,9 @@ namespace PUBGLiteExplorerWV
                 path = parent.Text + "/" + path;
                 parent = parent.Parent;
             }
-            foreach (PAKFile file in files)
+            foreach (PAKFileLite file in files)
                 if (file.isValid())
-                    foreach (PAKFileEntry entry in file.table.entries)
+                    foreach (PAKFileEntryLite entry in file.table.entries)
                         if (entry.path == path)
                         {
                             LoadAsset(file, entry);
@@ -162,9 +162,9 @@ namespace PUBGLiteExplorerWV
             int n = listBox1.SelectedIndex;
             if (n == -1) return;
             string path = listBox1.Items[n].ToString();
-            foreach (PAKFile file in files)
+            foreach (PAKFileLite file in files)
                 if (file.isValid())
-                    foreach (PAKFileEntry entry in file.table.entries)
+                    foreach (PAKFileEntryLite entry in file.table.entries)
                         if (entry.path == path)
                         {
                             LoadAsset(file, entry);
@@ -172,7 +172,7 @@ namespace PUBGLiteExplorerWV
                         }
         }
 
-        private void LoadAsset(PAKFile file, PAKFileEntry entry)
+        private void LoadAsset(PAKFileLite file, PAKFileEntryLite entry)
         {
             currentAsset = null;
             label2.Text = "PAK Path   = " + file.myPath + "\nAsset Path = " + entry.path;
@@ -198,10 +198,10 @@ namespace PUBGLiteExplorerWV
             if (isAsset)
             {
                 UAsset asset = null;
-                PAKFileEntry uexp = null;
+                PAKFileEntryLite uexp = null;
                 string uexpPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".uexp";
                 uexpPath = uexpPath.Replace("\\", "/");
-                foreach (PAKFileEntry e in file.table.entries)
+                foreach (PAKFileEntryLite e in file.table.entries)
                     if (e.path == uexpPath)
                     {
                         uexp = e;
@@ -210,10 +210,10 @@ namespace PUBGLiteExplorerWV
                 byte[] uexpData = null;
                 if (uexp != null)
                     uexpData = file.getEntryData(uexp);
-                PAKFileEntry ubulk = null;
+                PAKFileEntryLite ubulk = null;
                 string ubulkPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".ubulk";
                 ubulkPath = ubulkPath.Replace("\\", "/");
-                foreach (PAKFileEntry e in file.table.entries)
+                foreach (PAKFileEntryLite e in file.table.entries)
                     if (e.path == ubulkPath)
                     {
                         ubulk = e;
@@ -276,9 +276,9 @@ namespace PUBGLiteExplorerWV
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.*|*.*";
             d.FileName = fileName;
-            foreach (PAKFile file in files)
+            foreach (PAKFileLite file in files)
                 if (file.isValid())
-                    foreach (PAKFileEntry entry in file.table.entries)
+                    foreach (PAKFileEntryLite entry in file.table.entries)
                         if (entry.path == exportName)
                             if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
@@ -300,7 +300,7 @@ namespace PUBGLiteExplorerWV
                 ex.pb1.Maximum = files.Count + 1;
                 for (int i = 0; i < files.Count; i++)
                 {
-                    PAKFile file = files[i];
+                    PAKFileLite file = files[i];
                     ex.pb1.Value = i + 1;
                     ex.label1.Text = "PAK file " + (i + 1) + "/" + files.Count + " : " + Path.GetFileName(file.myPath);
                     Application.DoEvents();
@@ -311,7 +311,7 @@ namespace PUBGLiteExplorerWV
                         ex.pb2.Maximum = count + 1;
                         for (int j = 0; j < count; j++)
                         {
-                            PAKFileEntry entry = file.table.entries[j];
+                            PAKFileEntryLite entry = file.table.entries[j];
                             ex.pb2.Value = j + 1;
                             ex.label2.Text = "Current file " + (j + 1) + "/" + count + " : " + entry.path;
                             if ((j % 7) == 0)
@@ -529,7 +529,7 @@ namespace PUBGLiteExplorerWV
                 ex.pb1.Maximum = files.Count + 1;
                 for (int i = 0; i < files.Count; i++)
                 {
-                    PAKFile file = files[i];
+                    PAKFileLite file = files[i];
                     ex.pb1.Value = i + 1;
                     ex.label1.Text = "PAK file " + (i + 1) + "/" + files.Count + " : " + Path.GetFileName(file.myPath);
                     Application.DoEvents();
@@ -540,7 +540,7 @@ namespace PUBGLiteExplorerWV
                         ex.pb2.Maximum = count + 1;
                         for (int j = 0; j < count; j++)
                         {
-                            PAKFileEntry entry = file.table.entries[j];
+                            PAKFileEntryLite entry = file.table.entries[j];
                             ex.pb2.Value = j + 1;
                             ex.label2.Text = "Current file " + (j + 1) + "/" + count + " : " + entry.path;
                             if ((j % 7) == 0)
@@ -557,10 +557,10 @@ namespace PUBGLiteExplorerWV
                                 string exportPath = fbd.SelectedPath + "\\" + Path.GetDirectoryName(entry.path) + "\\";
                                 byte[] data = file.getEntryData(entry);
                                 UAsset asset = null;
-                                PAKFileEntry uexp = null;
+                                PAKFileEntryLite uexp = null;
                                 string uexpPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".uexp";
                                 uexpPath = uexpPath.Replace("\\", "/");
-                                foreach (PAKFileEntry en in file.table.entries)
+                                foreach (PAKFileEntryLite en in file.table.entries)
                                     if (en.path == uexpPath)
                                     {
                                         uexp = en;
@@ -569,10 +569,10 @@ namespace PUBGLiteExplorerWV
                                 byte[] uexpData = null;
                                 if (uexp != null)
                                     uexpData = file.getEntryData(uexp);
-                                PAKFileEntry ubulk = null;
+                                PAKFileEntryLite ubulk = null;
                                 string ubulkPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".ubulk";
                                 ubulkPath = ubulkPath.Replace("\\", "/");
-                                foreach (PAKFileEntry en in file.table.entries)
+                                foreach (PAKFileEntryLite en in file.table.entries)
                                     if (en.path == ubulkPath)
                                     {
                                         ubulk = en;
@@ -614,6 +614,54 @@ namespace PUBGLiteExplorerWV
                 }
                 ex.Close();
                 MessageBox.Show("Done.");
+            }
+        }
+
+        private void unpackMobilePAKToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog d = new OpenFileDialog();
+            d.Filter = "*.pak|*.pak";
+            if(d.ShowDialog() == DialogResult.OK)
+            {
+                PAKFileMobile file = new PAKFileMobile(d.FileName);
+                FolderBrowserDialog fbd = new FolderBrowserDialog();
+                fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
+                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    ExportDialog ex = new ExportDialog();
+                    ex.Show();
+                    ex.pb1.Value = 0;
+                    ex.pb1.Maximum = 1;
+                    ex.pb1.Value = 1;
+                    ex.label1.Text = "PAK file : " + Path.GetFileName(d.FileName);
+                    Application.DoEvents();
+                    if (file.isValid())
+                    {
+                        int count = file.table.entries.Count;
+                        ex.pb2.Value = 0;
+                        ex.pb2.Maximum = count + 1;
+                        for (int j = 0; j < count; j++)
+                        {
+                            PAKFileEntryMobile entry = file.table.entries[j];
+                            ex.pb2.Value = j + 1;
+                            ex.label2.Text = "Current file " + (j + 1) + "/" + count + " : " + entry.path;
+                            if ((j % 7) == 0)
+                            {
+                                Application.DoEvents();
+                                if (ex._exit)
+                                {
+                                    ex.Close();
+                                    return;
+                                }
+                            }
+                            string output = fbd.SelectedPath + "\\" + entry.path.Replace("/", "\\");
+                            Directory.CreateDirectory(Path.GetDirectoryName(output));
+                            file.ExportData(entry, output);
+                        }
+                    }
+                    ex.Close();
+                    MessageBox.Show("Done.");
+                }
             }
         }
     }

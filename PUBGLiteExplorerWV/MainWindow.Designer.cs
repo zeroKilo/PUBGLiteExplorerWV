@@ -74,6 +74,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
+            this.unpackMobilePAKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -124,7 +125,8 @@
             // 
             this.contentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadSinglePAKFileToolStripMenuItem,
-            this.loadFolderOfPAKFilesToolStripMenuItem});
+            this.loadFolderOfPAKFilesToolStripMenuItem,
+            this.unpackMobilePAKToolStripMenuItem});
             this.contentToolStripMenuItem.Name = "contentToolStripMenuItem";
             this.contentToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.contentToolStripMenuItem.Text = "Content";
@@ -623,6 +625,13 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
+            // unpackMobilePAKToolStripMenuItem
+            // 
+            this.unpackMobilePAKToolStripMenuItem.Name = "unpackMobilePAKToolStripMenuItem";
+            this.unpackMobilePAKToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.unpackMobilePAKToolStripMenuItem.Text = "Unpack Mobile PAK...";
+            this.unpackMobilePAKToolStripMenuItem.Click += new System.EventHandler(this.unpackMobilePAKToolStripMenuItem_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -723,5 +732,6 @@
         private System.Windows.Forms.ToolStripMenuItem staticMeshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem staticMeshLODsAsPSKToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportStaticMeshesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem unpackMobilePAKToolStripMenuItem;
     }
 }

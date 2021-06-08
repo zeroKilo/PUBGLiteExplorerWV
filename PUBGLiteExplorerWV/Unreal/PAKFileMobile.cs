@@ -1,54 +1,71 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Security.Cryptography;
 
 namespace PUBGLiteExplorerWV
 {
-    public class PAKFile
+    public class PAKFileMobile
     {
+        public static byte[] patternNormal = { 0x00, 0x00, 0x00, 0x2E, 0x2E, 0x2F, 0x2E, 0x2E, 0x2F, 0x2E, 0x2E, 0x2F };
+        public static byte[] patternXored = { 0x79, 0x79, 0x79, 0x57, 0x57, 0x56, 0x57, 0x57, 0x56, 0x57, 0x57, 0x56 };
         public string myPath;
-        public PAKHeader header;
-        public PAKFileTable table;
+        public PAKHeaderMobile header;
+        public PAKFileTableMobile table;
+        public MemoryStream pak_data;
 
-        public PAKFile(string path)
+        public PAKFileMobile(string path)
         {
             if (!File.Exists(path))
                 return;
             myPath = path;
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             fs.Seek(-45, SeekOrigin.End);
-            header = new PAKHeader(fs);
+            header = new PAKHeaderMobile(fs);
             if (!isValid())
             {
                 fs.Close();
                 return;
             }
-            fs.Seek((long)header.offset, 0);
-            table = new PAKFileTable(fs, header.size);
             fs.Close();
+            byte[] pak = File.ReadAllBytes(path);
+            int pos = pak.Length - patternNormal.Length;
+            while(--pos > 0)
+            {
+                bool found = true;
+                for (int i = 0; i < patternNormal.Length; i++)
+                    if (pak[pos + i] != patternNormal[i] &&
+                        pak[pos + i] != patternXored[i])
+                    {
+                        found = false;
+                        break;
+                    }
+                if (found)
+                    break;
+            }
+            if(pos > 1)
+            {
+                MemoryStream m = new MemoryStream(pak);
+                m.Seek(pos - 1, 0);
+                table = new PAKFileTableMobile(m, (ulong)(pak.Length - pos), pak[pos] == 0x79);
+                pak_data = new MemoryStream(pak);
+            }
         }
 
         public bool isValid()
         {
-            if (header == null || header.magic != 0x20171216 || header.encrypted != 1)
+            if (header == null || header.magic != 0x506e0406)
                 return false;
             return true;
         }
 
-        public byte[] getEntryData(PAKFileEntry e)
+        public byte[] getEntryData(PAKFileEntryMobile e)
         {
-            FileStream fs = new FileStream(myPath, FileMode.Open, FileAccess.Read);
             MemoryStream m = new MemoryStream();
-            e.CopyDecryptedData(fs, m);
-            fs.Close();
+            e.CopyDecryptedData(pak_data, m);
             return m.ToArray();
         }
 
-        public void ExportData(PAKFileEntry e, string path)
+        public void ExportData(PAKFileEntryMobile e, string path)
         {
             FileStream fIn = new FileStream(myPath, FileMode.Open, FileAccess.Read);
             FileStream fOut = new FileStream(path, FileMode.Create, FileAccess.Write);
@@ -58,44 +75,45 @@ namespace PUBGLiteExplorerWV
         }
     }
 
-
-    public class PAKHeader
+    public class PAKHeaderMobile
     {
         public byte encrypted;
         public uint magic;
         public uint version;
         public ulong offset;
         public ulong size;
-        public PAKHeader(Stream s)
+        public PAKHeaderMobile(Stream s)
         {
             encrypted = (byte)s.ReadByte();
             magic = Helper.ReadU32(s);
             version = Helper.ReadU32(s);
-            offset = Helper.ReadU64(s);
-            size = Helper.ReadU64(s);
         }
     }
 
-    public class PAKFileTable
+    public class PAKFileTableMobile
     {
         public string mPoint;
-        public List<PAKFileEntry> entries;
+        public List<PAKFileEntryMobile> entries;
 
-        public PAKFileTable(Stream s, ulong size)
+        public PAKFileTableMobile(Stream s, ulong size, bool xored)
         {
-            entries = new List<PAKFileEntry>();
+            entries = new List<PAKFileEntryMobile>();
             byte[] data = new byte[size];
-            for (ulong i = 0; i < size; i++)
-                data[i] = (byte)(s.ReadByte() ^ 0x79);
+            if (xored)
+                for (ulong i = 0; i < size; i++)
+                    data[i] = (byte)(s.ReadByte() ^ 0x79);
+            else
+                for (ulong i = 0; i < size; i++)
+                    data[i] = (byte)s.ReadByte();
             MemoryStream m = new MemoryStream(data);
             mPoint = Helper.ReadUString(m).Substring(9);
             uint count = Helper.ReadU32(m);
             for (uint i = 0; i < count; i++)
-                entries.Add(new PAKFileEntry(m, mPoint));
+                entries.Add(new PAKFileEntryMobile(m, mPoint));
         }
     }
 
-    public class PAKFileEntry
+    public class PAKFileEntryMobile
     {
         public long _offset;
         public string path;
@@ -104,29 +122,30 @@ namespace PUBGLiteExplorerWV
         public ulong usize;
         public uint cMethod;
         public byte[] hash;
-        public List<PAKCompressionBlock> cBlocks;
+        public List<PAKCompressionBlockMobile> cBlocks;
         public byte encrypted;
         public uint cBlockSize;
 
-        public PAKFileEntry(Stream s, string mPoint)
+        public PAKFileEntryMobile(Stream s, string mPoint)
         {
             _offset = s.Position;
             path = mPoint + Helper.ReadUString(s);
-            pos = Helper.ReadU64(s);
-            size = Helper.ReadU64(s);
-            usize = Helper.ReadU64(s);
-            cMethod = Helper.ReadU32(s);
             hash = new byte[20];
             s.Read(hash, 0, 20);
+            pos = Helper.ReadU64(s);
+            usize = Helper.ReadU64(s);
+            cMethod = Helper.ReadU32(s);
+            size = Helper.ReadU64(s);
+            s.Seek(0x15, SeekOrigin.Current);
             if (cMethod == 1)
             {
-                cBlocks = new List<PAKCompressionBlock>();
+                cBlocks = new List<PAKCompressionBlockMobile>();
                 uint count = Helper.ReadU32(s);
                 for (uint i = 0; i < count; i++)
-                    cBlocks.Add(new PAKCompressionBlock(s));
+                    cBlocks.Add(new PAKCompressionBlockMobile(s));
             }
-            encrypted = (byte)s.ReadByte();
             cBlockSize = Helper.ReadU32(s);
+            encrypted = (byte)s.ReadByte();
         }
 
         public void CopyDecryptedData(Stream s, Stream o)
@@ -149,7 +168,7 @@ namespace PUBGLiteExplorerWV
             }
             if (cMethod == 1)
             {
-                foreach (PAKCompressionBlock b in cBlocks)
+                foreach (PAKCompressionBlockMobile b in cBlocks)
                 {
                     ulong bSize = b.end - b.start;
                     s.Seek((long)b.start, 0);
@@ -166,12 +185,12 @@ namespace PUBGLiteExplorerWV
         }
     }
 
-    public class PAKCompressionBlock
+    public class PAKCompressionBlockMobile
     {
         public ulong start;
         public ulong end;
 
-        public PAKCompressionBlock(Stream s)
+        public PAKCompressionBlockMobile(Stream s)
         {
             start = Helper.ReadU64(s);
             end = Helper.ReadU64(s);

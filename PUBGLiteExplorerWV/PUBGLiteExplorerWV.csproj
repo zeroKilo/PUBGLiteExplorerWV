@@ -51,9 +51,10 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Unreal\PAKFile.cs" />
+    <Compile Include="Unreal\PAKFileLite.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Unreal\PAKFileMobile.cs" />
     <Compile Include="Unreal\UAsset.cs" />
     <Compile Include="Unreal\ULandscapeComponent.cs" />
     <Compile Include="Unreal\UProperty.cs" />
