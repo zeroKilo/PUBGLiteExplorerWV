@@ -616,5 +616,34 @@ namespace PUBGLiteExplorerWV
                 MessageBox.Show("Done.");
             }
         }
+
+        private void dumpScriptSourceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<ULandscapeComponent> lcs = new List<ULandscapeComponent>();
+            foreach (UExport exp in currentAsset.exportTable)
+                if (currentAsset.GetName(exp.classIdx) == "ScriptBlueprintGeneratedClass")
+                {
+                    
+
+                    SaveFileDialog d = new SaveFileDialog();
+                    d.Filter = "*.lua|*.lua";
+                    d.FileName = treeView1.SelectedNode.Text.Split('.')[0] + ".lua";
+                    if (d.ShowDialog() == DialogResult.OK)
+                    {
+                        List<UProperty> props = new List<UProperty>();
+                        MemoryStream s = new MemoryStream(exp._data);
+                        while (true)
+                        {
+                            UProperty p = new UProperty(s, currentAsset);
+                            if (p.name == "None")
+                                break;
+                            props.Add(p);
+                        }
+                        string text = ((UStrProperty)props[0].prop).value;
+                        File.WriteAllText(d.FileName, text);
+                    }
+                    return;
+                }
+        }
     }
 }

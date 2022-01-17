@@ -74,6 +74,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
+            this.dumpScriptSourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -181,7 +182,8 @@
             this.mipsInTexture2DTabToolStripMenuItem,
             this.landscapeToTerrainRawToolStripMenuItem,
             this.staticMeshToolStripMenuItem,
-            this.staticMeshLODsAsPSKToolStripMenuItem});
+            this.staticMeshLODsAsPSKToolStripMenuItem,
+            this.dumpScriptSourceToolStripMenuItem});
             this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
             this.dumpToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.dumpToolStripMenuItem.Text = "Dump";
@@ -623,6 +625,14 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
+            // dumpScriptSourceToolStripMenuItem
+            // 
+            this.dumpScriptSourceToolStripMenuItem.Name = "dumpScriptSourceToolStripMenuItem";
+            this.dumpScriptSourceToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.dumpScriptSourceToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.dumpScriptSourceToolStripMenuItem.Text = "Dump Script Source";
+            this.dumpScriptSourceToolStripMenuItem.Click += new System.EventHandler(this.dumpScriptSourceToolStripMenuItem_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -723,5 +733,6 @@
         private System.Windows.Forms.ToolStripMenuItem staticMeshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem staticMeshLODsAsPSKToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportStaticMeshesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dumpScriptSourceToolStripMenuItem;
     }
 }
