@@ -115,10 +115,14 @@ namespace PUBGLiteExplorerWV
             MemoryStream m = new MemoryStream(data);
             while(m.Position < data.Length)
             {
-                UProperty p = new UProperty(m, asset);
-                if (!p._isValid || p.name == "None")
-                    break;
-                subProps.Add(p);
+                try
+                {
+                    UProperty p = new UProperty(m, asset);
+                    if (!p._isValid || p.name == "None")
+                        break;
+                    subProps.Add(p);
+                }
+                catch { break; }
             }
         }
 

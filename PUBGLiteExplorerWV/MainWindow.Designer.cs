@@ -42,6 +42,7 @@
             this.landscapeToTerrainRawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.staticMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.staticMeshLODsAsPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dumpScriptSourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -74,7 +75,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.dumpScriptSourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAllLevelInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -149,7 +150,8 @@
             this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportSelectedToolStripMenuItem,
             this.exportAllToolStripMenuItem,
-            this.exportStaticMeshesToolStripMenuItem});
+            this.exportStaticMeshesToolStripMenuItem,
+            this.exportAllLevelInformationToolStripMenuItem});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.exportToolStripMenuItem.Text = "Export";
@@ -157,21 +159,21 @@
             // exportSelectedToolStripMenuItem
             // 
             this.exportSelectedToolStripMenuItem.Name = "exportSelectedToolStripMenuItem";
-            this.exportSelectedToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.exportSelectedToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.exportSelectedToolStripMenuItem.Text = "Export selected...";
             this.exportSelectedToolStripMenuItem.Click += new System.EventHandler(this.exportSelectedToolStripMenuItem_Click);
             // 
             // exportAllToolStripMenuItem
             // 
             this.exportAllToolStripMenuItem.Name = "exportAllToolStripMenuItem";
-            this.exportAllToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.exportAllToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.exportAllToolStripMenuItem.Text = "Export all...";
             this.exportAllToolStripMenuItem.Click += new System.EventHandler(this.exportAllToolStripMenuItem_Click);
             // 
             // exportStaticMeshesToolStripMenuItem
             // 
             this.exportStaticMeshesToolStripMenuItem.Name = "exportStaticMeshesToolStripMenuItem";
-            this.exportStaticMeshesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.exportStaticMeshesToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.exportStaticMeshesToolStripMenuItem.Text = "Export StaticMeshes...";
             this.exportStaticMeshesToolStripMenuItem.Click += new System.EventHandler(this.exportStaticMeshesToolStripMenuItem_Click);
             // 
@@ -224,6 +226,14 @@
             this.staticMeshLODsAsPSKToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.staticMeshLODsAsPSKToolStripMenuItem.Text = "Static Mesh as PSK...";
             this.staticMeshLODsAsPSKToolStripMenuItem.Click += new System.EventHandler(this.staticMeshLODsAsPSKToolStripMenuItem_Click);
+            // 
+            // dumpScriptSourceToolStripMenuItem
+            // 
+            this.dumpScriptSourceToolStripMenuItem.Name = "dumpScriptSourceToolStripMenuItem";
+            this.dumpScriptSourceToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.dumpScriptSourceToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.dumpScriptSourceToolStripMenuItem.Text = "Dump Script Source";
+            this.dumpScriptSourceToolStripMenuItem.Click += new System.EventHandler(this.dumpScriptSourceToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -625,13 +635,12 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // dumpScriptSourceToolStripMenuItem
+            // exportAllLevelInformationToolStripMenuItem
             // 
-            this.dumpScriptSourceToolStripMenuItem.Name = "dumpScriptSourceToolStripMenuItem";
-            this.dumpScriptSourceToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.dumpScriptSourceToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.dumpScriptSourceToolStripMenuItem.Text = "Dump Script Source";
-            this.dumpScriptSourceToolStripMenuItem.Click += new System.EventHandler(this.dumpScriptSourceToolStripMenuItem_Click);
+            this.exportAllLevelInformationToolStripMenuItem.Name = "exportAllLevelInformationToolStripMenuItem";
+            this.exportAllLevelInformationToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.exportAllLevelInformationToolStripMenuItem.Text = "Export All Level Information...";
+            this.exportAllLevelInformationToolStripMenuItem.Click += new System.EventHandler(this.exportAllLevelInformationToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -734,5 +743,6 @@
         private System.Windows.Forms.ToolStripMenuItem staticMeshLODsAsPSKToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportStaticMeshesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dumpScriptSourceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportAllLevelInformationToolStripMenuItem;
     }
 }
