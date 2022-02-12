@@ -55,6 +55,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unreal\UAsset.cs" />
+    <Compile Include="Unreal\UHirarchicalInstancedStaticMeshComponent.cs" />
     <Compile Include="Unreal\ULandscapeComponent.cs" />
     <Compile Include="Unreal\ULevel.cs" />
     <Compile Include="Unreal\UProperty.cs" />

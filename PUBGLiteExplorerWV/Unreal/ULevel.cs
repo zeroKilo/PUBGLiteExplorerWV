@@ -10,12 +10,13 @@ namespace PUBGLiteExplorerWV
     public class ULevel
     {
         public List<UProperty> props = new List<UProperty>();
-        public List<byte[]> lodRawData = new List<byte[]>();
         public List<int> objects = new List<int>();
         public UAsset myAsset;
+        public MemoryStream myBulk;
         public ULevel(Stream s, UAsset asset, MemoryStream ubulk)
         {
             myAsset = asset;
+            myBulk = ubulk;
             while (true)
             {
                 UProperty p = new UProperty(s, asset);
@@ -27,7 +28,7 @@ namespace PUBGLiteExplorerWV
             objects = new List<int>();
             for (int i = 0; i < count; i++)
                 objects.Add((int)Helper.ReadU32(s));
-        }
+        }        
 
         private void AddDetail(UProperty p, StringBuilder sb)
         {
@@ -36,15 +37,13 @@ namespace PUBGLiteExplorerWV
             {
                 case "RelativeLocation":
                     m = new MemoryStream(((UStructProperty)p.prop).data);
-                    sb.AppendLine("\tRelative Location : " + Helper.ReadFloat(m) + " " + Helper.ReadFloat(m) + " " + Helper.ReadFloat(m));
+                    Helper.ReadUnrealVector3(m, sb, p.name, true);
                     break;
                 case "RelativeRotation":
-                    m = new MemoryStream(((UStructProperty)p.prop).data);
-                    sb.AppendLine("\tRelative Rotation : " + Helper.ReadFloat(m) + " " + Helper.ReadFloat(m) + " " + Helper.ReadFloat(m));
-                    break;
                 case "RelativeScale":
+                case "RelativeScale3D":
                     m = new MemoryStream(((UStructProperty)p.prop).data);
-                    sb.AppendLine("\tRelative Scale : " + Helper.ReadFloat(m) + " " + Helper.ReadFloat(m) + " " + Helper.ReadFloat(m));
+                    Helper.ReadUnrealVector3(m, sb, p.name, false);
                     break;
             }
         }
@@ -121,6 +120,11 @@ namespace PUBGLiteExplorerWV
                                 sb.AppendLine("\tImport : " + myAsset.importTable[-staticMeshID - 1]._name);
                             else if (staticMeshID > 0)
                                 sb.AppendLine("\tExport : " + myAsset.exportTable[staticMeshID - 1]._name);
+                            if(myAsset.GetName( expIMC.classIdx) == "HierarchicalInstancedStaticMeshComponent")
+                            {
+                                UHirarchicalInstancedStaticMeshComponent hismc = new UHirarchicalInstancedStaticMeshComponent(new MemoryStream(expIMC._data), myAsset, myBulk);
+                                sb.AppendLine(hismc.GetDetails());
+                            }
                             break;
                     }
                 }

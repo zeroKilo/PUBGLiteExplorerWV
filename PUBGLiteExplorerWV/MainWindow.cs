@@ -44,9 +44,13 @@ namespace PUBGLiteExplorerWV
         private void loadFolderOfPAKFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
+            if (File.Exists("last_path.txt"))
+                fbd.SelectedPath = File.ReadAllText("last_path.txt").Trim();
+            else
+                fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                File.WriteAllText("last_path.txt", fbd.SelectedPath);
                 string[] paths = Directory.GetFiles(fbd.SelectedPath, "*.pak", SearchOption.TopDirectoryOnly);
                 files = new List<PAKFile>();
                 pb1.Value = 0;
@@ -81,20 +85,54 @@ namespace PUBGLiteExplorerWV
             if (n == 0)
             {
                 listBox1.Items.Clear();
+                List<string> list = new List<string>();
+                listBox1.Visible = false;
+                pb1.Value = 0;
+                pb1.Maximum = files.Count;
                 foreach (PAKFile file in files)
+                {
+                    status.Text = "Adding paths from " + Path.GetFileName(file.myPath) + " to list...";
+                    pb1.Value++;
+                    Application.DoEvents();
                     if (file.header.isValid)
                         foreach (PAKFileEntry entry in file.table.entries)
-                            listBox1.Items.Add(entry.path);
+                            list.Add(entry.path);
+                }
+                pb1.Value = 0;
+                if (alphabeticalSortingToolStripMenuItem.Checked)
+                {
+                    status.Text = "Sorting list...";
+                    Application.DoEvents();
+                    list.Sort();
+                }
+                status.Text = "Insert in listbox...";
+                Application.DoEvents();
+                listBox1.Items.AddRange(list.ToArray());
+                listBox1.Visible = true;
             }
             if (n == 1)
             {
                 TreeNode root = new TreeNode("ROOT");
+                treeView1.Nodes.Clear();
+                treeView1.Nodes.Add(root);
+                pb1.Value = 0;
+                pb1.Maximum = files.Count;
                 foreach (PAKFile file in files)
+                {
+                    status.Text = "Adding paths from " + Path.GetFileName(file.myPath) + " to tree...";
+                    pb1.Value++;
+                    Application.DoEvents();
                     if (file.header.isValid)
                         foreach (PAKFileEntry entry in file.table.entries)
                             AddPathToNode(root, entry.path);
-                treeView1.Nodes.Clear();
-                treeView1.Nodes.Add(root);
+                }
+                pb1.Value = 0;
+                if (alphabeticalSortingToolStripMenuItem.Checked)
+                {
+                    status.Text = "Sorting tree...";
+                    Application.DoEvents();
+                    treeView1.Sort();
+                }
             }
             status.Text = "";
         }

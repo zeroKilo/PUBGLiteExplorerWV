@@ -36,6 +36,7 @@
             this.exportSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportStaticMeshesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAllLevelInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewInExportTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mipsInTexture2DTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,7 +76,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.exportAllLevelInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alphabeticalSortingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -115,7 +117,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contentToolStripMenuItem,
             this.exportToolStripMenuItem,
-            this.dumpToolStripMenuItem});
+            this.dumpToolStripMenuItem,
+            this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(993, 24);
@@ -176,6 +179,13 @@
             this.exportStaticMeshesToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.exportStaticMeshesToolStripMenuItem.Text = "Export StaticMeshes...";
             this.exportStaticMeshesToolStripMenuItem.Click += new System.EventHandler(this.exportStaticMeshesToolStripMenuItem_Click);
+            // 
+            // exportAllLevelInformationToolStripMenuItem
+            // 
+            this.exportAllLevelInformationToolStripMenuItem.Name = "exportAllLevelInformationToolStripMenuItem";
+            this.exportAllLevelInformationToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.exportAllLevelInformationToolStripMenuItem.Text = "Export All Level Information...";
+            this.exportAllLevelInformationToolStripMenuItem.Click += new System.EventHandler(this.exportAllLevelInformationToolStripMenuItem_Click);
             // 
             // dumpToolStripMenuItem
             // 
@@ -635,12 +645,20 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // exportAllLevelInformationToolStripMenuItem
+            // optionsToolStripMenuItem
             // 
-            this.exportAllLevelInformationToolStripMenuItem.Name = "exportAllLevelInformationToolStripMenuItem";
-            this.exportAllLevelInformationToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.exportAllLevelInformationToolStripMenuItem.Text = "Export All Level Information...";
-            this.exportAllLevelInformationToolStripMenuItem.Click += new System.EventHandler(this.exportAllLevelInformationToolStripMenuItem_Click);
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.alphabeticalSortingToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // alphabeticalSortingToolStripMenuItem
+            // 
+            this.alphabeticalSortingToolStripMenuItem.CheckOnClick = true;
+            this.alphabeticalSortingToolStripMenuItem.Name = "alphabeticalSortingToolStripMenuItem";
+            this.alphabeticalSortingToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.alphabeticalSortingToolStripMenuItem.Text = "Alphabetical Sorting";
             // 
             // MainWindow
             // 
@@ -744,5 +762,7 @@
         private System.Windows.Forms.ToolStripMenuItem exportStaticMeshesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dumpScriptSourceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportAllLevelInformationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem alphabeticalSortingToolStripMenuItem;
     }
 }
