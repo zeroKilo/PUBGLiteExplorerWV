@@ -117,11 +117,14 @@ namespace PUBGLiteExplorerWV
             return f.ToString().Replace(",", ".");
         }
 
-        public static void ReadUnrealVector3(MemoryStream m, StringBuilder sb, string name, bool convert)
+        public static void ReadUnrealVector3(MemoryStream m, StringBuilder sb, string name, bool convert, bool times100 = false)
         {
             float[] vec = new float[] { Helper.ReadFloat(m), Helper.ReadFloat(m), Helper.ReadFloat(m) };
             if (convert)
                 vec = UnrealToUnity(vec);
+            if (times100)
+                for (int i = 0; i < 3; i++)
+                    vec[i] *= 100f;
             sb.AppendLine("\t" + name + " : " + MakeVector(vec));
         }
         public static float[] GetPosFromMatrix(float[] mat)
@@ -183,9 +186,12 @@ namespace PUBGLiteExplorerWV
             return res;
         }
 
-        public static string MakeVector(float[] f)
+        public static string MakeVector(float[] f, bool forUnity = true)
         {
-            return "Vector3(" + Helper.comma2dot(f[0]) + "f, " + Helper.comma2dot(f[1]) + "f, " + Helper.comma2dot(f[2]) + "f)";
+            if(forUnity)
+                return "Vector3(" + Helper.comma2dot(f[0]) + ", " + Helper.comma2dot(f[1]) + ", " + Helper.comma2dot(f[2]) + ")";
+            else
+                return "Vector3(" + Helper.comma2dot(f[0]) + "f, " + Helper.comma2dot(f[1]) + "f, " + Helper.comma2dot(f[2]) + "f)";
         }
 
         public enum AngleUnit

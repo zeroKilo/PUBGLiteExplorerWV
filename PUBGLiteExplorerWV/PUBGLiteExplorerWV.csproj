@@ -59,6 +59,7 @@
     <Compile Include="Unreal\ULandscapeComponent.cs" />
     <Compile Include="Unreal\ULevel.cs" />
     <Compile Include="Unreal\UProperty.cs" />
+    <Compile Include="Unreal\URandomPositionPlayerStart.cs" />
     <Compile Include="Unreal\UStaticMesh.cs" />
     <Compile Include="Unreal\UStaticMeshLOD.cs" />
     <Compile Include="Unreal\UTexture2D.cs" />

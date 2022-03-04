@@ -40,10 +40,13 @@ namespace PUBGLiteExplorerWV
                     Helper.ReadUnrealVector3(m, sb, p.name, true);
                     break;
                 case "RelativeRotation":
+                    m = new MemoryStream(((UStructProperty)p.prop).data);
+                    Helper.ReadUnrealVector3(m, sb, p.name, false);
+                    break;
                 case "RelativeScale":
                 case "RelativeScale3D":
                     m = new MemoryStream(((UStructProperty)p.prop).data);
-                    Helper.ReadUnrealVector3(m, sb, p.name, false);
+                    Helper.ReadUnrealVector3(m, sb, p.name, false, true);
                     break;
             }
         }

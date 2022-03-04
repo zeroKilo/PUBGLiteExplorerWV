@@ -20,6 +20,8 @@ namespace PUBGLiteExplorerWV
         public UTexture2D currentTex = null;
         public UStaticMesh currentStatMesh = null;
         public ULevel currentLevel = null;
+        public UHirarchicalInstancedStaticMeshComponent currentHISMC;
+        public URandomPositionPlayerStart currentRPPS;
         public string currentStatMeshName = "";
         public MainWindow()
         {
@@ -419,6 +421,24 @@ namespace PUBGLiteExplorerWV
                     else
                         currentLevel = new ULevel(new MemoryStream(ex._data), currentAsset, null);
                     rtb1.Text += "\n\n" + currentLevel.GetDetails();
+                }
+                else if (currentAsset.GetName(ex.classIdx) == "FoliageInstancedStaticMeshComponent")
+                {
+                    byte[] ubulkData = currentAsset._ubulkData;
+                    if (ubulkData != null)
+                        currentHISMC = new UHirarchicalInstancedStaticMeshComponent(new MemoryStream(ex._data), currentAsset, new MemoryStream(ubulkData));
+                    else
+                        currentHISMC = new UHirarchicalInstancedStaticMeshComponent(new MemoryStream(ex._data), currentAsset, null);
+                    rtb1.Text += "\n\n" + currentHISMC.GetDetails();
+                }
+                else if (currentAsset.GetName(ex.classIdx) == "RandomPositionPlayerStart")
+                {
+                    byte[] ubulkData = currentAsset._ubulkData;
+                    if (ubulkData != null)
+                        currentRPPS = new URandomPositionPlayerStart(new MemoryStream(ex._data), currentAsset, new MemoryStream(ubulkData));
+                    else
+                        currentRPPS = new URandomPositionPlayerStart(new MemoryStream(ex._data), currentAsset, null);
+                    rtb1.Text += "\n\n" + currentRPPS.GetDetails();
                 }
             }
             catch (Exception exc)

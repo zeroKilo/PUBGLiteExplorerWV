@@ -36,6 +36,7 @@ namespace PUBGLiteExplorerWV
         public UHirarchicalInstancedStaticMeshComponent(Stream s, UAsset asset, MemoryStream ubulk)
         {
             myAsset = asset;
+            myLocation = new float[3];
             while (true)
             {
                 UProperty p = new UProperty(s, asset);
@@ -44,7 +45,14 @@ namespace PUBGLiteExplorerWV
                 if (p.name == "RelativeLocation")
                 {
                     MemoryStream m = new MemoryStream(((UStructProperty)p.prop).data);
-                    myLocation = new float[] { Helper.ReadFloat(m), Helper.ReadFloat(m), Helper.ReadFloat(m) };
+                    myLocation = Helper.swapYZ(new float[] { Helper.ReadFloat(m), Helper.ReadFloat(m), Helper.ReadFloat(m) });
+                }
+                if(p.name == "CacheMeshExtendedBounds")
+                {
+                    MemoryStream m = new MemoryStream(((UStructProperty)p.prop).data);
+                    UProperty p2 = new UProperty(m, asset);
+                    m = new MemoryStream(((UStructProperty)p2.prop).data);
+                    myLocation = Helper.swapYZ(new float[] { Helper.ReadFloat(m), Helper.ReadFloat(m), Helper.ReadFloat(m) });
                 }
                 props.Add(p);
             }
@@ -103,8 +111,8 @@ namespace PUBGLiteExplorerWV
                     scale[i] *= 100f;
                 }
                 scale = Helper.swapYZ(scale);
-                sb.AppendLine("g = Instantiate(instance, new " + Helper.MakeVector(apos) + ", Quaternion.identity);");
-                sb.AppendLine("g.transform.localScale = new " + Helper.MakeVector(scale) + ";");
+                sb.AppendLine("g = Instantiate(instance, new " + Helper.MakeVector(apos, false) + ", Quaternion.identity);");
+                sb.AppendLine("g.transform.localScale = new " + Helper.MakeVector(scale, false) + ";");
             }
             return sb.ToString();
         }
