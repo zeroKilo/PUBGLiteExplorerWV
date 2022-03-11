@@ -45,14 +45,14 @@ namespace PUBGLiteExplorerWV
                 if (p.name == "RelativeLocation")
                 {
                     MemoryStream m = new MemoryStream(((UStructProperty)p.prop).data);
-                    myLocation = Helper.swapYZ(new float[] { Helper.ReadFloat(m), Helper.ReadFloat(m), Helper.ReadFloat(m) });
+                    myLocation = Helper.swapYZ(new float[] { Helper.ReadFloat(m), -Helper.ReadFloat(m), Helper.ReadFloat(m) });
                 }
                 if(p.name == "CacheMeshExtendedBounds")
                 {
                     MemoryStream m = new MemoryStream(((UStructProperty)p.prop).data);
                     UProperty p2 = new UProperty(m, asset);
                     m = new MemoryStream(((UStructProperty)p2.prop).data);
-                    myLocation = Helper.swapYZ(new float[] { Helper.ReadFloat(m), Helper.ReadFloat(m), Helper.ReadFloat(m) });
+                    myLocation = Helper.swapYZ(new float[] { Helper.ReadFloat(m), -Helper.ReadFloat(m), Helper.ReadFloat(m) });
                 }
                 props.Add(p);
             }
@@ -99,18 +99,16 @@ namespace PUBGLiteExplorerWV
             else
             {
                 float[] mat = transforms[node.firstInstance];
-                float[] pos = Helper.GetPosFromMatrix(mat);
+                float[] pos = Helper.swapYZ(Helper.GetPosFromMatrix(mat));
+                pos[2] *= -1f;
                 float[] apos = AddVec3(pos, myLocation);
                 float[] scale = Helper.GetScaleFromMatrix(mat);
-                float[] rot = Helper.GetRotFromMatrix(mat);
-                apos = Helper.swapYZ(apos);
-                apos[2] *= -1f;
+                float[] rot = Helper.swapYZ(Helper.GetRotFromMatrix(mat));
                 for (int i = 0; i < 3; i++)
                 {
                     apos[i] *= 0.01f;
                     scale[i] *= 100f;
                 }
-                scale = Helper.swapYZ(scale);
                 sb.AppendLine("g = Instantiate(instance, new " + Helper.MakeVector(apos, false) + ", Quaternion.identity);");
                 sb.AppendLine("g.transform.localScale = new " + Helper.MakeVector(scale, false) + ";");
             }

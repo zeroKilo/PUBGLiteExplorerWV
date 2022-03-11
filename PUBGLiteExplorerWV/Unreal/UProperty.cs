@@ -20,6 +20,11 @@ namespace PUBGLiteExplorerWV
         {
             _offset = s.Position;
             name = asset.GetName((int)Helper.ReadU64(s));
+            if(name == null)
+            {
+                _isValid = false;
+                return;
+            }
             if (name == "None")
             {
                 s.Seek(4, SeekOrigin.Current);
@@ -335,12 +340,14 @@ namespace PUBGLiteExplorerWV
 
     public class UArrayProperty : UProp
     {
+        private UAsset myAsset;
         public string type;
         public byte[] data;
         public List<UProperty> subProps = new List<UProperty>();
 
         public UArrayProperty(Stream s, UAsset asset)
         {
+            myAsset = asset;
             ReadSizeAndFlags(s);
             type = asset.GetName((int)Helper.ReadU64(s));
             s.ReadByte();
@@ -366,6 +373,26 @@ namespace PUBGLiteExplorerWV
             sb.AppendLine(offset.ToString("X8") + " : " + name + " ArrayProperty (" + type + ") Size = 0x" + data.Length.ToString("X"));
             foreach (UProperty p in subProps)
                 sb.Append(p.prop.ToDetails(tabs + 1, p._offset, p.name));
+            if (type == "ObjectProperty" && data.Length >= 4 && data.Length % 4 == 0)
+            {
+                MemoryStream m = new MemoryStream(data);
+                while (m.Position < data.Length)
+                {
+                    int index = (int)Helper.ReadU32(m);
+                    if (index > 0)
+                    {
+                        index--;
+                        sb.Append(MakeTabs(tabs));
+                        sb.AppendLine(" - Export 0x" + index.ToString("X") + " " + myAsset.exportTable[index]._name);
+                    }
+                    if (index < 0)
+                    {
+                        index = -index - 1;
+                        sb.Append(MakeTabs(tabs));
+                        sb.AppendLine(" - Import 0x" + index.ToString("X") + " " + myAsset.importTable[index]._name);
+                    }
+                }
+            }
             return sb.ToString();
         }
     }

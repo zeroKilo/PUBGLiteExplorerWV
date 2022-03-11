@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.contentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadSinglePAKFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,6 +45,8 @@
             this.staticMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.staticMeshLODsAsPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpScriptSourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alphabeticalSortingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -76,8 +79,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.alphabeticalSortingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.findPersistenLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -110,6 +113,7 @@
             this.splitContainer5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -244,6 +248,21 @@
             this.dumpScriptSourceToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.dumpScriptSourceToolStripMenuItem.Text = "Dump Script Source";
             this.dumpScriptSourceToolStripMenuItem.Click += new System.EventHandler(this.dumpScriptSourceToolStripMenuItem_Click);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.alphabeticalSortingToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // alphabeticalSortingToolStripMenuItem
+            // 
+            this.alphabeticalSortingToolStripMenuItem.CheckOnClick = true;
+            this.alphabeticalSortingToolStripMenuItem.Name = "alphabeticalSortingToolStripMenuItem";
+            this.alphabeticalSortingToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.alphabeticalSortingToolStripMenuItem.Text = "Alphabetical Sorting";
             // 
             // splitContainer1
             // 
@@ -457,6 +476,7 @@
             // 
             // listBox4
             // 
+            this.listBox4.ContextMenuStrip = this.contextMenuStrip1;
             this.listBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBox4.Font = new System.Drawing.Font("Courier New", 8.25F);
             this.listBox4.FormattingEnabled = true;
@@ -645,20 +665,19 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // optionsToolStripMenuItem
+            // contextMenuStrip1
             // 
-            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.alphabeticalSortingToolStripMenuItem});
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.optionsToolStripMenuItem.Text = "Options";
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.findPersistenLevelToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 48);
             // 
-            // alphabeticalSortingToolStripMenuItem
+            // findPersistenLevelToolStripMenuItem
             // 
-            this.alphabeticalSortingToolStripMenuItem.CheckOnClick = true;
-            this.alphabeticalSortingToolStripMenuItem.Name = "alphabeticalSortingToolStripMenuItem";
-            this.alphabeticalSortingToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.alphabeticalSortingToolStripMenuItem.Text = "Alphabetical Sorting";
+            this.findPersistenLevelToolStripMenuItem.Name = "findPersistenLevelToolStripMenuItem";
+            this.findPersistenLevelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.findPersistenLevelToolStripMenuItem.Text = "Find PersistenLevel";
+            this.findPersistenLevelToolStripMenuItem.Click += new System.EventHandler(this.findPersistenLevelToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -707,6 +726,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -764,5 +784,7 @@
         private System.Windows.Forms.ToolStripMenuItem exportAllLevelInformationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem alphabeticalSortingToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem findPersistenLevelToolStripMenuItem;
     }
 }

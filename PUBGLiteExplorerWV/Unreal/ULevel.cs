@@ -129,6 +129,31 @@ namespace PUBGLiteExplorerWV
                                 sb.AppendLine(hismc.GetDetails());
                             }
                             break;
+                        default:
+                            m = new MemoryStream(exp._data);
+                            int defaultSceneRoot= -1;
+                            while (true)
+                            {
+                                UProperty p = new UProperty(m, myAsset);
+                                if (p.name == "None")
+                                    break;
+                                if (p.name == "DefaultSceneRoot")
+                                    defaultSceneRoot = ((UObjectProperty)p.prop).value;
+                                else AddDetail(p, sb);
+                            }
+                            if (defaultSceneRoot < 1)
+                                break;
+                            sb.AppendLine(" ->DefaultSceneRoot");
+                            UExport expDSR = myAsset.exportTable[defaultSceneRoot - 1];
+                            m = new MemoryStream(expDSR._data);
+                            while (true)
+                            {
+                                UProperty p = new UProperty(m, myAsset);
+                                if (p.name == "None")
+                                    break;
+                                else AddDetail(p, sb);
+                            }
+                            break;
                     }
                 }
             return sb.ToString();

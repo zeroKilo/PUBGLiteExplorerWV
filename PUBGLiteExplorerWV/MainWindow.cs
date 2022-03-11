@@ -384,7 +384,7 @@ namespace PUBGLiteExplorerWV
             if (n == -1 || currentAsset == null)
                 return;
             UExport ex = currentAsset.exportTable[n];
-            try
+            //try
             {
                 hb2.ByteProvider = new DynamicByteProvider(ex._data);
                 rtb1.Text = currentAsset.ParseProperties(ex);
@@ -441,9 +441,9 @@ namespace PUBGLiteExplorerWV
                     rtb1.Text += "\n\n" + currentRPPS.GetDetails();
                 }
             }
-            catch (Exception exc)
+            //catch (Exception exc)
             {
-                rtb1.Text = exc.ToString();
+            //    rtb1.Text = exc.ToString();
             }
         }
 
@@ -814,6 +814,18 @@ namespace PUBGLiteExplorerWV
                 ex.Close();
                 MessageBox.Show("Done.");
             }
+        }
+
+        private void findPersistenLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentAsset == null)
+                return;
+            for(int i = 0; i < currentAsset.exportCount; i++)
+                if(currentAsset.exportTable[i]._name == "PersistentLevel")
+                {
+                    listBox4.SelectedIndex = i;
+                    break;
+                }
         }
     }
 }
