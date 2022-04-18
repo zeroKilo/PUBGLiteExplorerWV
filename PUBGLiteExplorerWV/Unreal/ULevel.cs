@@ -129,6 +129,33 @@ namespace PUBGLiteExplorerWV
                                 sb.AppendLine(hismc.GetDetails());
                             }
                             break;
+                        case "TslSpecificLocationMarker":
+                            m = new MemoryStream(exp._data);
+                            int sphereComponent = -1;
+                            string locName = null;
+                            while (true)
+                            {
+                                UProperty p = new UProperty(m, myAsset);
+                                if (p.name == "None")
+                                    break;
+                                if (p.name == "SphereComponent")
+                                    sphereComponent = ((UObjectProperty)p.prop).value;
+                                if (p.name == "LocationName")
+                                    locName = ((UStrProperty)p.prop).value;
+                            }
+                            if (sphereComponent < 1 || locName == null)
+                                break;
+                            sb.AppendLine("\tLocation Name : " + locName);
+                            UExport expSC = myAsset.exportTable[sphereComponent - 1];
+                            m = new MemoryStream(expSC._data);
+                            while (true)
+                            {
+                                UProperty p = new UProperty(m, myAsset);
+                                if (p.name == "None")
+                                    break;
+                                else AddDetail(p, sb);
+                            }
+                            break;
                         default:
                             m = new MemoryStream(exp._data);
                             int defaultSceneRoot= -1;

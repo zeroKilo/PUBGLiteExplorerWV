@@ -282,6 +282,47 @@ namespace PUBGLiteExplorerWV
             }
         }
 
+        private void LoadAssetFile(string assetPath)
+        {
+            currentAsset = null;
+            label2.Text = "Asset Path = " + assetPath;
+            listBox2.Items.Clear();
+            listBox3.Items.Clear();
+            listBox4.Items.Clear();
+            listBox5.Items.Clear();
+            rtb1.Text = "";
+            hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
+            hb3.ByteProvider = new DynamicByteProvider(new byte[0]);
+            if (tabControl2.TabPages.Contains(tabPage6))
+                tabControl2.TabPages.Remove(tabPage6);
+            byte[] data = File.ReadAllBytes(assetPath);
+            hb1.ByteProvider = new DynamicByteProvider(data);
+            UAsset asset = null;
+            string fileBase = Path.GetDirectoryName(assetPath) + "\\" + Path.GetFileNameWithoutExtension(assetPath);
+            byte[] uexpData = null; 
+            if (File.Exists(fileBase + ".uexp"))
+                uexpData = File.ReadAllBytes(fileBase + ".uexp");
+            byte[] ubulkData = null;
+            if (File.Exists(fileBase + ".ubulk")) ;
+                ubulkData = File.ReadAllBytes(fileBase + ".ubulk");
+            if (uexpData != null && ubulkData != null)
+                asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), new MemoryStream(ubulkData));
+            else if (uexpData != null)
+                asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), null);
+            else
+                asset = new UAsset(new MemoryStream(data), null, null);
+            if (asset != null && asset._isValid)
+            {
+                for (int i = 0; i < asset.nameCount; i++)
+                    listBox2.Items.Add(i.ToString("X4") + " : " + asset.nameTable[i]);
+                for (int i = 0; i < asset.importCount; i++)
+                    listBox3.Items.Add(i.ToString("X4") + " : Class=" + asset.importTable[i]._className + " Name=" + asset.importTable[i]._name);
+                for (int i = 0; i < asset.exportCount; i++)
+                    listBox4.Items.Add(i.ToString("X4") + " : " + asset.exportTable[i]._name + " (" + asset.GetName(asset.exportTable[i].classIdx) + ")");
+                currentAsset = asset;
+            }
+        }
+
         private string getSelectedPath()
         {
             int n = toolStripComboBox1.SelectedIndex;
@@ -384,7 +425,7 @@ namespace PUBGLiteExplorerWV
             if (n == -1 || currentAsset == null)
                 return;
             UExport ex = currentAsset.exportTable[n];
-            //try
+            try
             {
                 hb2.ByteProvider = new DynamicByteProvider(ex._data);
                 rtb1.Text = currentAsset.ParseProperties(ex);
@@ -403,7 +444,7 @@ namespace PUBGLiteExplorerWV
                             listBox5.Items.Add("Mip " + mip.width + "x" + mip.height);
                         label1.Text = n.ToString("X4") + " : " + ex._name;
                     }
-                }
+                } 
                 else if (currentAsset.GetName(ex.classIdx) == "StaticMesh")
                 {
                     byte[] ubulkData = currentAsset._ubulkData;
@@ -441,9 +482,9 @@ namespace PUBGLiteExplorerWV
                     rtb1.Text += "\n\n" + currentRPPS.GetDetails();
                 }
             }
-            //catch (Exception exc)
+            catch (Exception exc)
             {
-            //    rtb1.Text = exc.ToString();
+                rtb1.Text = exc.ToString();
             }
         }
 
@@ -826,6 +867,14 @@ namespace PUBGLiteExplorerWV
                     listBox4.SelectedIndex = i;
                     break;
                 }
+        }
+
+        private void loadUAssetFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog d = new OpenFileDialog();
+            d.Filter = "*.uasset|*.uasset";
+            if(d.ShowDialog() == DialogResult.OK)
+                LoadAssetFile(d.FileName);
         }
     }
 }

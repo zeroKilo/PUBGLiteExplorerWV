@@ -65,6 +65,8 @@
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.listBox4 = new System.Windows.Forms.ListBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.findPersistenLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.hb2 = new Be.Windows.Forms.HexBox();
@@ -79,8 +81,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.findPersistenLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadUAssetFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -98,6 +99,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
@@ -113,7 +115,6 @@
             this.splitContainer5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).BeginInit();
             this.statusStrip1.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -133,7 +134,8 @@
             // 
             this.contentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadSinglePAKFileToolStripMenuItem,
-            this.loadFolderOfPAKFilesToolStripMenuItem});
+            this.loadFolderOfPAKFilesToolStripMenuItem,
+            this.loadUAssetFileToolStripMenuItem});
             this.contentToolStripMenuItem.Name = "contentToolStripMenuItem";
             this.contentToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.contentToolStripMenuItem.Text = "Content";
@@ -489,6 +491,20 @@
             this.listBox4.TabIndex = 2;
             this.listBox4.SelectedIndexChanged += new System.EventHandler(this.listBox4_SelectedIndexChanged);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.findPersistenLevelToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(175, 26);
+            // 
+            // findPersistenLevelToolStripMenuItem
+            // 
+            this.findPersistenLevelToolStripMenuItem.Name = "findPersistenLevelToolStripMenuItem";
+            this.findPersistenLevelToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.findPersistenLevelToolStripMenuItem.Text = "Find PersistenLevel";
+            this.findPersistenLevelToolStripMenuItem.Click += new System.EventHandler(this.findPersistenLevelToolStripMenuItem_Click);
+            // 
             // splitContainer3
             // 
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -665,19 +681,12 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // contextMenuStrip1
+            // loadUAssetFileToolStripMenuItem
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.findPersistenLevelToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 48);
-            // 
-            // findPersistenLevelToolStripMenuItem
-            // 
-            this.findPersistenLevelToolStripMenuItem.Name = "findPersistenLevelToolStripMenuItem";
-            this.findPersistenLevelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.findPersistenLevelToolStripMenuItem.Text = "Find PersistenLevel";
-            this.findPersistenLevelToolStripMenuItem.Click += new System.EventHandler(this.findPersistenLevelToolStripMenuItem_Click);
+            this.loadUAssetFileToolStripMenuItem.Name = "loadUAssetFileToolStripMenuItem";
+            this.loadUAssetFileToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.loadUAssetFileToolStripMenuItem.Text = "Load UAsset File...";
+            this.loadUAssetFileToolStripMenuItem.Click += new System.EventHandler(this.loadUAssetFileToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -710,6 +719,7 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
@@ -726,7 +736,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -786,5 +795,6 @@
         private System.Windows.Forms.ToolStripMenuItem alphabeticalSortingToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem findPersistenLevelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadUAssetFileToolStripMenuItem;
     }
 }

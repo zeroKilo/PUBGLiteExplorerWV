@@ -359,10 +359,17 @@ namespace PUBGLiteExplorerWV
             {
                 if (m.Position >= data.Length)
                     break;
-                UProperty p = new UProperty(m, asset);
-                if (!p._isValid)
+                try
+                {
+                    UProperty p = new UProperty(m, asset);
+                    if (!p._isValid || p.name == "None")
+                        break;
+                    subProps.Add(p);
+                }
+                catch
+                {
                     break;
-                subProps.Add(p);
+                }
             }
         }
 
