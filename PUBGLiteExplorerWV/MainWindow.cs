@@ -10,11 +10,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Be.Windows.Forms;
 using Microsoft.VisualBasic;
+using PUBGLiteExplorerWV.Model;
 
 namespace PUBGLiteExplorerWV
 {
     public partial class MainWindow : Form
     {
+        public bool flatView = false;
         public List<PAKFile> files = new List<PAKFile>();
         public UAsset currentAsset = null;
         public UTexture2D currentTex = null;
@@ -26,9 +28,26 @@ namespace PUBGLiteExplorerWV
         public MainWindow()
         {
             InitializeComponent();
+            viewComboBox.SelectedIndex = 0;
             toolStripComboBox1.SelectedIndex = 1;
             tabControl1.SelectedTab = tabPage2;
             tabControl2.TabPages.Remove(tabPage6);
+
+            exportView.BeforeExpand += (sender, args) =>
+            {
+                foreach (TreeNode node in args.Node.Nodes)
+                {
+                    if (!node.Text.StartsWith("OBJECT_REF@"))
+                    {
+                        return;
+                    }
+
+                    int objID = int.Parse(node.Text.Split('@')[1]);
+                    NIEObject obj = new NIEObject(currentAsset, objID, true);
+                    node.Text = obj.GetObjectName();
+                    AddNIEObject(node, null, currentAsset, obj);
+                }
+            };
         }
 
         private void loadSinglePAKFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -221,7 +240,7 @@ namespace PUBGLiteExplorerWV
             listBox3.Items.Clear();
             listBox4.Items.Clear();
             listBox5.Items.Clear();
-            rtb1.Text = "";           
+            exportView.Nodes.Clear();       
             hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
             hb3.ByteProvider = new DynamicByteProvider(new byte[0]);
             if (tabControl2.TabPages.Contains(tabPage6))
@@ -290,7 +309,7 @@ namespace PUBGLiteExplorerWV
             listBox3.Items.Clear();
             listBox4.Items.Clear();
             listBox5.Items.Clear();
-            rtb1.Text = "";
+            exportView.Nodes.Clear();
             hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
             hb3.ByteProvider = new DynamicByteProvider(new byte[0]);
             if (tabControl2.TabPages.Contains(tabPage6))
@@ -425,10 +444,21 @@ namespace PUBGLiteExplorerWV
             if (n == -1 || currentAsset == null)
                 return;
             UExport ex = currentAsset.exportTable[n];
+            TreeNode root = null;
             try
             {
+                if (flatView)
+                {
+                    rtb1.Text = currentAsset.ParseProperties(ex);
+                } else {
+                    root = new TreeNode(ex._name);
+                    exportView.Nodes.Clear();
+                    exportView.Nodes.Add(root);
+                    
+                    AddNIEObject(root, ex._name, currentAsset, new NIEObject(currentAsset, n, true));
+                }
+
                 hb2.ByteProvider = new DynamicByteProvider(ex._data);
-                rtb1.Text = currentAsset.ParseProperties(ex);
                 if (currentAsset.GetName(ex.classIdx) == "Texture2D")
                 {
                     byte[] ubulkData = currentAsset._ubulkData;
@@ -461,7 +491,23 @@ namespace PUBGLiteExplorerWV
                         currentLevel = new ULevel(new MemoryStream(ex._data), currentAsset, new MemoryStream(ubulkData));
                     else
                         currentLevel = new ULevel(new MemoryStream(ex._data), currentAsset, null);
-                    rtb1.Text += "\n\n" + currentLevel.GetDetails();
+
+                    if (flatView)
+                    {
+                        rtb1.Text += "\n\n" + currentLevel.GetDetails();
+                    }
+                    else
+                    {
+                        TreeNode levelNode = new TreeNode("Level");
+                        root.Nodes.Add(levelNode);
+
+                        Level level = new Level(currentLevel);
+                        foreach (Export export in level.objects)
+                        {
+                            AddNIEObject(levelNode, export.uexport._name, currentAsset,
+                                new NIEObject(currentAsset, export.objID, true));
+                        }
+                    }
                 }
                 else if (currentAsset.GetName(ex.classIdx) == "FoliageInstancedStaticMeshComponent")
                 {
@@ -470,7 +516,22 @@ namespace PUBGLiteExplorerWV
                         currentHISMC = new UHirarchicalInstancedStaticMeshComponent(new MemoryStream(ex._data), currentAsset, new MemoryStream(ubulkData));
                     else
                         currentHISMC = new UHirarchicalInstancedStaticMeshComponent(new MemoryStream(ex._data), currentAsset, null);
-                    rtb1.Text += "\n\n" + currentHISMC.GetDetails();
+
+                    if (flatView)
+                    {
+                        rtb1.Text += "\n\n" + currentHISMC.GetDetails();  
+                    }
+                    else
+                    {
+                        TreeNode instancedMeshNode = new TreeNode("HISMC");
+                        root.Nodes.Add(instancedMeshNode);
+
+                        foreach (string line in currentHISMC.GetDetails().Split('\n'))
+                        {
+                            TreeNode lineNode = new TreeNode(line);
+                            instancedMeshNode.Nodes.Add(lineNode);
+                        }
+                    }
                 }
                 else if (currentAsset.GetName(ex.classIdx) == "RandomPositionPlayerStart")
                 {
@@ -479,13 +540,106 @@ namespace PUBGLiteExplorerWV
                         currentRPPS = new URandomPositionPlayerStart(new MemoryStream(ex._data), currentAsset, new MemoryStream(ubulkData));
                     else
                         currentRPPS = new URandomPositionPlayerStart(new MemoryStream(ex._data), currentAsset, null);
-                    rtb1.Text += "\n\n" + currentRPPS.GetDetails();
+
+                    if (flatView)
+                    {
+                        rtb1.Text += "\n\n" + currentRPPS.GetDetails();
+                    }
+                    else
+                    {
+                        TreeNode instancedMeshNode = new TreeNode("RPPS");
+                        root.Nodes.Add(instancedMeshNode);
+
+                        foreach (string line in currentRPPS.GetDetails().Split('\n'))
+                        {
+                            TreeNode lineNode = new TreeNode(line);
+                            instancedMeshNode.Nodes.Add(lineNode);
+                        }
+                    }
                 }
             }
             catch (Exception exc)
             {
-                rtb1.Text = exc.ToString();
+                exportView.Nodes.Clear();
+                exportView.Nodes.Add(new TreeNode(exc.ToString()));
             }
+        }
+
+        private void AddExportProperties(TreeNode parent, UAsset asset, UExport ex)
+        {
+            MemoryStream m = new MemoryStream(ex._data);
+            while ((ulong) m.Position < ex.dataSize)
+            {
+                long pos = m.Position;
+                UProperty p = new UProperty(m, asset);
+                if (p.name == "None")
+                    break;
+                if (!p._isValid)
+                {
+                    parent.Nodes.Add(new TreeNode("Error parsing at 0x" + pos.ToString("X") + " Name=" + p.name +
+                                                  " Type=" + p.type));
+                    break;
+                }
+
+                parent.Nodes.Add(new TreeNode(p.prop.ToDetails(0, p._offset, p.name)));
+            }
+        }
+
+        private void AddNIEObject(TreeNode parent, string name, UAsset asset, NIEObject nieObject)
+        {
+            if (nieObject == null)
+                return;
+            
+            TreeNode objectNode = name != null ? new TreeNode(name) : parent;
+
+            if (nieObject.IsExport())
+            {
+                Export export = new Export(asset, nieObject.export);
+                if (export.uexport._name != null) objectNode.Nodes.Add(new TreeNode("Name: " + export.uexport._name));
+                AddNIEObject(objectNode, "ClassIdx", asset, export.classIdx);
+                AddNIEObject(objectNode, "NameIdx", asset, export.nameIdx);
+                AddNIEObject(objectNode, "PackageIdx", asset, export.packageIdx);
+                AddNIEObject(objectNode, "TemplateIdx", asset, export.templateIdx);
+                
+                if (export.properties.Count > 0)
+                {
+                    foreach (Property p in export.properties)
+                    {
+                        TreeNode propertyNode = new TreeNode(p.property.name);
+                        objectNode.Nodes.Add(propertyNode);
+
+                        if (p.refObject == 0)
+                        {
+                            propertyNode.Nodes.Add(new TreeNode(p.property.prop.ToDetails(0, 0, p.property.name)));
+                        }
+                        else
+                        {
+                            propertyNode.Nodes.Add(new TreeNode("OBJECT_REF@" + p.refObject));
+                        }
+                    }
+                }
+            } else if (nieObject.IsImport())
+            {
+                Import import = new Import(asset, nieObject.import);
+                if (import.uimport._name != null) objectNode.Nodes.Add(new TreeNode("Name: " + import.uimport._name));
+                if (import.uimport._className != null) objectNode.Nodes.Add(new TreeNode("ClassName: " + import.uimport._className));
+                AddNIEObject(objectNode, "ClassName", asset, import.className);
+                AddNIEObject(objectNode, "ClassPackage", asset, import.classPackage);
+                AddNIEObject(objectNode, "ObjectName", asset, import.objectName);
+                AddNIEObject(objectNode, "PackageIdx", asset, import.packageIdx);
+            } else if (nieObject.IsName())
+            {
+                if (nieObject.name.Length == 0)
+                {
+                    return;
+                }
+
+                if (name != null)
+                    objectNode.Text += ": " + nieObject.name;
+            }
+            
+            if (name != null)
+                parent.Nodes.Add(objectNode);
         }
 
         private void listBox5_SelectedIndexChanged(object sender, EventArgs e)
@@ -875,6 +1029,23 @@ namespace PUBGLiteExplorerWV
             d.Filter = "*.uasset|*.uasset";
             if(d.ShowDialog() == DialogResult.OK)
                 LoadAssetFile(d.FileName);
+        }
+
+        private void viewComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            flatView = viewComboBox.SelectedItem.Equals("Flat");
+            if (flatView)
+            {
+                rtb1.BringToFront();
+                exportView.Nodes.Clear();
+            }
+            else
+            {
+                exportView.BringToFront();
+                rtb1.Clear();
+            }
+            
+            listBox4_SelectedIndexChanged(null, null);
         }
     }
 }

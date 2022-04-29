@@ -51,6 +51,12 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Export.cs" />
+    <Compile Include="Model\NIEObject.cs" />
+    <Compile Include="Model\Import.cs" />
+    <Compile Include="Model\Level.cs" />
+    <Compile Include="Model\Name.cs" />
+    <Compile Include="Model\Property.cs" />
     <Compile Include="Unreal\PAKFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
