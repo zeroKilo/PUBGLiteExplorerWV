@@ -33,6 +33,7 @@
             this.contentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadSinglePAKFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadFolderOfPAKFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadUAssetFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,8 +56,10 @@
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.treeView2 = new System.Windows.Forms.TreeView();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.viewComboBox = new System.Windows.Forms.ComboBox();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.listBox2 = new System.Windows.Forms.ListBox();
@@ -69,6 +72,7 @@
             this.findPersistenLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
+            this.exportView = new System.Windows.Forms.TreeView();
             this.hb2 = new Be.Windows.Forms.HexBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
@@ -81,9 +85,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.loadUAssetFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -95,35 +98,31 @@
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
             this.tabPage6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer4)).BeginInit();
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer5)).BeginInit();
             this.splitContainer5.Panel1.SuspendLayout();
             this.splitContainer5.Panel2.SuspendLayout();
             this.splitContainer5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pic1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.pic1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.contentToolStripMenuItem,
-            this.exportToolStripMenuItem,
-            this.dumpToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.contentToolStripMenuItem, this.exportToolStripMenuItem, this.dumpToolStripMenuItem, this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(993, 24);
@@ -132,10 +131,7 @@
             // 
             // contentToolStripMenuItem
             // 
-            this.contentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadSinglePAKFileToolStripMenuItem,
-            this.loadFolderOfPAKFilesToolStripMenuItem,
-            this.loadUAssetFileToolStripMenuItem});
+            this.contentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {this.loadSinglePAKFileToolStripMenuItem, this.loadFolderOfPAKFilesToolStripMenuItem, this.loadUAssetFileToolStripMenuItem});
             this.contentToolStripMenuItem.Name = "contentToolStripMenuItem";
             this.contentToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.contentToolStripMenuItem.Text = "Content";
@@ -154,13 +150,16 @@
             this.loadFolderOfPAKFilesToolStripMenuItem.Text = "Load folder of PAK files...";
             this.loadFolderOfPAKFilesToolStripMenuItem.Click += new System.EventHandler(this.loadFolderOfPAKFilesToolStripMenuItem_Click);
             // 
+            // loadUAssetFileToolStripMenuItem
+            // 
+            this.loadUAssetFileToolStripMenuItem.Name = "loadUAssetFileToolStripMenuItem";
+            this.loadUAssetFileToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.loadUAssetFileToolStripMenuItem.Text = "Load UAsset File...";
+            this.loadUAssetFileToolStripMenuItem.Click += new System.EventHandler(this.loadUAssetFileToolStripMenuItem_Click);
+            // 
             // exportToolStripMenuItem
             // 
-            this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportSelectedToolStripMenuItem,
-            this.exportAllToolStripMenuItem,
-            this.exportStaticMeshesToolStripMenuItem,
-            this.exportAllLevelInformationToolStripMenuItem});
+            this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {this.exportSelectedToolStripMenuItem, this.exportAllToolStripMenuItem, this.exportStaticMeshesToolStripMenuItem, this.exportAllLevelInformationToolStripMenuItem});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.exportToolStripMenuItem.Text = "Export";
@@ -195,13 +194,7 @@
             // 
             // dumpToolStripMenuItem
             // 
-            this.dumpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.previewInExportTableToolStripMenuItem,
-            this.mipsInTexture2DTabToolStripMenuItem,
-            this.landscapeToTerrainRawToolStripMenuItem,
-            this.staticMeshToolStripMenuItem,
-            this.staticMeshLODsAsPSKToolStripMenuItem,
-            this.dumpScriptSourceToolStripMenuItem});
+            this.dumpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {this.previewInExportTableToolStripMenuItem, this.mipsInTexture2DTabToolStripMenuItem, this.landscapeToTerrainRawToolStripMenuItem, this.staticMeshToolStripMenuItem, this.staticMeshLODsAsPSKToolStripMenuItem, this.dumpScriptSourceToolStripMenuItem});
             this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
             this.dumpToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.dumpToolStripMenuItem.Text = "Dump";
@@ -253,8 +246,7 @@
             // 
             // optionsToolStripMenuItem
             // 
-            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.alphabeticalSortingToolStripMenuItem});
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {this.alphabeticalSortingToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -312,9 +304,7 @@
             // 
             // toolStrip1
             // 
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1,
-            this.toolStripComboBox1});
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.toolStripLabel1, this.toolStripComboBox1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(304, 25);
@@ -329,9 +319,8 @@
             // 
             // toolStripComboBox1
             // 
-            this.toolStripComboBox1.Items.AddRange(new object[] {
-            "List",
-            "Tree"});
+            this.toolStripComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBox1.Items.AddRange(new object[] {"List", "Tree"});
             this.toolStripComboBox1.Name = "toolStripComboBox1";
             this.toolStripComboBox1.Size = new System.Drawing.Size(75, 25);
             this.toolStripComboBox1.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBox1_SelectedIndexChanged);
@@ -349,6 +338,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.treeView2);
             this.tabPage1.Controls.Add(this.hb1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -358,17 +348,24 @@
             this.tabPage1.Text = "Hex View";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // treeView2
+            // 
+            this.treeView2.Location = new System.Drawing.Point(8, 8);
+            this.treeView2.Name = "treeView2";
+            this.treeView2.Size = new System.Drawing.Size(121, 97);
+            this.treeView2.TabIndex = 2;
+            // 
             // hb1
             // 
             this.hb1.BoldFont = null;
             this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb1.LineInfoVisible = true;
             this.hb1.Location = new System.Drawing.Point(3, 3);
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
-            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int) (((byte) (100)))), ((int) (((byte) (60)))), ((int) (((byte) (188)))), ((int) (((byte) (255)))));
             this.hb1.Size = new System.Drawing.Size(671, 428);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 1;
@@ -377,6 +374,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.viewComboBox);
             this.tabPage2.Controls.Add(this.tabControl2);
             this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -386,6 +384,19 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Asset Details";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // viewComboBox
+            // 
+            this.viewComboBox.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.viewComboBox.DisplayMember = "Flat";
+            this.viewComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.viewComboBox.FormattingEnabled = true;
+            this.viewComboBox.Items.AddRange(new object[] {"Flat", "Tree"});
+            this.viewComboBox.Location = new System.Drawing.Point(599, 15);
+            this.viewComboBox.Name = "viewComboBox";
+            this.viewComboBox.Size = new System.Drawing.Size(68, 21);
+            this.viewComboBox.TabIndex = 12;
+            this.viewComboBox.SelectedIndexChanged += new System.EventHandler(this.viewComboBox_SelectedIndexChanged);
             // 
             // tabControl2
             // 
@@ -493,8 +504,7 @@
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.findPersistenLevelToolStripMenuItem});
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.findPersistenLevelToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(175, 26);
             // 
@@ -515,6 +525,7 @@
             // splitContainer3.Panel1
             // 
             this.splitContainer3.Panel1.Controls.Add(this.rtb1);
+            this.splitContainer3.Panel1.Controls.Add(this.exportView);
             // 
             // splitContainer3.Panel2
             // 
@@ -527,7 +538,7 @@
             // 
             this.rtb1.DetectUrls = false;
             this.rtb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtb1.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.rtb1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.rtb1.HideSelection = false;
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
@@ -536,17 +547,27 @@
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
             // 
+            // exportView
+            // 
+            this.exportView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.exportView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.exportView.HideSelection = false;
+            this.exportView.Location = new System.Drawing.Point(0, 0);
+            this.exportView.Name = "exportView";
+            this.exportView.Size = new System.Drawing.Size(434, 232);
+            this.exportView.TabIndex = 0;
+            // 
             // hb2
             // 
             this.hb2.BoldFont = null;
             this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb2.LineInfoVisible = true;
             this.hb2.Location = new System.Drawing.Point(0, 0);
             this.hb2.Name = "hb2";
             this.hb2.ReadOnly = true;
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int) (((byte) (100)))), ((int) (((byte) (60)))), ((int) (((byte) (188)))), ((int) (((byte) (255)))));
             this.hb2.Size = new System.Drawing.Size(434, 121);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 6;
@@ -627,13 +648,13 @@
             // 
             this.hb3.BoldFont = null;
             this.hb3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.hb3.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb3.LineInfoVisible = true;
             this.hb3.Location = new System.Drawing.Point(0, 0);
             this.hb3.Name = "hb3";
             this.hb3.ReadOnly = true;
-            this.hb3.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb3.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int) (((byte) (100)))), ((int) (((byte) (60)))), ((int) (((byte) (188)))), ((int) (((byte) (255)))));
             this.hb3.Size = new System.Drawing.Size(434, 184);
             this.hb3.StringViewVisible = true;
             this.hb3.TabIndex = 3;
@@ -662,9 +683,7 @@
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pb1,
-            this.status});
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.pb1, this.status});
             this.statusStrip1.Location = new System.Drawing.Point(0, 484);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(993, 22);
@@ -680,13 +699,6 @@
             // 
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
-            // 
-            // loadUAssetFileToolStripMenuItem
-            // 
-            this.loadUAssetFileToolStripMenuItem.Name = "loadUAssetFileToolStripMenuItem";
-            this.loadUAssetFileToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-            this.loadUAssetFileToolStripMenuItem.Text = "Load UAsset File...";
-            this.loadUAssetFileToolStripMenuItem.Click += new System.EventHandler(this.loadUAssetFileToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -704,7 +716,7 @@
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
@@ -717,29 +729,32 @@
             this.tabPage5.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.tabPage6.ResumeLayout(false);
             this.splitContainer4.Panel1.ResumeLayout(false);
             this.splitContainer4.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer4)).EndInit();
             this.splitContainer4.ResumeLayout(false);
             this.splitContainer5.Panel1.ResumeLayout(false);
             this.splitContainer5.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.splitContainer5)).EndInit();
             this.splitContainer5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pic1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.pic1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
+
+        private System.Windows.Forms.ComboBox viewComboBox;
+
+        private System.Windows.Forms.RichTextBox rtb1;
 
         #endregion
 
@@ -772,7 +787,6 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ListBox listBox4;
         private System.Windows.Forms.SplitContainer splitContainer3;
-        private System.Windows.Forms.RichTextBox rtb1;
         private Be.Windows.Forms.HexBox hb2;
         private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.SplitContainer splitContainer4;
@@ -796,5 +810,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem findPersistenLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadUAssetFileToolStripMenuItem;
+        private System.Windows.Forms.TreeView exportView;
+        private System.Windows.Forms.TreeView treeView2;
     }
 }
