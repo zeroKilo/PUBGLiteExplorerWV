@@ -462,6 +462,8 @@ namespace PUBGLiteExplorerWV
                     else
                         currentLevel = new ULevel(new MemoryStream(ex._data), currentAsset, null);
                     rtb1.Text += "\n\n" + currentLevel.GetDetails();
+                    currentLevel.GetTree(treeView2, currentAsset);
+                    
                 }
                 else if (currentAsset.GetName(ex.classIdx) == "FoliageInstancedStaticMeshComponent")
                 {

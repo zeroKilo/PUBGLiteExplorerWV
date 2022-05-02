@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PUBGLiteExplorerWV
 {
@@ -28,7 +29,7 @@ namespace PUBGLiteExplorerWV
             objects = new List<int>();
             for (int i = 0; i < count; i++)
                 objects.Add((int)Helper.ReadU32(s));
-        }        
+        }
 
         private void AddDetail(UProperty p, StringBuilder sb)
         {
@@ -50,6 +51,52 @@ namespace PUBGLiteExplorerWV
                     break;
             }
         }
+
+        public void GetTree(TreeView tv, UAsset asset)
+        {
+            tv.Nodes.Clear();
+            TreeNode t = new TreeNode("root");
+            foreach (int obj in objects)
+                if (obj > 0)
+                    AddChild(asset, obj - 1, t);
+            tv.Nodes.Add(t);
+        }
+
+        public void AddChild(UAsset asset, int idx, TreeNode root)
+        {
+            TreeNode t = new TreeNode(idx.ToString("X") + " " + asset.exportTable[idx]._name);
+            int child, parent;
+            GetChildAndParent(asset, idx, out child, out parent);
+            if (child > 0)
+                AddChild(asset, child - 1, t);
+            for(int i = 0; i < asset.exportCount; i++)
+                if(i != idx)
+                {
+                    GetChildAndParent(asset, i, out child, out parent);
+                    if(parent -1 == idx)
+                        AddChild(asset, i, t);
+                }
+            root.Nodes.Add(t);
+        }
+
+        public void GetChildAndParent(UAsset asset, int idx, out int child, out int parent)
+        {
+            UExport ex = asset.exportTable[idx];
+            MemoryStream s = new MemoryStream(ex._data);
+            child = 0;
+            parent = 0;
+            while (s.Position < s.Length)
+            {
+                UProperty p = new UProperty(s, asset);
+                if (p.name == "None")
+                    break;
+                if (p.name == "RootComponent")
+                    child = ((UObjectProperty)p.prop).value;
+                if (p.name == "AttachParent")
+                    parent = ((UObjectProperty)p.prop).value;
+            }
+        }
+
 
         public string GetDetails()
         {
