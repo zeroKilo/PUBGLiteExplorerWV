@@ -500,7 +500,7 @@ namespace PUBGLiteExplorerWV
             {
                 pic1.Image = currentTex.mips[n].MakeBitmap();
             }
-            catch { }
+            catch (Exception ex) { Console.Write(ex.Message); }
         }
 
         private void previewInExportTableToolStripMenuItem_Click(object sender, EventArgs e)
