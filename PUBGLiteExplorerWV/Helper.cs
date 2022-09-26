@@ -117,7 +117,7 @@ namespace PUBGLiteExplorerWV
             return f.ToString().Replace(",", ".");
         }
 
-        public static void ReadUnrealVector3(MemoryStream m, StringBuilder sb, string name, bool convert, bool times100 = false)
+        public static float[] ReadUnrealVector3(MemoryStream m, StringBuilder sb, string name, bool convert, bool times100 = false)
         {
             float[] vec = new float[] { Helper.ReadFloat(m), Helper.ReadFloat(m), Helper.ReadFloat(m) };
             if (convert)
@@ -126,6 +126,7 @@ namespace PUBGLiteExplorerWV
                 for (int i = 0; i < 3; i++)
                     vec[i] *= 100f;
             sb.AppendLine("\t" + name + " : " + MakeVector(vec));
+            return vec;
         }
         public static float[] GetPosFromMatrix(float[] mat)
         {

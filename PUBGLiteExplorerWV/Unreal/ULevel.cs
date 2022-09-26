@@ -14,6 +14,9 @@ namespace PUBGLiteExplorerWV
         public List<int> objects = new List<int>();
         public UAsset myAsset;
         public MemoryStream myBulk;
+
+        public MemoryStream rawData;
+        private float[] lastPos, lastRot, lastScale;
         public ULevel(Stream s, UAsset asset, MemoryStream ubulk)
         {
             myAsset = asset;
@@ -38,16 +41,16 @@ namespace PUBGLiteExplorerWV
             {
                 case "RelativeLocation":
                     m = new MemoryStream(((UStructProperty)p.prop).data);
-                    Helper.ReadUnrealVector3(m, sb, p.name, true);
+                    lastPos = Helper.ReadUnrealVector3(m, sb, p.name, true);
                     break;
                 case "RelativeRotation":
                     m = new MemoryStream(((UStructProperty)p.prop).data);
-                    Helper.ReadUnrealVector3(m, sb, p.name, false);
+                    lastRot = Helper.ReadUnrealVector3(m, sb, p.name, false);
                     break;
                 case "RelativeScale":
                 case "RelativeScale3D":
                     m = new MemoryStream(((UStructProperty)p.prop).data);
-                    Helper.ReadUnrealVector3(m, sb, p.name, false, true);
+                    lastScale = Helper.ReadUnrealVector3(m, sb, p.name, false, true);
                     break;
             }
         }
@@ -88,7 +91,7 @@ namespace PUBGLiteExplorerWV
             while (s.Position < s.Length)
             {
                 UProperty p = new UProperty(s, asset);
-                if (p.name == "None")
+                if (!p._isValid || p.name == "None")
                     break;
                 if (p.name == "RootComponent")
                     child = ((UObjectProperty)p.prop).value;
@@ -100,17 +103,21 @@ namespace PUBGLiteExplorerWV
 
         public string GetDetails()
         {
+            rawData = new MemoryStream();
+            Helper.WriteCString(rawData, "WVM0");
             StringBuilder sb = new StringBuilder();
             foreach(int objID in objects)
                 if(objID > 0)
                 {
                     UExport exp = myAsset.exportTable[objID - 1];
-                    string cls = myAsset.GetName(myAsset.exportTable[objID - 1].classIdx);
+                    string cls = myAsset.GetName(exp.classIdx);
                     sb.AppendLine(objID.ToString("X") + " " + cls + " " + exp._name);
-                    switch(cls)
+                    lastPos = lastRot = new float[3];
+                    lastScale = new float[] { 100, 100, 100 };
+                    string name3 = "";
+                    switch (cls)
                     {
                         case "StaticMeshActor":
-                            Console.WriteLine(objID + " " + exp._name);
                             MemoryStream m = new MemoryStream(exp._data);
                             int staticMeshComponentID = -1;
                             while (true)
@@ -137,9 +144,15 @@ namespace PUBGLiteExplorerWV
                                 else AddDetail(p, sb);
                             }
                             if (staticMeshID < 0)
-                                sb.AppendLine("\tImport : " + myAsset.importTable[-staticMeshID - 1]._name);
+                            {
+                                name3 = myAsset.importTable[-staticMeshID - 1]._name;
+                                sb.AppendLine("\tImport : " + name3);
+                            }
                             else if (staticMeshID > 0)
-                                sb.AppendLine("\tExport : " + myAsset.exportTable[staticMeshID - 1]._name);
+                            {
+                                name3 = myAsset.exportTable[staticMeshID - 1]._name;
+                                sb.AppendLine("\tExport : " + name3);
+                            }
                             break;
                         case "StaticMeshActorFM":
                             m = new MemoryStream(exp._data);
@@ -156,25 +169,46 @@ namespace PUBGLiteExplorerWV
                                 break;
                             UExport expIMC = myAsset.exportTable[instancedMeshComponentID - 1];
                             m = new MemoryStream(expIMC._data);
-                            staticMeshID = -1;
+                            staticMeshID = 0;
                             while (true)
                             {
                                 UProperty p = new UProperty(m, myAsset);
                                 if (p.name == "None")
                                     break;
-                                if (p.name == "StaticMesh")
+                                if (p.name == "StaticMesh") 
                                     staticMeshID = ((UObjectProperty)p.prop).value;
                                 else AddDetail(p, sb);
                             }
+                            if (staticMeshID == 0)
+                            {
+                                sb.AppendLine("\t###STATIC MESH NOT FOUND!###");
+                                continue;
+                            }
                             if (staticMeshID < 0)
-                                sb.AppendLine("\tImport : " + myAsset.importTable[-staticMeshID - 1]._name);
+                            {
+                                name3 = myAsset.importTable[-staticMeshID - 1]._name;
+                                sb.AppendLine("\tImport : " + name3);
+                            }
                             else if (staticMeshID > 0)
-                                sb.AppendLine("\tExport : " + myAsset.exportTable[staticMeshID - 1]._name);
-                            if(myAsset.GetName( expIMC.classIdx) == "HierarchicalInstancedStaticMeshComponent")
+                            {
+                                name3 = myAsset.exportTable[staticMeshID - 1]._name;
+                                sb.AppendLine("\tExport : " + name3);
+                            }
+                            if (myAsset.GetName(expIMC.classIdx) == "HierarchicalInstancedStaticMeshComponent")
                             {
                                 UHirarchicalInstancedStaticMeshComponent hismc = new UHirarchicalInstancedStaticMeshComponent(new MemoryStream(expIMC._data), myAsset, myBulk);
                                 sb.AppendLine(hismc.GetDetails());
+                                hismc.ProcessNodeForRaw(0, hismc.myLocation, rawData, name3, exp._name);
+                                lastPos = new float[3];
                             }
+                            break;
+                        case "InstancedFoliageActor":
+                            UInstancedFoliageActor ifa = new UInstancedFoliageActor(new MemoryStream(exp._data), myAsset, myBulk);
+                            sb.AppendLine(ifa.GetDetails());
+                            foreach(UInstancedFoliageActor.FoliageInfo info in ifa.foliageInfo)
+                                if(info.hismc != null)
+                                    info.hismc.ProcessNodeForRaw(0, info.hismc.myLocation, rawData, info.name, exp._name);
+                            lastPos = new float[3];
                             break;
                         case "TslSpecificLocationMarker":
                             m = new MemoryStream(exp._data);
@@ -229,7 +263,26 @@ namespace PUBGLiteExplorerWV
                             }
                             break;
                     }
+                    if (lastPos[0] != 0 || lastPos[1] != 0 || lastPos[2] != 0)
+                    {
+                        Console.WriteLine(objID + " " + exp._name);
+                        Console.WriteLine("Pos = " + lastPos[0] + " " + lastPos[1] + " " + lastPos[2]);
+                        rawData.WriteByte(1);
+                        Helper.WriteCString(rawData, cls);
+                        rawData.WriteByte(0);
+                        Helper.WriteCString(rawData, exp._name);
+                        rawData.WriteByte(0);
+                        Helper.WriteCString(rawData, name3);
+                        rawData.WriteByte(0);
+                        foreach (float f in lastPos)
+                            Helper.WriteFloat(rawData, f);
+                        foreach (float f in lastRot)
+                            Helper.WriteFloat(rawData, f);
+                        foreach (float f in lastScale)
+                            Helper.WriteFloat(rawData, f);
+                    }
                 }
+            rawData.WriteByte(0);
             return sb.ToString();
         }
     }

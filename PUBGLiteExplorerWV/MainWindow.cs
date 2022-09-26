@@ -21,8 +21,10 @@ namespace PUBGLiteExplorerWV
         public UStaticMesh currentStatMesh = null;
         public ULevel currentLevel = null;
         public UHirarchicalInstancedStaticMeshComponent currentHISMC;
+        public UInstancedFoliageActor currentIFA;
         public URandomPositionPlayerStart currentRPPS;
         public string currentStatMeshName = "";
+        public string currentAssetPath = "";
         public MainWindow()
         {
             InitializeComponent();
@@ -193,6 +195,7 @@ namespace PUBGLiteExplorerWV
                     foreach (PAKFileEntry entry in file.table.entries)
                         if (entry.path == path)
                         {
+                            currentAssetPath = path;
                             LoadAsset(file, entry);
                             break;
                         }
@@ -462,7 +465,7 @@ namespace PUBGLiteExplorerWV
                     else
                         currentLevel = new ULevel(new MemoryStream(ex._data), currentAsset, null);
                     rtb1.Text += "\n\n" + currentLevel.GetDetails();
-                    currentLevel.GetTree(treeView2, currentAsset);
+                    //currentLevel.GetTree(treeView2, currentAsset);
                     
                 }
                 else if (currentAsset.GetName(ex.classIdx) == "FoliageInstancedStaticMeshComponent")
@@ -473,6 +476,11 @@ namespace PUBGLiteExplorerWV
                     else
                         currentHISMC = new UHirarchicalInstancedStaticMeshComponent(new MemoryStream(ex._data), currentAsset, null);
                     rtb1.Text += "\n\n" + currentHISMC.GetDetails();
+                }
+                else if (currentAsset.GetName(ex.classIdx) == "InstancedFoliageActor")
+                {
+                    currentIFA = new UInstancedFoliageActor(new MemoryStream(ex._data), currentAsset, null);
+                    rtb1.Text += "\n\n" + currentIFA.GetDetails(false);
                 }
                 else if (currentAsset.GetName(ex.classIdx) == "RandomPositionPlayerStart")
                 {
@@ -543,45 +551,52 @@ namespace PUBGLiteExplorerWV
         {
             if (currentAsset == null)
                 return;
+            List<ULandscapeComponent> lcs = new List<ULandscapeComponent>();
+            foreach (UExport exp in currentAsset.exportTable)
+                if (currentAsset.GetName(exp.classIdx) == "LandscapeComponent")
+                    lcs.Add(new ULandscapeComponent(new MemoryStream(exp._data), currentAsset));
+            if (lcs.Count != 16 || lcs[0].data.Length != 0x7E02)
+            {
+                MessageBox.Show("Cant export,\nexpected lcs=16, found=" + lcs.Count + "\nexpected datasize=0x7E02, actual size=0x" + lcs[0].data.Length.ToString("X4"));
+                return;
+            }
+            while (true)
+            {
+                bool found = false;
+                for (int i = 0; i < 15; i++)
+                {
+                    UProp x1 = findPropByName(lcs[i].props, "SectionBaseX");
+                    UProp y1 = findPropByName(lcs[i].props, "SectionBaseY");
+                    UProp x2 = findPropByName(lcs[i + 1].props, "SectionBaseX");
+                    UProp y2 = findPropByName(lcs[i + 1].props, "SectionBaseY");
+                    int posX1, posX2, posY1, posY2;
+                    posX1 = posX2 = posY1 = posY2 = 0;
+                    if (x1 != null) posX1 = ((UIntProperty)x1).value;
+                    if (y1 != null) posY1 = ((UIntProperty)y1).value;
+                    if (x2 != null) posX2 = ((UIntProperty)x2).value;
+                    if (y2 != null) posY2 = ((UIntProperty)y2).value;
+                    if (posY1 > posY2 || (posY1 == posY2 && posX1 > posX2))
+                    {
+                        ULandscapeComponent tmp = lcs[i];
+                        lcs[i] = lcs[i + 1];
+                        lcs[i + 1] = tmp;
+                        found = true;
+                    }
+                }
+                if (!found)
+                    break;
+            }
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.raw|*.raw";
+            int start = currentAssetPath.IndexOf("_x");
+            if (start != -1)
+            {
+                string s = currentAssetPath.Substring(start + 1);
+                string[] parts = s.Split('_');
+                d.FileName = parts[0].Substring(1) + "_" + parts[1].Substring(1) + ".raw";
+            }
             if (d.ShowDialog() == DialogResult.OK)
             {
-                List<ULandscapeComponent> lcs = new List<ULandscapeComponent>();
-                foreach (UExport exp in currentAsset.exportTable)
-                    if (currentAsset.GetName(exp.classIdx) == "LandscapeComponent")
-                        lcs.Add(new ULandscapeComponent(new MemoryStream(exp._data), currentAsset));
-                if (lcs.Count != 16 || lcs[0].data.Length != 0x7E02)
-                {
-                    MessageBox.Show("Cant export,\nexpected lcs=16, found=" + lcs.Count + "\nexpected datasize=0x7E02, actual size=0x" + lcs[0].data.Length.ToString("X4"));
-                    return;
-                }
-                while(true)
-                {
-                    bool found = false;
-                    for(int i = 0; i < 15; i++)
-                    {
-                        UProp x1 = findPropByName(lcs[i].props, "SectionBaseX");
-                        UProp y1 = findPropByName(lcs[i].props, "SectionBaseY");
-                        UProp x2 = findPropByName(lcs[i + 1].props, "SectionBaseX");
-                        UProp y2 = findPropByName(lcs[i + 1].props, "SectionBaseY");
-                        int posX1, posX2, posY1, posY2;
-                        posX1 = posX2 = posY1 = posY2 = 0;
-                        if (x1 != null) posX1 = ((UIntProperty)x1).value;
-                        if (y1 != null) posY1 = ((UIntProperty)y1).value;
-                        if (x2 != null) posX2 = ((UIntProperty)x2).value;
-                        if (y2 != null) posY2 = ((UIntProperty)y2).value;
-                        if (posY1 > posY2 || ( posY1 == posY2 && posX1 > posX2))
-                        {
-                            ULandscapeComponent tmp = lcs[i];
-                            lcs[i] = lcs[i + 1];
-                            lcs[i + 1] = tmp;
-                            found = true;
-                        }
-                    }
-                    if (!found)
-                        break;
-                }
                 MemoryStream result = new MemoryStream();
                 for (int ty = 0; ty < 4; ty++)
                     for (int y = 0; y < 127; y++)
@@ -619,12 +634,8 @@ namespace PUBGLiteExplorerWV
             d.FileName = currentStatMeshName + ".psk";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                string uvSet = Interaction.InputBox("Which set of UV to export? (0-" + ((currentStatMesh.lods[0].uvs[0].Length / 2) - 1) + ")", "UV Set", "2");
-                if (uvSet != "")
-                {
-                    File.WriteAllBytes(d.FileName, currentStatMesh.lods[0].MakePSK(Convert.ToInt32(uvSet)));
-                    MessageBox.Show("Done.");
-                }
+                File.WriteAllBytes(d.FileName, currentStatMesh.lods[0].MakePSK());
+                MessageBox.Show("Done.");                
             }
         }
 
@@ -710,7 +721,7 @@ namespace PUBGLiteExplorerWV
                                                 mesh = new UStaticMesh(new MemoryStream(exp._data), asset, new MemoryStream(ubulkData));
                                             if (mesh.lods == null || mesh.lods.Count == 0)
                                                 return;
-                                            byte[] pskData = mesh.lods[0].MakePSK(2);
+                                            byte[] pskData = mesh.lods[0].MakePSK();
                                             if(pskData.Length == 0)
                                                 return;
                                             if (!Directory.Exists(exportPath))
@@ -877,6 +888,106 @@ namespace PUBGLiteExplorerWV
             d.Filter = "*.uasset|*.uasset";
             if(d.ShowDialog() == DialogResult.OK)
                 LoadAssetFile(d.FileName);
+        }
+
+        private void dumpPersistentMapDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentAsset == null || currentLevel == null)
+                return;
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "*.wvm|*.wvm";
+            if(d.ShowDialog() ==  DialogResult.OK)
+            {
+                File.WriteAllBytes(d.FileName, currentLevel.rawData.ToArray());
+                MessageBox.Show("Done.");
+            }
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            string t = toolStripTextBox1.Text.ToLower();
+            int start = listBox2.SelectedIndex + 1;
+            for(int i = start; i < listBox2.Items.Count; i++)
+            {
+                if(listBox2.Items[i].ToString().ToLower().Contains(t))
+                {
+                    listBox2.SelectedIndex = i;
+                    break;
+                }
+            }
+            for (int i = 0; i < start; i++)
+            {
+                if (listBox2.Items[i].ToString().ToLower().Contains(t))
+                {
+                    listBox2.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            string t = toolStripTextBox2.Text.ToLower();
+            int start = listBox3.SelectedIndex + 1;
+            for (int i = start; i < listBox3.Items.Count; i++)
+            {
+                if (listBox3.Items[i].ToString().ToLower().Contains(t))
+                {
+                    listBox3.SelectedIndex = i;
+                    return;
+                }
+            }
+            for (int i = 0; i < start; i++)
+            {
+                if (listBox3.Items[i].ToString().ToLower().Contains(t))
+                {
+                    listBox3.SelectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            string t = toolStripTextBox3.Text.ToLower();
+            int start = listBox4.SelectedIndex + 1;
+            for (int i = start; i < listBox4.Items.Count; i++)
+            {
+                if (listBox4.Items[i].ToString().ToLower().Contains(t))
+                {
+                    listBox4.SelectedIndex = i;
+                    return;
+                }
+            }
+            for (int i = 0; i < start; i++)
+            {
+                if (listBox4.Items[i].ToString().ToLower().Contains(t))
+                {
+                    listBox4.SelectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        private void listBox2_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int n = listBox2.SelectedIndex;
+            if (n != -1)
+                Clipboard.SetText(listBox2.SelectedItem.ToString());
+        }
+
+        private void listBox3_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int n = listBox3.SelectedIndex;
+            if (n != -1)
+                Clipboard.SetText(listBox3.SelectedItem.ToString());
+        }
+
+        private void listBox4_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int n = listBox4.SelectedIndex;
+            if (n != -1)
+                Clipboard.SetText(listBox4.SelectedItem.ToString());
         }
     }
 }

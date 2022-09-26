@@ -34,6 +34,7 @@ namespace PUBGLiteExplorerWV
         public List<MaterialInfo> matInfo;
         public List<float[]> vertices;
         public List<float[]> uvs;
+        public List<uint> colors;
         public List<ushort[]> sections;
 
         public UStaticMeshLOD(Stream s)
@@ -77,8 +78,13 @@ namespace PUBGLiteExplorerWV
             for (int i = 0; i < count1; i++)
             {
                 float[] vec = new float[size1 / 2];
+                ushort[] tmp = new ushort[size1 / 2];
                 for (int j = 0; j < size1 / 2; j++)
-                    vec[j] = Helper.Half2Float(Helper.ReadU16(s));
+                    tmp[j] = Helper.ReadU16(s);
+                    for (int j = 0; j < 4; j++)
+                        vec[j] = (tmp[j]) / (float)0xFFFF;
+                    for (int j = 4; j < size1 / 2; j++)
+                        vec[j] = Helper.Half2Float(tmp[j]);
                 uvs.Add(vec);
             }
             if (Helper.ReadU16(s) != 1)
@@ -91,7 +97,14 @@ namespace PUBGLiteExplorerWV
                 count2 = Helper.ReadU32(s);
                 if (count1 != count2 || size1 != size2)
                     return;
-                s.Seek(size1 * count1, SeekOrigin.Current);
+                if(size1 == 4)
+                {
+                    colors = new List<uint>();
+                    for (int i = 0; i < count1; i++)
+                        colors.Add(Helper.ReadU32(s));
+                }
+                else
+                    s.Seek(size1 * count1, SeekOrigin.Current);
             }
             if (uvs.Count != vertices.Count)
                 return;
@@ -111,7 +124,7 @@ namespace PUBGLiteExplorerWV
             _valid = true;
         }
 
-        public byte[] MakePSK(int uvset)
+        public byte[] MakePSK()
         {
             if(!_valid)
                 return new byte[0];
@@ -121,10 +134,7 @@ namespace PUBGLiteExplorerWV
             foreach (ushort u in sections[0])
             {
                 tmpVerts.Add(vertices[u]);
-                float[] newUVs = new float[2];
-                newUVs[0] = uvs[u][uvset * 2];
-                newUVs[1] = uvs[u][uvset * 2 + 1];
-                tmpUVs.Add(newUVs);
+                tmpUVs.Add(uvs[u]);
                 for (byte i = 0; i < matInfo.Count; i++)
                     if (u >= matInfo[i].start && u <= matInfo[i].end)
                     {
@@ -199,6 +209,20 @@ namespace PUBGLiteExplorerWV
             Helper.WriteU64(result, 0x5354);
             Helper.WriteU64(result, 0);
             Helper.WriteU64(result, 0xC);
+            for (int i = 0; i < 3; i++)
+            {
+                Helper.WriteCString(result, "EXTRAUVS" + i);
+                for (int j = 0; j < 7; j++)
+                    result.WriteByte(0);
+                Helper.WriteU64(result, 0);
+                Helper.WriteU32(result, 0x8);
+                Helper.WriteU32(result, (uint)tmpUVs.Count);
+                foreach (float[] uv in tmpUVs)
+                {
+                    Helper.WriteFloat(result, uv[2 + i * 2]);
+                    Helper.WriteFloat(result, uv[3 + i * 2]);
+                }
+            }
             return result.ToArray();
         }
     }

@@ -386,17 +386,22 @@ namespace PUBGLiteExplorerWV
                 while (m.Position < data.Length)
                 {
                     int index = (int)Helper.ReadU32(m);
-                    if (index > 0)
+                    if (index > 0 && index - 1 < myAsset.exportCount)
                     {
                         index--;
                         sb.Append(MakeTabs(tabs));
                         sb.AppendLine(" - Export 0x" + index.ToString("X") + " " + myAsset.exportTable[index]._name);
                     }
-                    if (index < 0)
+                    else if (index < 0 && -index - 1 < myAsset.importCount)
                     {
                         index = -index - 1;
                         sb.Append(MakeTabs(tabs));
                         sb.AppendLine(" - Import 0x" + index.ToString("X") + " " + myAsset.importTable[index]._name);
+                    }
+                    else
+                    {
+                        sb.Append(MakeTabs(tabs));
+                        sb.AppendLine(" - Unknown 0x" + index.ToString("X") + " = " + index);
                     }
                 }
             }

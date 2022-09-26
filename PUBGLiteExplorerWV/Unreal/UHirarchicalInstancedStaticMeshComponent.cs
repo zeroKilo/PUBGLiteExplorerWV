@@ -115,6 +115,45 @@ namespace PUBGLiteExplorerWV
             return sb.ToString();
         }
 
+        public void ProcessNodeForRaw(int index, float[] loc, Stream s, string name, string name2)
+        {
+            NodeData node = nodes[index];
+            float[] center = new float[3];
+            for (int i = 0; i < 3; i++)
+                center[i] = (node.min[i] + node.max[i]) * 0.5f;
+            if (node.firstChild != -1 && node.lastChild != -1)
+                for (int i = node.firstChild; i <= node.lastChild; i++)
+                    ProcessNodeForRaw(i, AddVec3(loc, center), s, name, name2);
+            else
+            {
+                float[] mat = transforms[node.firstInstance];
+                float[] pos = Helper.swapYZ(Helper.GetPosFromMatrix(mat));
+                pos[2] *= -1f;
+                float[] apos = AddVec3(pos, myLocation);
+                float[] scale = Helper.GetScaleFromMatrix(mat);
+                float[] rot = Helper.swapYZ(Helper.GetRotFromMatrix(mat));
+                rot[0] = rot[2] = 0;
+                for (int i = 0; i < 3; i++)
+                {
+                    apos[i] *= 0.01f;
+                    scale[i] *= 100f;
+                }
+                s.WriteByte(1);
+                Helper.WriteCString(s, name);
+                s.WriteByte(0);
+                Helper.WriteCString(s, name2);
+                s.WriteByte(0);
+                Helper.WriteCString(s, "");
+                s.WriteByte(0);
+                foreach (float f in apos)
+                    Helper.WriteFloat(s, f);
+                foreach (float f in rot)
+                    Helper.WriteFloat(s, f);
+                foreach (float f in scale)
+                    Helper.WriteFloat(s, f);
+            }
+        }
+
         public string GetDetails()
         {
             StringBuilder sb = new StringBuilder();
