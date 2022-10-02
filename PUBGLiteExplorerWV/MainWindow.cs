@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Be.Windows.Forms;
 using Microsoft.VisualBasic;
+using System.Drawing.Imaging;
 
 namespace PUBGLiteExplorerWV
 {
@@ -988,6 +989,111 @@ namespace PUBGLiteExplorerWV
             int n = listBox4.SelectedIndex;
             if (n != -1)
                 Clipboard.SetText(listBox4.SelectedItem.ToString());
+        }
+
+        private void CopyImageToImage(Bitmap target, Bitmap src, int dx, int dy)
+        {
+            for(int y = 0; y < src.Height; y++)
+                for (int x = 0; x < src.Width; x++)
+                    target.SetPixel(x + dx, y + dy, src.GetPixel(x, y));
+        }
+
+        private void dumpSplatMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentAsset == null)
+                return;
+            try
+            {
+                byte[] ubulkData = currentAsset._ubulkData;
+                MemoryStream ubulkStream = null;
+                if (ubulkData != null)
+                    ubulkStream = new MemoryStream(ubulkData);
+                Bitmap resultWeightMap = new Bitmap(512, 512);
+                Bitmap resultChannelMap = new Bitmap(512, 512);
+                Graphics gWeights = Graphics.FromImage(resultWeightMap);
+                Graphics gChannels = Graphics.FromImage(resultChannelMap);
+                gWeights.Clear(Color.FromArgb(0, 0, 0, 0));
+                gChannels.Clear(Color.FromArgb(0, 0, 0, 0));
+                List<string> layerNames = new List<string>();
+                foreach (UExport export in currentAsset.exportTable)
+                {
+                    string clsName = currentAsset.GetClassName(export.classIdx);
+                    if (clsName == "LandscapeComponent")
+                    {
+                        ULandscapeComponent lc = new ULandscapeComponent(new MemoryStream(export._data), currentAsset);
+                        UProp wMapLayerAllocations = findPropByName(lc.props, "WeightmapLayerAllocations");
+                        if (wMapLayerAllocations != null)
+                        {
+                            UArrayProperty allocs = (UArrayProperty)wMapLayerAllocations;
+                            int layerCount = allocs.subProps.Count;
+                            if(layerCount == 3)
+                            {
+                                for(int i = 0; i < 3; i++)
+                                {
+                                    UStructProperty layerInfo = (UStructProperty)allocs.subProps[i].prop;
+                                    UObjectProperty objInfo = (UObjectProperty)layerInfo.subProps[0].prop;
+                                    layerNames.Add(objInfo.objName);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                foreach (UExport export in currentAsset.exportTable)
+                {
+                    string clsName = currentAsset.GetClassName(export.classIdx);
+                    if (clsName == "LandscapeComponent")
+                    {
+                        ULandscapeComponent lc = new ULandscapeComponent(new MemoryStream(export._data), currentAsset);
+                        UProp sectionBaseX = findPropByName(lc.props, "SectionBaseX");
+                        UProp sectionBaseY = findPropByName(lc.props, "SectionBaseY");
+                        UProp wMapTextures = findPropByName(lc.props, "WeightmapTextures");
+                        UProp wMapLayerAllocations = findPropByName(lc.props, "WeightmapLayerAllocations");
+                        int offsetX = 0;
+                        if (sectionBaseX != null)
+                            offsetX = ((UIntProperty)sectionBaseX).value / 126;
+                        int offsetY = 0;
+                        if (sectionBaseY != null)
+                            offsetY = ((UIntProperty)sectionBaseY).value / 126;
+                        offsetX = offsetX % 4;
+                        offsetY = offsetY % 4;
+                        if (wMapTextures != null && wMapLayerAllocations != null)
+                        {
+                            UArrayProperty allocs = (UArrayProperty)wMapLayerAllocations;
+                            int layerCount = allocs.subProps.Count;
+                            byte[] mappings = new byte[3];
+                            for(int i = 0; i < layerCount && i < 3; i++)
+                            {
+                                UStructProperty struc = (UStructProperty)allocs.subProps[i].prop;
+                                UObjectProperty objInfo = (UObjectProperty)struc.subProps[0].prop;
+                                UByteProperty property = (UByteProperty)struc.subProps[2].prop;
+                                if(layerNames.Count != 0)
+                                    mappings[layerNames.IndexOf(objInfo.objName)] = property.value;
+                                else
+                                    mappings[i] = property.value;
+                            }
+                            Bitmap channels = new Bitmap(128, 128);
+                            Graphics gChannel = Graphics.FromImage(channels);
+                            gChannel.Clear(Color.FromArgb(255, mappings[0], mappings[1], mappings[2]));
+                            UArrayProperty list = (UArrayProperty)wMapTextures;
+                            uint texIdx = BitConverter.ToUInt32(list.data, 4) - 1;
+                            UTexture2D texObj = new UTexture2D(new MemoryStream(currentAsset.exportTable[(int)texIdx]._data), currentAsset, ubulkStream);
+                            Bitmap map = texObj.mips[0].MakeBitmap();
+                            CopyImageToImage(resultWeightMap, map, offsetX * 128, offsetY * 128);
+                            CopyImageToImage(resultChannelMap, channels, offsetX * 128, offsetY * 128);
+                        }
+                    }
+                }
+                SaveFileDialog d = new SaveFileDialog();
+                d.Filter = "*.png|*.png";
+                if(d.ShowDialog() == DialogResult.OK)
+                {
+                    resultWeightMap.Save(d.FileName);
+                    resultChannelMap.Save(d.FileName.Substring(0, d.FileName.Length - 4) + ".channels.png");
+                    MessageBox.Show("Done.");
+                }
+            }
+            catch { }
         }
     }
 }

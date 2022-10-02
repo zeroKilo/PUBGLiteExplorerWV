@@ -15,7 +15,9 @@ namespace PUBGLiteExplorerWV
         public UProp prop;
 
         public bool _isValid = false;
-
+        public UProperty()
+        {
+        }
         public UProperty(Stream s, UAsset asset)
         {
             _offset = s.Position;
@@ -109,6 +111,8 @@ namespace PUBGLiteExplorerWV
         public byte[] data;
         public List<UProperty> subProps = new List<UProperty>();
 
+        public UStructProperty()
+        { }
         public UStructProperty(Stream s, UAsset asset)
         {
             ReadSizeAndFlags(s);
@@ -127,7 +131,10 @@ namespace PUBGLiteExplorerWV
                         break;
                     subProps.Add(p);
                 }
-                catch { break; }
+                catch (Exception ex)
+                {
+                    break; 
+                }
             }
         }
 
@@ -355,22 +362,56 @@ namespace PUBGLiteExplorerWV
             s.Read(data, 0, (int)size);
             MemoryStream m = new MemoryStream(data);
             uint count = Helper.ReadU32(m);
-            for (int i = 0; i < count; i++)
+            if (type == "StructProperty")
             {
-                if (m.Position >= data.Length)
-                    break;
-                try
+                m.Seek(0x31, SeekOrigin.Current);
+                for (int i = 0; i < count; i++)
                 {
-                    UProperty p = new UProperty(m, asset);
-                    if (!p._isValid || p.name == "None")
-                        break;
-                    subProps.Add(p);
-                }
-                catch
-                {
-                    break;
+                    UStructProperty uStruct = new UStructProperty();
+                    uStruct.subProps = new List<UProperty>();
+                    uStruct.data = new byte[0];
+                    while(m.Position < m.Length)
+                    {
+                        try
+                        {
+                            UProperty p = new UProperty(m, asset);
+                            if (!p._isValid)
+                                break;
+                            if (p.name == "None")
+                            {
+                                m.Seek(-4, SeekOrigin.Current);
+                                break;
+                            }
+                            uStruct.subProps.Add(p);
+                        }
+                        catch (Exception ex)
+                        {
+                            break;
+                        }
+                    }
+                    UProperty subProp = new UProperty();
+                    subProp.type = "StructProperty";
+                    subProp.prop = uStruct;
+                    subProps.Add(subProp);
                 }
             }
+            else
+                for (int i = 0; i < count; i++)
+                {
+                    if (m.Position >= data.Length)
+                        break;
+                    try
+                    {
+                        UProperty p = new UProperty(m, asset);
+                        if (!p._isValid || p.name == "None")
+                            break;
+                        subProps.Add(p);
+                    }
+                    catch (Exception ex)
+                    {
+                        break;
+                    }
+                }
         }
 
         public override string ToDetails(int tabs, long offset, string name)

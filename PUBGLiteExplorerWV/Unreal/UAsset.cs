@@ -113,6 +113,16 @@ namespace PUBGLiteExplorerWV
             return null;
         }
 
+        public string GetClassName(int idx)
+        {
+            if (idx == 0)
+                return "None";
+            if (idx > 0)
+                return exportTable[idx - 1]._name;
+            else
+                return importTable[-idx - 1]._name;
+        }
+
         private void ReadNameTable(Stream s)
         {
             nameTable = new List<string>();
