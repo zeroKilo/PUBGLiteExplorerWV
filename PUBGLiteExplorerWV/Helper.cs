@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -305,6 +306,11 @@ namespace PUBGLiteExplorerWV
             }
 
             return eul;
+        }
+
+        public static Bitmap DDS2BMP(byte[] data)
+        {
+            return DDSImage.Load(data).Images[0];
         }
     }
 }

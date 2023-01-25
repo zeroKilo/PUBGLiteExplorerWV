@@ -501,15 +501,28 @@ namespace PUBGLiteExplorerWV
 
         private void listBox5_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int n = listBox5.SelectedIndex;
-            if (n == -1 || currentTex == null)
+            int n = listBox4.SelectedIndex;
+            int m = listBox5.SelectedIndex;
+            if (n == -1 || m == -1 || currentAsset == null || currentTex == null)
                 return;
-            hb3.ByteProvider = new DynamicByteProvider(currentTex.mips[n].data);
+            hb3.ByteProvider = new DynamicByteProvider(currentTex.mips[m].data);
             try
             {
-                pic1.Image = currentTex.mips[n].MakeBitmap();
+                pic1.Image = currentTex.mips[m].MakeBitmap();
             }
-            catch (Exception ex) { Console.Write(ex.Message); }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                try
+                {
+                    byte[] data = currentTex.mips[m].MakeDDS(currentTex, currentAsset.exportTable[n]);
+                    pic1.Image = Helper.DDS2BMP(data);
+                }
+                catch (Exception ex2)
+                {
+                    Console.Write(ex2.Message);
+                }
+            }
         }
 
         private void previewInExportTableToolStripMenuItem_Click(object sender, EventArgs e)
@@ -556,15 +569,18 @@ namespace PUBGLiteExplorerWV
             foreach (UExport exp in currentAsset.exportTable)
                 if (currentAsset.GetName(exp.classIdx) == "LandscapeComponent")
                     lcs.Add(new ULandscapeComponent(new MemoryStream(exp._data), currentAsset));
-            if (lcs.Count != 16 || lcs[0].data.Length != 0x7E02)
+            if ((lcs.Count != 16 && lcs.Count != 4) || lcs[0].data.Length != 0x7E02)
             {
-                MessageBox.Show("Cant export,\nexpected lcs=16, found=" + lcs.Count + "\nexpected datasize=0x7E02, actual size=0x" + lcs[0].data.Length.ToString("X4"));
+                MessageBox.Show("Cant export,\nexpected lcs=16 or 4, found=" + lcs.Count + "\nexpected datasize=0x7E02, actual size=0x" + lcs[0].data.Length.ToString("X4"));
                 return;
             }
+            int sideLen = 4;
+            if (lcs.Count == 4)
+                sideLen = 2;
             while (true)
             {
                 bool found = false;
-                for (int i = 0; i < 15; i++)
+                for (int i = 0; i < lcs.Count - 1; i++)
                 {
                     UProp x1 = findPropByName(lcs[i].props, "SectionBaseX");
                     UProp y1 = findPropByName(lcs[i].props, "SectionBaseY");
@@ -599,15 +615,13 @@ namespace PUBGLiteExplorerWV
             if (d.ShowDialog() == DialogResult.OK)
             {
                 MemoryStream result = new MemoryStream();
-                for (int ty = 0; ty < 4; ty++)
+                for (int ty = 0; ty < sideLen; ty++)
                     for (int y = 0; y < 127; y++)
-                    {
-                        for (int tx = 0; tx < 4; tx++)
+                        for (int tx = 0; tx < sideLen; tx++)
                         {
-                            ULandscapeComponent lc = lcs[ty * 4 + tx];
+                            ULandscapeComponent lc = lcs[ty * sideLen + tx];
                             result.Write(lc.data, 254 * y, 254);
                         }
-                    }
                 File.WriteAllBytes(d.FileName, result.ToArray());
                 MessageBox.Show("Done.");
             }
@@ -991,11 +1005,97 @@ namespace PUBGLiteExplorerWV
                 Clipboard.SetText(listBox4.SelectedItem.ToString());
         }
 
-        private void CopyImageToImage(Bitmap target, Bitmap src, int dx, int dy)
+        private List<string> Splat_FindAllLayerNames(List<ULandscapeComponent> lcs)
         {
-            for(int y = 0; y < src.Height; y++)
-                for (int x = 0; x < src.Width; x++)
-                    target.SetPixel(x + dx, y + dy, src.GetPixel(x, y));
+            List<string> allLayerNames = new List<string>();
+            foreach(ULandscapeComponent lc in lcs)
+            {
+                UProp wMapLayerAllocations = findPropByName(lc.props, "WeightmapLayerAllocations");
+                if (wMapLayerAllocations != null)
+                {
+                    UArrayProperty allocs = (UArrayProperty)wMapLayerAllocations;
+                    int layerCount = allocs.subProps.Count;
+                    foreach (UProperty sp in allocs.subProps)
+                    {
+                        UStructProperty struc = (UStructProperty)sp.prop;
+                        UObjectProperty objInfo = (UObjectProperty)struc.subProps[0].prop;
+                        if (!allLayerNames.Contains(objInfo.objName))
+                            allLayerNames.Add(objInfo.objName);
+                    }
+                }
+            }
+            return allLayerNames;
+        }
+
+        private int Splat_GetTextureSize(ULandscapeComponent lc, MemoryStream ubulkStream)
+        {
+            UArrayProperty wMapTextures = (UArrayProperty)findPropByName(lc.props, "WeightmapTextures");
+            uint texIdx = BitConverter.ToUInt32(wMapTextures.data, 4) - 1;
+            UTexture2D texObj = new UTexture2D(new MemoryStream(currentAsset.exportTable[(int)texIdx]._data), currentAsset, ubulkStream);
+            return (int)texObj.height;
+        }
+
+        private void Splat_ApplyWeights(ULandscapeComponent lc, Bitmap resultWeightMap, List<string> layerNames, int baseSize, int sideLen, MemoryStream ubulkStream)
+        {
+            UProp sectionBaseX = findPropByName(lc.props, "SectionBaseX");
+            UProp sectionBaseY = findPropByName(lc.props, "SectionBaseY");
+            UArrayProperty wMapTextures = (UArrayProperty)findPropByName(lc.props, "WeightmapTextures");
+            UArrayProperty wMapLayerAllocations = (UArrayProperty)findPropByName(lc.props, "WeightmapLayerAllocations");
+            UArrayProperty wMats = (UArrayProperty)findPropByName(lc.props, "MaterialInstances");
+            int offsetX = 0;
+            if (sectionBaseX != null)
+                offsetX = ((UIntProperty)sectionBaseX).value / (baseSize - 2);
+            int offsetY = 0;
+            if (sectionBaseY != null)
+                offsetY = ((UIntProperty)sectionBaseY).value / (baseSize - 2);
+            offsetX = offsetX % sideLen;
+            offsetY = offsetY % sideLen;
+            byte[,,] resultMap = new byte[baseSize, baseSize, 4];
+            if (wMapTextures != null && wMapLayerAllocations != null && wMats != null)
+            {
+                uint materialIndex = BitConverter.ToUInt32(wMats.data, 4) - 1;
+                ULandscapeMaterialInstanceConstant lmic = new ULandscapeMaterialInstanceConstant(new MemoryStream(currentAsset.exportTable[(int)materialIndex]._data), currentAsset);
+                List<Bitmap> weightTextures = new List<Bitmap>();
+                for (int i = 1; i < wMapTextures.data.Length / 4; i++)
+                {
+                    uint texIdx = BitConverter.ToUInt32(wMapTextures.data, i * 4) - 1;
+                    UTexture2D texObj = new UTexture2D(new MemoryStream(currentAsset.exportTable[(int)texIdx]._data), currentAsset, ubulkStream);
+                    weightTextures.Add(texObj.mips[0].MakeBitmap());
+                }
+                int currentChannel = 0;
+                foreach (string layerName in layerNames)
+                {
+                    int layerCount = wMapLayerAllocations.subProps.Count;
+                    for (int i = 0; i < layerCount; i++)
+                    {
+                        UStructProperty struc = (UStructProperty)wMapLayerAllocations.subProps[i].prop;
+                        UObjectProperty objInfo = (UObjectProperty)struc.subProps[0].prop;
+                        if (objInfo.objName == layerName)
+                        {
+                            byte texIndex = ((UByteProperty)struc.subProps[1].prop).value;
+                            int test = lmic.FindChannelIndex(layerName);
+                            if (test == -1)
+                                return;
+                            byte texChannel = (byte)test;
+                            for (int y = 0; y < baseSize; y++)
+                                for (int x = 0; x < baseSize; x++)
+                                {
+                                    Color c = weightTextures[texIndex].GetPixel(x, y);
+                                    byte[] ca = new byte[] { c.A, c.R, c.G, c.B};
+                                    resultMap[x, y, currentChannel] = ca[texChannel];
+                                }
+                            break;
+                        }
+                    }
+                    currentChannel++;
+                }
+                for (int y = 0; y < baseSize; y++)
+                    for (int x = 0; x < baseSize; x++)
+                    {
+                        Color c = Color.FromArgb(resultMap[x, y, 0], resultMap[x, y, 1], resultMap[x, y, 2], resultMap[x, y, 3]);
+                        resultWeightMap.SetPixel(offsetX * baseSize + x, offsetY * baseSize + y, c);
+                    }
+            }
         }
 
         private void dumpSplatMapToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1008,92 +1108,74 @@ namespace PUBGLiteExplorerWV
                 MemoryStream ubulkStream = null;
                 if (ubulkData != null)
                     ubulkStream = new MemoryStream(ubulkData);
-                Bitmap resultWeightMap = new Bitmap(512, 512);
-                Bitmap resultChannelMap = new Bitmap(512, 512);
+                List<ULandscapeComponent> landscapeComponents = new List<ULandscapeComponent>();
+                foreach (UExport export in currentAsset.exportTable)
+                    if (currentAsset.GetClassName(export.classIdx) == "LandscapeComponent")
+                        landscapeComponents.Add(new ULandscapeComponent(new MemoryStream(export._data), currentAsset));
+                int sideLen;
+                if (landscapeComponents.Count == 4)
+                    sideLen = 2;
+                else if (landscapeComponents.Count == 16)
+                    sideLen = 4;
+                else if (landscapeComponents.Count == 25)
+                    sideLen = 5;
+                else
+                    return;
+                List<string> allLayerNames = Splat_FindAllLayerNames(landscapeComponents);
+                int baseSize = Splat_GetTextureSize(landscapeComponents[0], ubulkStream);
+                Bitmap resultWeightMap = new Bitmap(sideLen * baseSize, sideLen * baseSize);
                 Graphics gWeights = Graphics.FromImage(resultWeightMap);
-                Graphics gChannels = Graphics.FromImage(resultChannelMap);
                 gWeights.Clear(Color.FromArgb(0, 0, 0, 0));
-                gChannels.Clear(Color.FromArgb(0, 0, 0, 0));
-                List<string> layerNames = new List<string>();
-                foreach (UExport export in currentAsset.exportTable)
+                LayerSelector lSel = new LayerSelector();
+                lSel.checkedListBox1.Items.Clear();
+                foreach (string name in allLayerNames)
+                    lSel.checkedListBox1.Items.Add(name);
+                List<string> selectedLayerNames;
+                while (true)
                 {
-                    string clsName = currentAsset.GetClassName(export.classIdx);
-                    if (clsName == "LandscapeComponent")
-                    {
-                        ULandscapeComponent lc = new ULandscapeComponent(new MemoryStream(export._data), currentAsset);
-                        UProp wMapLayerAllocations = findPropByName(lc.props, "WeightmapLayerAllocations");
-                        if (wMapLayerAllocations != null)
-                        {
-                            UArrayProperty allocs = (UArrayProperty)wMapLayerAllocations;
-                            int layerCount = allocs.subProps.Count;
-                            if(layerCount == 3)
-                            {
-                                for(int i = 0; i < 3; i++)
-                                {
-                                    UStructProperty layerInfo = (UStructProperty)allocs.subProps[i].prop;
-                                    UObjectProperty objInfo = (UObjectProperty)layerInfo.subProps[0].prop;
-                                    layerNames.Add(objInfo.objName);
-                                }
-                                break;
-                            }
-                        }
-                    }
+                    selectedLayerNames = new List<string>();
+                    if (lSel.ShowDialog() != DialogResult.OK)
+                        return;
+                    foreach (string sel in lSel.checkedListBox1.CheckedItems)
+                        selectedLayerNames.Add(sel);
+                    if (selectedLayerNames.Count > 0 && selectedLayerNames.Count <= 4)
+                        break;
+                    if (selectedLayerNames.Count == 0)
+                        MessageBox.Show("Please select at least 1 layer");
+                    else
+                        MessageBox.Show("Please select max 4 layers");
                 }
-                foreach (UExport export in currentAsset.exportTable)
-                {
-                    string clsName = currentAsset.GetClassName(export.classIdx);
-                    if (clsName == "LandscapeComponent")
-                    {
-                        ULandscapeComponent lc = new ULandscapeComponent(new MemoryStream(export._data), currentAsset);
-                        UProp sectionBaseX = findPropByName(lc.props, "SectionBaseX");
-                        UProp sectionBaseY = findPropByName(lc.props, "SectionBaseY");
-                        UProp wMapTextures = findPropByName(lc.props, "WeightmapTextures");
-                        UProp wMapLayerAllocations = findPropByName(lc.props, "WeightmapLayerAllocations");
-                        int offsetX = 0;
-                        if (sectionBaseX != null)
-                            offsetX = ((UIntProperty)sectionBaseX).value / 126;
-                        int offsetY = 0;
-                        if (sectionBaseY != null)
-                            offsetY = ((UIntProperty)sectionBaseY).value / 126;
-                        offsetX = offsetX % 4;
-                        offsetY = offsetY % 4;
-                        if (wMapTextures != null && wMapLayerAllocations != null)
-                        {
-                            UArrayProperty allocs = (UArrayProperty)wMapLayerAllocations;
-                            int layerCount = allocs.subProps.Count;
-                            byte[] mappings = new byte[3];
-                            for(int i = 0; i < layerCount && i < 3; i++)
-                            {
-                                UStructProperty struc = (UStructProperty)allocs.subProps[i].prop;
-                                UObjectProperty objInfo = (UObjectProperty)struc.subProps[0].prop;
-                                UByteProperty property = (UByteProperty)struc.subProps[2].prop;
-                                if(layerNames.Count != 0)
-                                    mappings[layerNames.IndexOf(objInfo.objName)] = property.value;
-                                else
-                                    mappings[i] = property.value;
-                            }
-                            Bitmap channels = new Bitmap(128, 128);
-                            Graphics gChannel = Graphics.FromImage(channels);
-                            gChannel.Clear(Color.FromArgb(255, mappings[0], mappings[1], mappings[2]));
-                            UArrayProperty list = (UArrayProperty)wMapTextures;
-                            uint texIdx = BitConverter.ToUInt32(list.data, 4) - 1;
-                            UTexture2D texObj = new UTexture2D(new MemoryStream(currentAsset.exportTable[(int)texIdx]._data), currentAsset, ubulkStream);
-                            Bitmap map = texObj.mips[0].MakeBitmap();
-                            CopyImageToImage(resultWeightMap, map, offsetX * 128, offsetY * 128);
-                            CopyImageToImage(resultChannelMap, channels, offsetX * 128, offsetY * 128);
-                        }
-                    }
-                }
+                foreach (ULandscapeComponent lc in landscapeComponents)
+                    Splat_ApplyWeights(lc, resultWeightMap, selectedLayerNames, baseSize, sideLen, ubulkStream);
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.png|*.png";
                 if(d.ShowDialog() == DialogResult.OK)
                 {
                     resultWeightMap.Save(d.FileName);
-                    resultChannelMap.Save(d.FileName.Substring(0, d.FileName.Length - 4) + ".channels.png");
                     MessageBox.Show("Done.");
                 }
             }
             catch { }
+        }
+
+        private void saveAsDdsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int n = listBox4.SelectedIndex;
+            int m = listBox5.SelectedIndex;
+            if (n == -1 || m == -1 || currentAsset == null || currentTex == null)
+                return;
+            UExport ex = currentAsset.exportTable[n];
+            byte[] result = currentTex.mips[m].MakeDDS(currentTex, ex);
+            if (result.Length == 0)
+                return;
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "*.dds|*.dds";
+            d.FileName = ex._name + ".dds";
+            if(d.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllBytes(d.FileName, result.ToArray());
+                MessageBox.Show("Done.");
+            }
         }
     }
 }

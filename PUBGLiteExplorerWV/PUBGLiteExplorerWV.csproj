@@ -36,8 +36,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DDSImage.cs" />
     <Compile Include="ExportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -45,6 +47,12 @@
       <DependentUpon>ExportDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper.cs" />
+    <Compile Include="LayerSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LayerSelector.Designer.cs">
+      <DependentUpon>LayerSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,6 +67,7 @@
     <Compile Include="Unreal\UInstancedFoliageActor.cs" />
     <Compile Include="Unreal\ULandscapeComponent.cs" />
     <Compile Include="Unreal\ULevel.cs" />
+    <Compile Include="Unreal\ULandscapeMaterialInstanceConstant.cs" />
     <Compile Include="Unreal\UProperty.cs" />
     <Compile Include="Unreal\URandomPositionPlayerStart.cs" />
     <Compile Include="Unreal\UStaticMesh.cs" />
@@ -66,6 +75,9 @@
     <Compile Include="Unreal\UTexture2D.cs" />
     <EmbeddedResource Include="ExportDialog.resx">
       <DependentUpon>ExportDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayerSelector.resx">
+      <DependentUpon>LayerSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

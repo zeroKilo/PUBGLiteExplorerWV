@@ -216,7 +216,7 @@ namespace PUBGLiteExplorerWV
                         buff[i] = (byte)(s.ReadByte() ^ 0x79);
                     else
                         buff[i] = (byte)(s.ReadByte());
-
+                o.Write(buff, 0, buff.Length);
             }
             if (cMethod == 1)
             {

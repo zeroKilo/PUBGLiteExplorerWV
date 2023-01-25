@@ -48,6 +48,7 @@
             this.staticMeshLODsAsPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpScriptSourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpPersistentMapDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dumpSplatMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alphabeticalSortingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -97,7 +98,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.dumpSplatMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.saveAsDdsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -137,6 +139,7 @@
             this.splitContainer5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -288,6 +291,13 @@
             this.dumpPersistentMapDataToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.dumpPersistentMapDataToolStripMenuItem.Text = "Dump Persistent Map Data";
             this.dumpPersistentMapDataToolStripMenuItem.Click += new System.EventHandler(this.dumpPersistentMapDataToolStripMenuItem_Click);
+            // 
+            // dumpSplatMapToolStripMenuItem
+            // 
+            this.dumpSplatMapToolStripMenuItem.Name = "dumpSplatMapToolStripMenuItem";
+            this.dumpSplatMapToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.dumpSplatMapToolStripMenuItem.Text = "Dump Splat Map...";
+            this.dumpSplatMapToolStripMenuItem.Click += new System.EventHandler(this.dumpSplatMapToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -751,6 +761,7 @@
             // 
             // listBox5
             // 
+            this.listBox5.ContextMenuStrip = this.contextMenuStrip2;
             this.listBox5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBox5.Font = new System.Drawing.Font("Courier New", 8.25F);
             this.listBox5.FormattingEnabled = true;
@@ -848,12 +859,19 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // dumpSplatMapToolStripMenuItem
+            // contextMenuStrip2
             // 
-            this.dumpSplatMapToolStripMenuItem.Name = "dumpSplatMapToolStripMenuItem";
-            this.dumpSplatMapToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.dumpSplatMapToolStripMenuItem.Text = "Dump Splat Map...";
-            this.dumpSplatMapToolStripMenuItem.Click += new System.EventHandler(this.dumpSplatMapToolStripMenuItem_Click);
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveAsDdsToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip2";
+            this.contextMenuStrip2.Size = new System.Drawing.Size(181, 48);
+            // 
+            // saveAsDdsToolStripMenuItem
+            // 
+            this.saveAsDdsToolStripMenuItem.Name = "saveAsDdsToolStripMenuItem";
+            this.saveAsDdsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveAsDdsToolStripMenuItem.Text = "Save as dds...";
+            this.saveAsDdsToolStripMenuItem.Click += new System.EventHandler(this.saveAsDdsToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -915,6 +933,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -990,5 +1009,7 @@
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox3;
         private System.Windows.Forms.ToolStripButton toolStripButton3;
         private System.Windows.Forms.ToolStripMenuItem dumpSplatMapToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
+        private System.Windows.Forms.ToolStripMenuItem saveAsDdsToolStripMenuItem;
     }
 }
