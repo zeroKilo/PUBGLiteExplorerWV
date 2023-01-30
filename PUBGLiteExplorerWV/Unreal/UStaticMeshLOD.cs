@@ -11,7 +11,7 @@ namespace PUBGLiteExplorerWV
     {
         public class MaterialInfo
         {
-            public uint unk1;
+            public uint matIndex;
             public uint unk2;
             public uint unk3;
             public uint start;
@@ -20,7 +20,7 @@ namespace PUBGLiteExplorerWV
             public uint unk5;
             public MaterialInfo(Stream s)
             {
-                unk1 = Helper.ReadU32(s);
+                matIndex = Helper.ReadU32(s);
                 unk2 = Helper.ReadU32(s);
                 unk3 = Helper.ReadU32(s);
                 start = Helper.ReadU32(s);
@@ -36,9 +36,11 @@ namespace PUBGLiteExplorerWV
         public List<float[]> uvs;
         public List<uint> colors;
         public List<ushort[]> sections;
+        public UStaticMesh parent;
 
-        public UStaticMeshLOD(Stream s)
+        public UStaticMeshLOD(Stream s, UStaticMesh p)
         {
+            parent = p;
             if (Helper.ReadU16(s) != 1)
                 return;
             uint matCount = Helper.ReadU32(s);
@@ -194,7 +196,11 @@ namespace PUBGLiteExplorerWV
             currIdx = 0;
             foreach (MaterialInfo info in matInfo)
             {
-                string matName = "material_"+ currIdx;
+                string matName;
+                if (currIdx < parent.materialNames.Count)
+                    matName = parent.materialNames[(int)matInfo[currIdx].matIndex];
+                else
+                    matName = "material_" + currIdx;
                 byte[] buff = new byte[0x58];
                 for (int i = 0; i < matName.Length; i++)
                     buff[i] = (byte)matName[i];

@@ -13,6 +13,7 @@ namespace PUBGLiteExplorerWV
         public List<UProperty> props = new List<UProperty>();
         public List<byte[]> lodRawData = new List<byte[]>();
         public List<UStaticMeshLOD> lods = new List<UStaticMeshLOD>();
+        public List<string> materialNames = new List<string>();
 
         public UStaticMesh(Stream s, UAsset asset, MemoryStream ubulk)
         {
@@ -23,6 +24,14 @@ namespace PUBGLiteExplorerWV
                     break;
                 props.Add(p);
             }
+            UArrayProperty staticMaterials = (UArrayProperty)findPropByName(props, "StaticMaterials");
+            if(staticMaterials != null)
+                for(int i = 0; i < staticMaterials.subProps.Count; i++)
+                {
+                    UStructProperty staticMaterial = (UStructProperty)staticMaterials.subProps[i].prop;
+                    UObjectProperty materialInterface = (UObjectProperty)staticMaterial.subProps[0].prop;
+                    materialNames.Add(materialInterface.objName);
+                }
             if (ubulk != null)
             {
                 s.Seek(0x22, SeekOrigin.Current);
@@ -43,7 +52,7 @@ namespace PUBGLiteExplorerWV
                 }
                 lods = new List<UStaticMeshLOD>();
                 foreach (byte[] buff in lodRawData)
-                    lods.Add(new UStaticMeshLOD(new MemoryStream(buff)));
+                    lods.Add(new UStaticMeshLOD(new MemoryStream(buff), this));
             }
             else
             {
@@ -51,8 +60,17 @@ namespace PUBGLiteExplorerWV
                 uint count = Helper.ReadU32(s);
                 s.Seek(count * 4 + 4, SeekOrigin.Current);
                 lods = new List<UStaticMeshLOD>();
-                lods.Add(new UStaticMeshLOD(s));
+                lods.Add(new UStaticMeshLOD(s, this));
             }
         }
+
+        private UProp findPropByName(List<UProperty> list, string name)
+        {
+            foreach (UProperty p in list)
+                if (p.name == name)
+                    return p.prop;
+            return null;
+        }
+
     }
 }
