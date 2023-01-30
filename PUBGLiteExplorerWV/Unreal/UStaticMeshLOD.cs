@@ -215,7 +215,10 @@ namespace PUBGLiteExplorerWV
             Helper.WriteU64(result, 0x5354);
             Helper.WriteU64(result, 0);
             Helper.WriteU64(result, 0xC);
-            for (int i = 0; i < 3; i++)
+            int extraCount = 0;
+            if (tmpUVs.Count > 0)
+                extraCount = tmpUVs[0].Length / 2 - 1;
+            for (int i = 0; i < extraCount; i++)
             {
                 Helper.WriteCString(result, "EXTRAUVS" + i);
                 for (int j = 0; j < 7; j++)

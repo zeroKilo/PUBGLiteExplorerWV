@@ -571,7 +571,10 @@ namespace PUBGLiteExplorerWV
                     lcs.Add(new ULandscapeComponent(new MemoryStream(exp._data), currentAsset));
             if ((lcs.Count != 16 && lcs.Count != 4) || lcs[0].data.Length != 0x7E02)
             {
-                MessageBox.Show("Cant export,\nexpected lcs=16 or 4, found=" + lcs.Count + "\nexpected datasize=0x7E02, actual size=0x" + lcs[0].data.Length.ToString("X4"));
+                if(lcs.Count > 0)
+                    MessageBox.Show("Cant export,\nexpected lcs=16 or 4, found=" + lcs.Count + "\nexpected datasize=0x7E02, actual size=0x" + lcs[0].data.Length.ToString("X4"));
+                else
+                    MessageBox.Show("Cant export,\nexpected lcs=16 or 4, found=" + lcs.Count);
                 return;
             }
             int sideLen = 4;
