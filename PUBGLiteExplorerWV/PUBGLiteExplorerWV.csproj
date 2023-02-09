@@ -68,6 +68,8 @@
     <Compile Include="Unreal\ULandscapeComponent.cs" />
     <Compile Include="Unreal\ULevel.cs" />
     <Compile Include="Unreal\ULandscapeMaterialInstanceConstant.cs" />
+    <Compile Include="Unreal\UMaterial.cs" />
+    <Compile Include="Unreal\UMaterialExpressionTextureSampleParameter2D.cs" />
     <Compile Include="Unreal\UProperty.cs" />
     <Compile Include="Unreal\URandomPositionPlayerStart.cs" />
     <Compile Include="Unreal\UStaticMesh.cs" />

@@ -12,6 +12,14 @@ namespace PUBGLiteExplorerWV
 
     public static class Helper
     {
+        public static UProp FindPropByName(List<UProperty> list, string name)
+        {
+            foreach (UProperty p in list)
+                if (p.name == name)
+                    return p.prop;
+            return null;
+        }
+
         public static ushort ReadU16(Stream s)
         {
             byte[] buff = new byte[2];

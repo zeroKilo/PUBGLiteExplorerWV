@@ -552,15 +552,7 @@ namespace PUBGLiteExplorerWV
                 MessageBox.Show("Done.");
             }
         }
-
-        private UProp findPropByName(List<UProperty>list, string name)
-        {
-            foreach (UProperty p in list)
-                if (p.name == name)
-                    return p.prop;
-            return null;
-        }
-
+              
         private void landscapeToTerrainRawToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (currentAsset == null)
@@ -585,10 +577,10 @@ namespace PUBGLiteExplorerWV
                 bool found = false;
                 for (int i = 0; i < lcs.Count - 1; i++)
                 {
-                    UProp x1 = findPropByName(lcs[i].props, "SectionBaseX");
-                    UProp y1 = findPropByName(lcs[i].props, "SectionBaseY");
-                    UProp x2 = findPropByName(lcs[i + 1].props, "SectionBaseX");
-                    UProp y2 = findPropByName(lcs[i + 1].props, "SectionBaseY");
+                    UProp x1 = Helper.FindPropByName(lcs[i].props, "SectionBaseX");
+                    UProp y1 = Helper.FindPropByName(lcs[i].props, "SectionBaseY");
+                    UProp x2 = Helper.FindPropByName(lcs[i + 1].props, "SectionBaseX");
+                    UProp y2 = Helper.FindPropByName(lcs[i + 1].props, "SectionBaseY");
                     int posX1, posX2, posY1, posY2;
                     posX1 = posX2 = posY1 = posY2 = 0;
                     if (x1 != null) posX1 = ((UIntProperty)x1).value;
@@ -668,90 +660,95 @@ namespace PUBGLiteExplorerWV
                 ex.pb1.Value = 0;
                 ex.pb1.Maximum = files.Count + 1;
                 for (int i = 0; i < files.Count; i++)
-                {
-                    PAKFile file = files[i];
-                    ex.pb1.Value = i + 1;
-                    ex.label1.Text = "PAK file " + (i + 1) + "/" + files.Count + " : " + Path.GetFileName(file.myPath);
-                    Application.DoEvents();
-                    if (file.header.isValid)
+                    try
                     {
-                        int count = file.table.entries.Count;
-                        ex.pb2.Value = 0;
-                        ex.pb2.Maximum = count + 1;
-                        for (int j = 0; j < count; j++)
+                        PAKFile file = files[i];
+                        ex.pb1.Value = i + 1;
+                        ex.label1.Text = "PAK file " + (i + 1) + "/" + files.Count + " : " + Path.GetFileName(file.myPath);
+                        Application.DoEvents();
+                        if (file.header.isValid)
                         {
-                            PAKFileEntry entry = file.table.entries[j];
-                            ex.pb2.Value = j + 1;
-                            ex.label2.Text = "Current file " + (j + 1) + "/" + count + " : " + entry.path;
-                            if ((j % 7) == 0)
+                            int count = file.table.entries.Count;
+                            ex.pb2.Value = 0;
+                            ex.pb2.Maximum = count + 1;
+                            for (int j = 0; j < count; j++)
                             {
-                                Application.DoEvents();
-                                if (ex._exit)
+                                PAKFileEntry entry = file.table.entries[j];
+                                ex.pb2.Value = j + 1;
+                                ex.label2.Text = "Current file " + (j + 1) + "/" + count + " : " + entry.path;
+                                if ((j % 7) == 0)
                                 {
-                                    ex.Close();
-                                    return;
+                                    Application.DoEvents();
+                                    if (ex._exit)
+                                    {
+                                        ex.Close();
+                                        return;
+                                    }
                                 }
-                            }
-                            if (entry.path.EndsWith(".uasset"))
-                            {
-                                string exportPath = fbd.SelectedPath + "\\" + Path.GetDirectoryName(entry.path) + "\\";
-                                byte[] data = file.getEntryData(entry);
-                                UAsset asset = null;
-                                PAKFileEntry uexp = null;
-                                string uexpPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".uexp";
-                                uexpPath = uexpPath.Replace("\\", "/");
-                                foreach (PAKFileEntry en in file.table.entries)
-                                    if (en.path == uexpPath)
-                                    {
-                                        uexp = en;
-                                        break;
-                                    }
-                                byte[] uexpData = null;
-                                if (uexp != null)
-                                    uexpData = file.getEntryData(uexp);
-                                PAKFileEntry ubulk = null;
-                                string ubulkPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".ubulk";
-                                ubulkPath = ubulkPath.Replace("\\", "/");
-                                foreach (PAKFileEntry en in file.table.entries)
-                                    if (en.path == ubulkPath)
-                                    {
-                                        ubulk = en;
-                                        break;
-                                    }
-                                byte[] ubulkData = null;
-                                if (ubulk != null)
-                                    ubulkData = file.getEntryData(ubulk);
-                                if (uexpData != null && ubulkData != null)
-                                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), new MemoryStream(ubulkData));
-                                else if (uexpData != null)
-                                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), null);
-                                else
-                                    asset = new UAsset(new MemoryStream(data), null, null);
-                                if (asset != null && asset._isValid)
+                                if (entry.path.EndsWith(".uasset"))
                                 {
-                                    foreach(UExport exp in asset.exportTable)
-                                        if(asset.GetName(exp.classIdx) == "StaticMesh")
+                                    string exportPath = fbd.SelectedPath + "\\" + Path.GetDirectoryName(entry.path) + "\\";
+                                    byte[] data = file.getEntryData(entry);
+                                    UAsset asset = null;
+                                    PAKFileEntry uexp = null;
+                                    string uexpPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".uexp";
+                                    uexpPath = uexpPath.Replace("\\", "/");
+                                    foreach (PAKFileEntry en in file.table.entries)
+                                        if (en.path == uexpPath)
                                         {
-                                            UStaticMesh mesh;
-                                            if(ubulkData == null)
-                                                mesh = new UStaticMesh(new MemoryStream(exp._data), asset, null);
-                                            else
-                                                mesh = new UStaticMesh(new MemoryStream(exp._data), asset, new MemoryStream(ubulkData));
-                                            if (mesh.lods == null || mesh.lods.Count == 0)
-                                                return;
-                                            byte[] pskData = mesh.lods[0].MakePSK();
-                                            if(pskData.Length == 0)
-                                                return;
-                                            if (!Directory.Exists(exportPath))
-                                                Directory.CreateDirectory(exportPath);
-                                            string name = exp._name + ".psk";
-                                            File.WriteAllBytes(exportPath + name, pskData);
+                                            uexp = en;
+                                            break;
                                         }
+                                    byte[] uexpData = null;
+                                    if (uexp != null)
+                                        uexpData = file.getEntryData(uexp);
+                                    PAKFileEntry ubulk = null;
+                                    string ubulkPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".ubulk";
+                                    ubulkPath = ubulkPath.Replace("\\", "/");
+                                    foreach (PAKFileEntry en in file.table.entries)
+                                        if (en.path == ubulkPath)
+                                        {
+                                            ubulk = en;
+                                            break;
+                                        }
+                                    byte[] ubulkData = null;
+                                    if (ubulk != null)
+                                        ubulkData = file.getEntryData(ubulk);
+                                    if (uexpData != null && ubulkData != null)
+                                        asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), new MemoryStream(ubulkData));
+                                    else if (uexpData != null)
+                                        asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), null);
+                                    else
+                                        asset = new UAsset(new MemoryStream(data), null, null);
+                                    if (asset != null && asset._isValid)
+                                    {
+                                        foreach (UExport exp in asset.exportTable)
+                                            if (asset.GetName(exp.classIdx) == "StaticMesh")
+                                                try
+                                                {
+
+                                                    UStaticMesh mesh;
+                                                    if (ubulkData == null)
+                                                        mesh = new UStaticMesh(new MemoryStream(exp._data), asset, null);
+                                                    else
+                                                        mesh = new UStaticMesh(new MemoryStream(exp._data), asset, new MemoryStream(ubulkData));
+                                                    if (mesh.lods == null || mesh.lods.Count == 0)
+                                                        return;
+                                                    byte[] pskData = mesh.lods[0].MakePSK();
+                                                    if (pskData.Length == 0)
+                                                        return;
+                                                    if (!Directory.Exists(exportPath))
+                                                        Directory.CreateDirectory(exportPath);
+                                                    string name = exp._name + ".psk";
+                                                    File.WriteAllBytes(exportPath + name, pskData);
+                                                }
+                                                catch { }
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                    catch { }
                 ex.Close();
                 MessageBox.Show("Done.");
             }
@@ -1013,7 +1010,7 @@ namespace PUBGLiteExplorerWV
             List<string> allLayerNames = new List<string>();
             foreach(ULandscapeComponent lc in lcs)
             {
-                UProp wMapLayerAllocations = findPropByName(lc.props, "WeightmapLayerAllocations");
+                UProp wMapLayerAllocations = Helper.FindPropByName(lc.props, "WeightmapLayerAllocations");
                 if (wMapLayerAllocations != null)
                 {
                     UArrayProperty allocs = (UArrayProperty)wMapLayerAllocations;
@@ -1032,7 +1029,7 @@ namespace PUBGLiteExplorerWV
 
         private int Splat_GetTextureSize(ULandscapeComponent lc, MemoryStream ubulkStream)
         {
-            UArrayProperty wMapTextures = (UArrayProperty)findPropByName(lc.props, "WeightmapTextures");
+            UArrayProperty wMapTextures = (UArrayProperty)Helper.FindPropByName(lc.props, "WeightmapTextures");
             uint texIdx = BitConverter.ToUInt32(wMapTextures.data, 4) - 1;
             UTexture2D texObj = new UTexture2D(new MemoryStream(currentAsset.exportTable[(int)texIdx]._data), currentAsset, ubulkStream);
             return (int)texObj.height;
@@ -1040,11 +1037,11 @@ namespace PUBGLiteExplorerWV
 
         private void Splat_ApplyWeights(ULandscapeComponent lc, Bitmap resultWeightMap, List<string> layerNames, int baseSize, int sideLen, MemoryStream ubulkStream)
         {
-            UProp sectionBaseX = findPropByName(lc.props, "SectionBaseX");
-            UProp sectionBaseY = findPropByName(lc.props, "SectionBaseY");
-            UArrayProperty wMapTextures = (UArrayProperty)findPropByName(lc.props, "WeightmapTextures");
-            UArrayProperty wMapLayerAllocations = (UArrayProperty)findPropByName(lc.props, "WeightmapLayerAllocations");
-            UArrayProperty wMats = (UArrayProperty)findPropByName(lc.props, "MaterialInstances");
+            UProp sectionBaseX = Helper.FindPropByName(lc.props, "SectionBaseX");
+            UProp sectionBaseY = Helper.FindPropByName(lc.props, "SectionBaseY");
+            UArrayProperty wMapTextures = (UArrayProperty)Helper.FindPropByName(lc.props, "WeightmapTextures");
+            UArrayProperty wMapLayerAllocations = (UArrayProperty)Helper.FindPropByName(lc.props, "WeightmapLayerAllocations");
+            UArrayProperty wMats = (UArrayProperty)Helper.FindPropByName(lc.props, "MaterialInstances");
             int offsetX = 0;
             if (sectionBaseX != null)
                 offsetX = ((UIntProperty)sectionBaseX).value / (baseSize - 2);
@@ -1178,6 +1175,57 @@ namespace PUBGLiteExplorerWV
             {
                 File.WriteAllBytes(d.FileName, result.ToArray());
                 MessageBox.Show("Done.");
+            }
+        }
+
+        private void materialGraphToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentAsset == null)
+                return;
+            try
+            {
+                UMaterial mat = null;
+                foreach (UExport export in currentAsset.exportTable)
+                    if (currentAsset.GetClassName(export.classIdx) == "Material")
+                    {
+                        mat = new UMaterial(new MemoryStream(export._data), currentAsset);
+                        break;
+                    }
+                if (mat == null)
+                    return;                
+                SaveFileDialog d = new SaveFileDialog();
+                d.Filter = "*.dot|*.dot";
+                d.FileName = "Material.dot";
+                if(d.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllText(d.FileName, mat.MakeDotGraph());
+                    MessageBox.Show("Done.");
+                }
+            }
+            catch { }
+        }
+        public void DumpMaterialExpressionNodes(StringBuilder sb, UAsset asset, uint exportID)
+        {
+            sb.Append("N" + exportID + "[shape=box label=\"");
+            UExport export = asset.exportTable[(int)exportID];
+            string cname = asset.GetClassName(export.classIdx);
+            switch(cname)
+            {
+                default:
+                    sb.Append(cname);
+                    break;
+            }
+            sb.AppendLine("\"]");
+        }
+        public void DumpMaterialExpressionEdges(StringBuilder sb, UAsset asset, uint exportID)
+        {
+            UExport export = asset.exportTable[(int)exportID];
+            string cname = asset.GetClassName(export.classIdx);
+            switch (cname)
+            {
+                default:
+                    //sb.Append(cname);
+                    break;
             }
         }
     }

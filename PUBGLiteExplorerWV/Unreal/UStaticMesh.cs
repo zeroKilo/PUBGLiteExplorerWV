@@ -24,7 +24,7 @@ namespace PUBGLiteExplorerWV
                     break;
                 props.Add(p);
             }
-            UArrayProperty staticMaterials = (UArrayProperty)findPropByName(props, "StaticMaterials");
+            UArrayProperty staticMaterials = (UArrayProperty)Helper.FindPropByName(props, "StaticMaterials");
             if(staticMaterials != null)
                 for(int i = 0; i < staticMaterials.subProps.Count; i++)
                 {
@@ -32,6 +32,15 @@ namespace PUBGLiteExplorerWV
                     UObjectProperty materialInterface = (UObjectProperty)staticMaterial.subProps[0].prop;
                     materialNames.Add(materialInterface.objName);
                 }
+
+            for (int i = 0; i < materialNames.Count; i++)
+            {
+                string matName = materialNames[i];
+                int intCounter = 0;
+                for (int j = i + 1; j < materialNames.Count; j++)
+                    if (materialNames[j] == matName)
+                        materialNames[j] += "_" + (intCounter++);
+            }
             if (ubulk != null)
             {
                 s.Seek(0x22, SeekOrigin.Current);
@@ -63,14 +72,5 @@ namespace PUBGLiteExplorerWV
                 lods.Add(new UStaticMeshLOD(s, this));
             }
         }
-
-        private UProp findPropByName(List<UProperty> list, string name)
-        {
-            foreach (UProperty p in list)
-                if (p.name == name)
-                    return p.prop;
-            return null;
-        }
-
     }
 }

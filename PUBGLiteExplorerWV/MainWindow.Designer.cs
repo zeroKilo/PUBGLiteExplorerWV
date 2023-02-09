@@ -90,6 +90,8 @@
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.listBox5 = new System.Windows.Forms.ListBox();
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.saveAsDdsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
             this.pic1 = new System.Windows.Forms.PictureBox();
             this.hb3 = new Be.Windows.Forms.HexBox();
@@ -98,8 +100,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.saveAsDdsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.materialGraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -133,13 +134,13 @@
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
+            this.contextMenuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).BeginInit();
             this.splitContainer5.Panel1.SuspendLayout();
             this.splitContainer5.Panel2.SuspendLayout();
             this.splitContainer5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).BeginInit();
             this.statusStrip1.SuspendLayout();
-            this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -235,7 +236,8 @@
             this.staticMeshLODsAsPSKToolStripMenuItem,
             this.dumpScriptSourceToolStripMenuItem,
             this.dumpPersistentMapDataToolStripMenuItem,
-            this.dumpSplatMapToolStripMenuItem});
+            this.dumpSplatMapToolStripMenuItem,
+            this.materialGraphToolStripMenuItem});
             this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
             this.dumpToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.dumpToolStripMenuItem.Text = "Dump";
@@ -774,6 +776,20 @@
             this.listBox5.TabIndex = 3;
             this.listBox5.SelectedIndexChanged += new System.EventHandler(this.listBox5_SelectedIndexChanged);
             // 
+            // contextMenuStrip2
+            // 
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveAsDdsToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip2";
+            this.contextMenuStrip2.Size = new System.Drawing.Size(144, 26);
+            // 
+            // saveAsDdsToolStripMenuItem
+            // 
+            this.saveAsDdsToolStripMenuItem.Name = "saveAsDdsToolStripMenuItem";
+            this.saveAsDdsToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.saveAsDdsToolStripMenuItem.Text = "Save as dds...";
+            this.saveAsDdsToolStripMenuItem.Click += new System.EventHandler(this.saveAsDdsToolStripMenuItem_Click);
+            // 
             // splitContainer5
             // 
             this.splitContainer5.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -859,19 +875,12 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // contextMenuStrip2
+            // materialGraphToolStripMenuItem
             // 
-            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveAsDdsToolStripMenuItem});
-            this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(181, 48);
-            // 
-            // saveAsDdsToolStripMenuItem
-            // 
-            this.saveAsDdsToolStripMenuItem.Name = "saveAsDdsToolStripMenuItem";
-            this.saveAsDdsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveAsDdsToolStripMenuItem.Text = "Save as dds...";
-            this.saveAsDdsToolStripMenuItem.Click += new System.EventHandler(this.saveAsDdsToolStripMenuItem_Click);
+            this.materialGraphToolStripMenuItem.Name = "materialGraphToolStripMenuItem";
+            this.materialGraphToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.materialGraphToolStripMenuItem.Text = "Material Graph...";
+            this.materialGraphToolStripMenuItem.Click += new System.EventHandler(this.materialGraphToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -926,6 +935,7 @@
             this.splitContainer4.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
             this.splitContainer4.ResumeLayout(false);
+            this.contextMenuStrip2.ResumeLayout(false);
             this.splitContainer5.Panel1.ResumeLayout(false);
             this.splitContainer5.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
@@ -933,7 +943,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1011,5 +1020,6 @@
         private System.Windows.Forms.ToolStripMenuItem dumpSplatMapToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem saveAsDdsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem materialGraphToolStripMenuItem;
     }
 }

@@ -22,18 +22,12 @@ namespace PUBGLiteExplorerWV
                 props.Add(p);
             }
         }
-        private UProp findPropByName(string name)
-        {
-            foreach (UProperty p in props)
-                if (p.name == name)
-                    return p.prop;
-            return null;
-        }
+
         public int FindChannelIndex(string layerName)
         {
             int[] remap = { 1, 2, 3, 0 };
             layerName = layerName.Replace("_LayerInfo", "");
-            UArrayProperty vpv = (UArrayProperty)findPropByName("VectorParameterValues");
+            UArrayProperty vpv = (UArrayProperty)Helper.FindPropByName(props, "VectorParameterValues");
             int layerCount = vpv.subProps.Count;
             for (int i = 0; i < layerCount; i++)
             {
