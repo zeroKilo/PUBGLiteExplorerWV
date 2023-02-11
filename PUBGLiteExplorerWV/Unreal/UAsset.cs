@@ -100,7 +100,34 @@ namespace PUBGLiteExplorerWV
                     break;
                 }
                 sb.Append(p.prop.ToDetails(0, p._offset, p.name));
+                if (p.prop is UStructProperty)
+                    sb.Append(TryParseStructProperty((UStructProperty)p.prop));
             }
+            return sb.ToString();
+        }
+
+        public string TryParseStructProperty(UStructProperty p)
+        {
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                MemoryStream m = new MemoryStream(p.data);
+                uint name, value;
+                switch (p.structType)
+                {
+                    case "ColorMaterialInput":
+                    case "ExpressionInput":
+                    case "ScalarMaterialInput":
+                    case "VectorMaterialInput":
+                    case "Vector2MaterialInput":
+                        m.Seek(0x1C, 0);
+                        name = Helper.ReadU32(m);
+                        value = Helper.ReadU32(m);
+                        sb.AppendLine("\t" + nameTable[(int)name] + " = 0x" + value.ToString("X"));
+                        break;
+                }
+            }
+            catch { }
             return sb.ToString();
         }
 
