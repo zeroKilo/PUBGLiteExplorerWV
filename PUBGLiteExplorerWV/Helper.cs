@@ -320,5 +320,24 @@ namespace PUBGLiteExplorerWV
         {
             return DDSImage.Load(data).Images[0];
         }
+
+        public static List<string> GetAllImported(List<UImport> imports, string type = "Package", bool fixPath = true)
+        {
+            List<string> result = new List<string>();
+            foreach (UImport import in imports)
+                if (import._className == type)
+                {
+                    string pkg = import._name;
+                    if (fixPath)
+                    {
+                        if (!pkg.StartsWith("/Game/"))
+                            continue;
+                        pkg = pkg.Substring(6);
+                        pkg = "ShadowTrackerExtra/Content/" + pkg;
+                    }
+                    result.Add(pkg);
+                }
+            return result;
+        }
     }
 }

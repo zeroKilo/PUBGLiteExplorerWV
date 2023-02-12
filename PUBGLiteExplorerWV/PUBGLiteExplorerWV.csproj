@@ -39,6 +39,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnalysisResult.Designer.cs">
+      <DependentUpon>AnalysisResult.cs</DependentUpon>
+    </Compile>
     <Compile Include="DDSImage.cs" />
     <Compile Include="ExportDialog.cs">
       <SubType>Form</SubType>
@@ -75,6 +81,9 @@
     <Compile Include="Unreal\UStaticMesh.cs" />
     <Compile Include="Unreal\UStaticMeshLOD.cs" />
     <Compile Include="Unreal\UTexture2D.cs" />
+    <EmbeddedResource Include="AnalysisResult.resx">
+      <DependentUpon>AnalysisResult.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ExportDialog.resx">
       <DependentUpon>ExportDialog.cs</DependentUpon>
     </EmbeddedResource>

@@ -217,21 +217,24 @@ namespace PUBGLiteExplorerWV
                         }
         }
 
-        private void LoadAsset(PAKFile file, PAKFileEntry entry)
+        private UAsset LoadAsset(PAKFile file, PAKFileEntry entry, bool onlyLoad = false)
         {
-            currentAsset = null;
-            label2.Text = "PAK Path   = " + file.myPath + "\nAsset Path = " + entry.path;
-            listBox2.Items.Clear();
-            listBox3.Items.Clear();
-            listBox4.Items.Clear();
-            listBox5.Items.Clear();
-            rtb1.Text = "";           
-            hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
-            hb3.ByteProvider = new DynamicByteProvider(new byte[0]);
-            if (tabControl2.TabPages.Contains(tabPage6))
-                tabControl2.TabPages.Remove(tabPage6);
             byte[] data = file.getEntryData(entry);
-            hb1.ByteProvider = new DynamicByteProvider(data);
+            if (!onlyLoad)
+            {
+                currentAsset = null;
+                label2.Text = "PAK Path   = " + file.myPath + "\nAsset Path = " + entry.path;
+                listBox2.Items.Clear();
+                listBox3.Items.Clear();
+                listBox4.Items.Clear();
+                listBox5.Items.Clear();
+                rtb1.Text = "";
+                hb2.ByteProvider = new DynamicByteProvider(new byte[0]);
+                hb3.ByteProvider = new DynamicByteProvider(new byte[0]);
+                if (tabControl2.TabPages.Contains(tabPage6))
+                    tabControl2.TabPages.Remove(tabPage6);
+                hb1.ByteProvider = new DynamicByteProvider(data);
+            }
             string[] assetFiles = { ".uasset", ".umap" };
             bool isAsset = false;
             foreach(string check in assetFiles)
@@ -273,7 +276,7 @@ namespace PUBGLiteExplorerWV
                     asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), null);
                 else
                     asset = new UAsset(new MemoryStream(data), null, null);
-                if (asset != null && asset._isValid)
+                if (asset != null && asset._isValid && !onlyLoad)
                 {
                     for (int i = 0; i < asset.nameCount; i++)
                         listBox2.Items.Add(i.ToString("X4") + " : " + asset.nameTable[i]);
@@ -283,7 +286,9 @@ namespace PUBGLiteExplorerWV
                         listBox4.Items.Add(i.ToString("X4") + " : " + asset.exportTable[i]._name + " (" + asset.GetName(asset.exportTable[i].classIdx) + ")");
                     currentAsset = asset;
                 }
+                return asset;
             }
+            return null;
         }
 
         private void LoadAssetFile(string assetPath)
@@ -1227,6 +1232,51 @@ namespace PUBGLiteExplorerWV
                     //sb.Append(cname);
                     break;
             }
+        }
+
+        private void findReferencedTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentStatMesh == null || currentStatMesh.lods.Count == 0)
+                return;
+            StringBuilder sb = new StringBuilder();
+            List<string> pkgsToDo = Helper.GetAllImported(currentAsset.importTable);
+            List<string> pkgsDone = new List<string>();
+            while (pkgsToDo.Count > 0)
+            {
+                string pkg = pkgsToDo[0];
+                pkgsToDo.RemoveAt(0);
+                pkgsDone.Add(pkg);
+                bool found = false;
+                UAsset asset = null;
+                foreach (PAKFile file in files)
+                {
+                    string mountedPath = pkg + ".uasset";
+                    foreach (PAKFileEntry entry in file.table.entries)
+                    {
+                        if (entry.path == mountedPath)
+                        {
+                            asset = LoadAsset(file, entry, true);
+                            if(asset != null && asset._isValid)
+                                found = true;
+                            break;
+                        }
+                    }
+                }
+                sb.AppendLine("Processing " + pkg + " -> " + (found ? "found" : "not found"));
+                if (found)
+                {
+                    List<string> pkgs = Helper.GetAllImported(asset.importTable);
+                    foreach (string p in pkgs)
+                        if (!pkgsDone.Contains(p))
+                            pkgsToDo.Add(p);
+                    List<string> textures = Helper.GetAllImported(asset.importTable, "Texture2D", false);
+                    foreach (string tex in textures)
+                        sb.AppendLine(" -> Found referenced Texture2D " + tex);
+                }
+            }
+            AnalysisResult ar = new AnalysisResult();
+            ar.rtb1.Text = sb.ToString();
+            ar.ShowDialog();
         }
     }
 }
