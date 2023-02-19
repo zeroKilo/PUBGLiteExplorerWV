@@ -65,6 +65,11 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Unreal\MaterialExpressions\FColorMaterialInput.cs" />
+    <Compile Include="Unreal\MaterialExpressions\FExpressionInput.cs" />
+    <Compile Include="Unreal\MaterialExpressions\FScalarMaterialInput.cs" />
+    <Compile Include="Unreal\MaterialExpressions\FVector2MaterialInput.cs" />
+    <Compile Include="Unreal\MaterialExpressions\FVectorMaterialInput.cs" />
     <Compile Include="Unreal\PAKFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

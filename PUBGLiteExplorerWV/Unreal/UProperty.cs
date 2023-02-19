@@ -89,7 +89,7 @@ namespace PUBGLiteExplorerWV
     {
         public uint size;
         public uint flags;
-        public abstract string ToDetails(int tabs, long offset, string name);
+        public abstract string ToDetails(int tabs, long offset, string name, UAsset asset);
 
         public string MakeTabs(int tabs)
         {
@@ -138,27 +138,45 @@ namespace PUBGLiteExplorerWV
             }
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
-            MemoryStream m;
+            MemoryStream m = new MemoryStream(data);
             sb.Append(MakeTabs(tabs));
             sb.Append(offset.ToString("X8") + " : " + name + " (StructProperty " + structType + ") = {");
             switch (structType)
             {
                 case "Vector":
-                    m = new MemoryStream(data);
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m));
                     break;
                 case "Vector4":
                 case "LinearColor":
-                    m = new MemoryStream(data);
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m));
+                    break;
+                case "ExpressionInput":
+                    sb.AppendLine();
+                    sb.Append(new FExpressionInput(m, asset).ToString());
+                    break;
+                case "ColorMaterialInput":
+                    sb.AppendLine();
+                    sb.Append(new FColorMaterialInput(m, asset).ToString());
+                    break;
+                case "ScalarMaterialInput":
+                    sb.AppendLine();
+                    sb.Append(new FScalarMaterialInput(m, asset).ToString());
+                    break;
+                case "VectorMaterialInput":
+                    sb.AppendLine();
+                    sb.Append(new FVectorMaterialInput(m, asset).ToString());
+                    break;
+                case "Vector2MaterialInput":
+                    sb.AppendLine();
+                    sb.Append(new FVector2MaterialInput(m, asset).ToString());
                     break;
                 default:
                     foreach (byte b in data)
@@ -167,7 +185,7 @@ namespace PUBGLiteExplorerWV
             }
             sb.AppendLine("}");
             foreach (UProperty p in subProps)
-                sb.Append(p.prop.ToDetails(tabs + 1, p._offset, p.name));
+                sb.Append(p.prop.ToDetails(tabs + 1, p._offset, p.name, asset));
             return sb.ToString();
         }
     }
@@ -191,7 +209,7 @@ namespace PUBGLiteExplorerWV
                 objName = asset.importTable[(int)-value - 1]._name;
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
@@ -211,7 +229,7 @@ namespace PUBGLiteExplorerWV
             value = Helper.ReadFloat(s);
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
@@ -231,7 +249,7 @@ namespace PUBGLiteExplorerWV
             value = Helper.ReadUString(s);
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
@@ -251,7 +269,7 @@ namespace PUBGLiteExplorerWV
             s.ReadByte();
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
@@ -274,7 +292,7 @@ namespace PUBGLiteExplorerWV
             s.Seek(size - 1, SeekOrigin.Current);
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
@@ -294,7 +312,7 @@ namespace PUBGLiteExplorerWV
             value = (int)Helper.ReadU32(s);
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
@@ -314,7 +332,7 @@ namespace PUBGLiteExplorerWV
             value = Helper.ReadU32(s);
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
@@ -336,7 +354,7 @@ namespace PUBGLiteExplorerWV
             value = asset.GetName((int)Helper.ReadU64(s));
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
@@ -414,13 +432,13 @@ namespace PUBGLiteExplorerWV
                 }
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
             sb.AppendLine(offset.ToString("X8") + " : " + name + " ArrayProperty (" + type + ") Size = 0x" + data.Length.ToString("X"));
             foreach (UProperty p in subProps)
-                sb.Append(p.prop.ToDetails(tabs + 1, p._offset, p.name));
+                sb.Append(p.prop.ToDetails(tabs + 1, p._offset, p.name, asset));
             if (type == "ObjectProperty" && data.Length >= 4 && data.Length % 4 == 0)
             {
                 MemoryStream m = new MemoryStream(data);
@@ -461,7 +479,7 @@ namespace PUBGLiteExplorerWV
             value = asset.GetName((int)Helper.ReadU64(s));
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));
@@ -482,7 +500,7 @@ namespace PUBGLiteExplorerWV
             s.Read(value, 0, (int)size);
         }
 
-        public override string ToDetails(int tabs, long offset, string name)
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(MakeTabs(tabs));

@@ -312,7 +312,7 @@ namespace PUBGLiteExplorerWV
             if (File.Exists(fileBase + ".uexp"))
                 uexpData = File.ReadAllBytes(fileBase + ".uexp");
             byte[] ubulkData = null;
-            if (File.Exists(fileBase + ".ubulk")) ;
+            if (File.Exists(fileBase + ".ubulk"))
                 ubulkData = File.ReadAllBytes(fileBase + ".ubulk");
             if (uexpData != null && ubulkData != null)
                 asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), new MemoryStream(ubulkData));
@@ -437,7 +437,7 @@ namespace PUBGLiteExplorerWV
             try
             {
                 hb2.ByteProvider = new DynamicByteProvider(ex._data);
-                rtb1.Text = currentAsset.ParseProperties(ex);
+                rtb1.Text = currentAsset.ParseProperties(ex, currentAsset);
                 if (currentAsset.GetName(ex.classIdx) == "Texture2D")
                 {
                     byte[] ubulkData = currentAsset._ubulkData;

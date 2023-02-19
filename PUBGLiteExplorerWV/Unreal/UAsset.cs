@@ -84,7 +84,7 @@ namespace PUBGLiteExplorerWV
             _isValid = true;
         }
 
-        public string ParseProperties(UExport ex)
+        public string ParseProperties(UExport ex, UAsset asset)
         {
             MemoryStream m = new MemoryStream(ex._data);
             StringBuilder sb = new StringBuilder();
@@ -99,35 +99,8 @@ namespace PUBGLiteExplorerWV
                     sb.AppendLine("Error parsing at 0x" + pos.ToString("X") + " Name=" + p.name + " Type=" + p.type);
                     break;
                 }
-                sb.Append(p.prop.ToDetails(0, p._offset, p.name));
-                if (p.prop is UStructProperty)
-                    sb.Append(TryParseStructProperty((UStructProperty)p.prop));
+                sb.Append(p.prop.ToDetails(0, p._offset, p.name, asset));
             }
-            return sb.ToString();
-        }
-
-        public string TryParseStructProperty(UStructProperty p)
-        {
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                MemoryStream m = new MemoryStream(p.data);
-                uint name, value;
-                switch (p.structType)
-                {
-                    case "ColorMaterialInput":
-                    case "ExpressionInput":
-                    case "ScalarMaterialInput":
-                    case "VectorMaterialInput":
-                    case "Vector2MaterialInput":
-                        m.Seek(0x1C, 0);
-                        name = Helper.ReadU32(m);
-                        value = Helper.ReadU32(m);
-                        sb.AppendLine("\t" + nameTable[(int)name] + " = 0x" + value.ToString("X"));
-                        break;
-                }
-            }
-            catch { }
             return sb.ToString();
         }
 
@@ -140,7 +113,7 @@ namespace PUBGLiteExplorerWV
             return null;
         }
 
-        public string GetClassName(int idx)
+        public string GetClassName(int idx)//ExpressionInput
         {
             if (idx == 0)
                 return "None";
