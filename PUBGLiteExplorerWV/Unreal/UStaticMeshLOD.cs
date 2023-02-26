@@ -15,7 +15,7 @@ namespace PUBGLiteExplorerWV
             UInt16
         }
 
-        public static UVBinaryFormat[] readerDefaults = new UVBinaryFormat[] 
+        public static UVBinaryFormat[] readerDefaultsUV = new UVBinaryFormat[] 
         { 
             UVBinaryFormat.UInt16,  //UV0
             UVBinaryFormat.UInt16,  //UV1
@@ -102,26 +102,32 @@ namespace PUBGLiteExplorerWV
             if (count1 != count2 || size1 != size2)
                 return;
             uvs = new List<float[]>();
-            uint uvCount = size1 / 2;
+            uint uvCount = size1 / 4;
             for (int i = 0; i < count1; i++)
             {
-                float[] vec = new float[uvCount];
-                ushort[] tmp = new ushort[uvCount];
-                for (int j = 0; j < uvCount; j++)
+                float[] vec = new float[uvCount * 2];
+                ushort[] tmp = new ushort[uvCount * 2];
+                for (int j = 0; j < uvCount * 2; j++)
                     tmp[j] = Helper.ReadU16(s);
-                for (int j = 0; j < uvCount; j++)
-                    switch(readerDefaults[j])
+                for (int j = 0; j < uvCount; j ++)
+                {
+                    int index = j * 2;
+                    switch (readerDefaultsUV[j])
                     {
                         case UVBinaryFormat.Float16:
-                            vec[j] = Helper.Half2Float(tmp[j]);
+                            vec[index] = Helper.Half2Float(tmp[index]);
+                            vec[index + 1] = Helper.Half2Float(tmp[index]);
                             break;
                         case UVBinaryFormat.Int16:
-                            vec[j] = (short)tmp[j] / (float)0x8000;
+                            vec[index] = (short)tmp[index] / (float)0x8000;
+                            vec[index + 1] = (short)tmp[index + 1] / (float)0x8000;
                             break;
                         case UVBinaryFormat.UInt16:
-                            vec[j] = tmp[j] / (float)0xFFFF;
+                            vec[index] = tmp[index] / (float)0xFFFF;
+                            vec[index + 1] = tmp[index + 1] / (float)0xFFFF;
                             break;
                     }
+                }
                 uvs.Add(vec);
             }
             if (Helper.ReadU16(s) != 1)

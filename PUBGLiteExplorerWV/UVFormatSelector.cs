@@ -30,7 +30,7 @@ namespace PUBGLiteExplorerWV
         {
             listBox1.Items.Clear();
             int count = 0;
-            foreach (UStaticMeshLOD.UVBinaryFormat format in UStaticMeshLOD.readerDefaults)
+            foreach (UStaticMeshLOD.UVBinaryFormat format in UStaticMeshLOD.readerDefaultsUV)
                 listBox1.Items.Add("UV" + (count++) + " = " + format);
         }
 
@@ -39,7 +39,7 @@ namespace PUBGLiteExplorerWV
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            toolStripComboBox1.SelectedIndex = (int)UStaticMeshLOD.readerDefaults[n];
+            toolStripComboBox1.SelectedIndex = (int)UStaticMeshLOD.readerDefaultsUV[n];
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -47,7 +47,7 @@ namespace PUBGLiteExplorerWV
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            UStaticMeshLOD.readerDefaults[n] = (UStaticMeshLOD.UVBinaryFormat)toolStripComboBox1.SelectedIndex;
+            UStaticMeshLOD.readerDefaultsUV[n] = (UStaticMeshLOD.UVBinaryFormat)toolStripComboBox1.SelectedIndex;
             RefreshList();
         }
     }
