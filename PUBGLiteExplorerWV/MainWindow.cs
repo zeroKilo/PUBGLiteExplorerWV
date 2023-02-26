@@ -470,9 +470,7 @@ namespace PUBGLiteExplorerWV
                         currentLevel = new ULevel(new MemoryStream(ex._data), currentAsset, new MemoryStream(ubulkData));
                     else
                         currentLevel = new ULevel(new MemoryStream(ex._data), currentAsset, null);
-                    rtb1.Text += "\n\n" + currentLevel.GetDetails();
-                    //currentLevel.GetTree(treeView2, currentAsset);
-                    
+                    rtb1.Text += "\n\n" + currentLevel.GetDetails();                    
                 }
                 else if (currentAsset.GetName(ex.classIdx) == "FoliageInstancedStaticMeshComponent")
                 {
@@ -1277,6 +1275,11 @@ namespace PUBGLiteExplorerWV
             AnalysisResult ar = new AnalysisResult();
             ar.rtb1.Text = sb.ToString();
             ar.ShowDialog();
+        }
+
+        private void uVFormatSelectorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new UVFormatSelector().ShowDialog();
         }
     }
 }

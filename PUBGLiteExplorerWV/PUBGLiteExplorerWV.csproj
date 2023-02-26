@@ -86,6 +86,12 @@
     <Compile Include="Unreal\UStaticMesh.cs" />
     <Compile Include="Unreal\UStaticMeshLOD.cs" />
     <Compile Include="Unreal\UTexture2D.cs" />
+    <Compile Include="UVFormatSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UVFormatSelector.Designer.cs">
+      <DependentUpon>UVFormatSelector.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AnalysisResult.resx">
       <DependentUpon>AnalysisResult.cs</DependentUpon>
     </EmbeddedResource>
@@ -107,6 +113,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UVFormatSelector.resx">
+      <DependentUpon>UVFormatSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

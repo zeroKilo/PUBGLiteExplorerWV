@@ -50,6 +50,8 @@
             this.dumpPersistentMapDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpSplatMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.materialGraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.analyzeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findReferencedTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alphabeticalSortingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -101,8 +103,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.analyzeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.findReferencedTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uVFormatSelectorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -311,10 +312,26 @@
             this.materialGraphToolStripMenuItem.Text = "Material Graph...";
             this.materialGraphToolStripMenuItem.Click += new System.EventHandler(this.materialGraphToolStripMenuItem_Click);
             // 
+            // analyzeToolStripMenuItem
+            // 
+            this.analyzeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.findReferencedTexturesToolStripMenuItem});
+            this.analyzeToolStripMenuItem.Name = "analyzeToolStripMenuItem";
+            this.analyzeToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.analyzeToolStripMenuItem.Text = "Analyze";
+            // 
+            // findReferencedTexturesToolStripMenuItem
+            // 
+            this.findReferencedTexturesToolStripMenuItem.Name = "findReferencedTexturesToolStripMenuItem";
+            this.findReferencedTexturesToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.findReferencedTexturesToolStripMenuItem.Text = "Find referenced Textures";
+            this.findReferencedTexturesToolStripMenuItem.Click += new System.EventHandler(this.findReferencedTexturesToolStripMenuItem_Click);
+            // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.alphabeticalSortingToolStripMenuItem});
+            this.alphabeticalSortingToolStripMenuItem,
+            this.uVFormatSelectorToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -323,7 +340,7 @@
             // 
             this.alphabeticalSortingToolStripMenuItem.CheckOnClick = true;
             this.alphabeticalSortingToolStripMenuItem.Name = "alphabeticalSortingToolStripMenuItem";
-            this.alphabeticalSortingToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.alphabeticalSortingToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
             this.alphabeticalSortingToolStripMenuItem.Text = "Alphabetical Sorting";
             // 
             // splitContainer1
@@ -885,20 +902,12 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // analyzeToolStripMenuItem
+            // uVFormatSelectorToolStripMenuItem
             // 
-            this.analyzeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.findReferencedTexturesToolStripMenuItem});
-            this.analyzeToolStripMenuItem.Name = "analyzeToolStripMenuItem";
-            this.analyzeToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
-            this.analyzeToolStripMenuItem.Text = "Analyze";
-            // 
-            // findReferencedTexturesToolStripMenuItem
-            // 
-            this.findReferencedTexturesToolStripMenuItem.Name = "findReferencedTexturesToolStripMenuItem";
-            this.findReferencedTexturesToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.findReferencedTexturesToolStripMenuItem.Text = "Find referenced Textures";
-            this.findReferencedTexturesToolStripMenuItem.Click += new System.EventHandler(this.findReferencedTexturesToolStripMenuItem_Click);
+            this.uVFormatSelectorToolStripMenuItem.Name = "uVFormatSelectorToolStripMenuItem";
+            this.uVFormatSelectorToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.uVFormatSelectorToolStripMenuItem.Text = "UV Format Selector";
+            this.uVFormatSelectorToolStripMenuItem.Click += new System.EventHandler(this.uVFormatSelectorToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -1041,5 +1050,6 @@
         private System.Windows.Forms.ToolStripMenuItem materialGraphToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem analyzeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findReferencedTexturesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uVFormatSelectorToolStripMenuItem;
     }
 }

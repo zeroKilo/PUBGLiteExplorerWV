@@ -9,6 +9,31 @@ namespace PUBGLiteExplorerWV
 {
     public class UStaticMeshLOD
     {
+        public enum UVBinaryFormat{
+            Float16,
+            Int16,
+            UInt16
+        }
+
+        public static UVBinaryFormat[] readerDefaults = new UVBinaryFormat[] 
+        { 
+            UVBinaryFormat.UInt16,  //UV0
+            UVBinaryFormat.UInt16,  //UV1
+            UVBinaryFormat.Float16, //UV2
+            UVBinaryFormat.Float16, //UV3           
+            UVBinaryFormat.Float16, //UV4
+            UVBinaryFormat.Float16, //UV5
+            UVBinaryFormat.Float16, //UV6
+            UVBinaryFormat.Float16, //UV7
+            UVBinaryFormat.Float16, //UV8
+            UVBinaryFormat.Float16, //UV9
+            UVBinaryFormat.Float16, //UV10
+            UVBinaryFormat.Float16, //UV11          
+            UVBinaryFormat.Float16, //UV12
+            UVBinaryFormat.Float16, //UV13
+            UVBinaryFormat.Float16, //UV14
+            UVBinaryFormat.Float16, //UV15
+        };
         public class MaterialInfo
         {
             public uint matIndex;
@@ -77,16 +102,26 @@ namespace PUBGLiteExplorerWV
             if (count1 != count2 || size1 != size2)
                 return;
             uvs = new List<float[]>();
+            uint uvCount = size1 / 2;
             for (int i = 0; i < count1; i++)
             {
-                float[] vec = new float[size1 / 2];
-                ushort[] tmp = new ushort[size1 / 2];
-                for (int j = 0; j < size1 / 2; j++)
+                float[] vec = new float[uvCount];
+                ushort[] tmp = new ushort[uvCount];
+                for (int j = 0; j < uvCount; j++)
                     tmp[j] = Helper.ReadU16(s);
-                    for (int j = 0; j < 4; j++)
-                        vec[j] = (tmp[j]) / (float)0xFFFF;
-                    for (int j = 4; j < size1 / 2; j++)
-                        vec[j] = Helper.Half2Float(tmp[j]);
+                for (int j = 0; j < uvCount; j++)
+                    switch(readerDefaults[j])
+                    {
+                        case UVBinaryFormat.Float16:
+                            vec[j] = Helper.Half2Float(tmp[j]);
+                            break;
+                        case UVBinaryFormat.Int16:
+                            vec[j] = (short)tmp[j] / (float)0x8000;
+                            break;
+                        case UVBinaryFormat.UInt16:
+                            vec[j] = tmp[j] / (float)0xFFFF;
+                            break;
+                    }
                 uvs.Add(vec);
             }
             if (Helper.ReadU16(s) != 1)
@@ -157,8 +192,11 @@ namespace PUBGLiteExplorerWV
             Helper.WriteU32(result, 0xC);
             Helper.WriteU32(result, (uint)tmpVerts.Count);
             foreach (float[] vec in tmpVerts)
-                foreach (float f in vec)
-                    Helper.WriteFloat(result, f);
+            {
+                Helper.WriteFloat(result, vec[0]);
+                Helper.WriteFloat(result, -vec[1]);
+                Helper.WriteFloat(result, vec[2]);
+            }
             Helper.WriteCString(result, "VTXW0000");
             Helper.WriteU64(result, 0);
             Helper.WriteU64(result, 0);
