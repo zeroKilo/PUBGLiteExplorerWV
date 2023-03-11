@@ -78,9 +78,17 @@ namespace PUBGLiteExplorerWV
         public class FMaterialShaderMap
         {
             public FMaterialShaderMapId shaderMapId;
+            public uint SaveFrozenContentSize;
+            public uint SavePointerTableSize;
+            public uint NumDependencies;
+            public bool bShareCode;
             public FMaterialShaderMap(Stream s)
             {
                 shaderMapId = new FMaterialShaderMapId(s);
+                SaveFrozenContentSize = Helper.ReadU32(s);//
+                SavePointerTableSize = Helper.ReadU32(s); //
+                NumDependencies = Helper.ReadU32(s);      //
+                bShareCode = Helper.ReadU32(s) == 1;      //assuming all zero
             }
         }
 
@@ -89,11 +97,13 @@ namespace PUBGLiteExplorerWV
             public bool bCooked;
             public bool bValid;
             public FMaterialShaderMap gameThreadShaderMap;
+            public string ResourceName; //starting from here its all guessed
             public FMaterialResource(Stream s)
             {
                 bCooked = Helper.ReadU32(s) == 1;
                 bValid = Helper.ReadU32(s) == 1;
                 gameThreadShaderMap = new FMaterialShaderMap(s);
+                ResourceName = Helper.ReadUString(s);
             }
         }
 
@@ -112,12 +122,16 @@ namespace PUBGLiteExplorerWV
                     break;
                 props.Add(p);
             }
-            uint NumResources = Helper.ReadU32(s);
-            for(uint i = 0; i < NumResources; i++)
+            try
             {
-                resources.Add(new FMaterialResource(s));
-                break;
+                uint NumResources = Helper.ReadU32(s);
+                for (uint i = 0; i < NumResources; i++)
+                {
+                    resources.Add(new FMaterialResource(s));
+                    break;
+                }
             }
+            catch { }
             UArrayProperty expressions = (UArrayProperty)Helper.FindPropByName(props, "Expressions");
             if (expressions == null)
                 return;

@@ -1281,5 +1281,22 @@ namespace PUBGLiteExplorerWV
         {
             new UVFormatSelector().ShowDialog();
         }
+
+        private void staticMesh4x8AsPSKToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentStatMesh == null || currentStatMesh.lods.Count == 0)
+                return;
+            UVChannelSelector uvsel = new UVChannelSelector();
+            uvsel.channels = new int[] { 1, 2, 3, 16, 24, 25, 22, 27 };
+            uvsel.ShowDialog();
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "*.psk|*.psk";
+            d.FileName = currentStatMeshName + ".psk";
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllBytes(d.FileName, currentStatMesh.lods[0].MakePSK(uvsel.channels));
+                MessageBox.Show("Done.");
+            }
+        }
     }
 }

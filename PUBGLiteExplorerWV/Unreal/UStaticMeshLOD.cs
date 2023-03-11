@@ -116,7 +116,7 @@ namespace PUBGLiteExplorerWV
                     {
                         case UVBinaryFormat.Float16:
                             vec[index] = Helper.Half2Float(tmp[index]);
-                            vec[index + 1] = Helper.Half2Float(tmp[index]);
+                            vec[index + 1] = Helper.Half2Float(tmp[index + 1]);
                             break;
                         case UVBinaryFormat.Int16:
                             vec[index] = (short)tmp[index] / (float)0x8000;
@@ -166,18 +166,19 @@ namespace PUBGLiteExplorerWV
             }
             _valid = true;
         }
-
-        public byte[] MakePSK()
+        public byte[] MakePSK(int[] channels = null)
         {
             if(!_valid)
                 return new byte[0];
             List<float[]> tmpVerts = new List<float[]>();
             List<float[]> tmpUVs = new List<float[]>();
+            List<uint> tmpColors = new List<uint>();
             List<byte> tmpMatIndex = new List<byte>();
             foreach (ushort u in sections[0])
             {
                 tmpVerts.Add(vertices[u]);
                 tmpUVs.Add(uvs[u]);
+                tmpColors.Add(colors[u]);
                 for (byte i = 0; i < matInfo.Count; i++)
                     if (u >= matInfo[i].start && u <= matInfo[i].end)
                     {
@@ -270,10 +271,29 @@ namespace PUBGLiteExplorerWV
                 Helper.WriteU64(result, 0);
                 Helper.WriteU32(result, 0x8);
                 Helper.WriteU32(result, (uint)tmpUVs.Count);
+                index = 0;
                 foreach (float[] uv in tmpUVs)
                 {
-                    Helper.WriteFloat(result, uv[2 + i * 2]);
-                    Helper.WriteFloat(result, uv[3 + i * 2]);
+                    if (i == 1 && channels != null)
+                    {
+                        uint color = tmpColors[(int)index];
+                        byte[] mask = BitConverter.GetBytes(color);
+                        int a = mask[0] != 0 ? 1 : 0;
+                        int b = mask[1] != 0 ? 2 : 0;
+                        int c = mask[2] != 0 ? 4 : 0;
+                        int paletteIndex = a + b + c;
+                        int atlasIndex = channels[paletteIndex];
+                        int col = atlasIndex % 4;
+                        int row = atlasIndex / 4;
+                        Helper.WriteFloat(result, (uv[4] + col) * 0.25f);
+                        Helper.WriteFloat(result, (uv[5] + row) * 0.125f);
+                    }
+                    else
+                    {
+                        Helper.WriteFloat(result, uv[2 + i * 2]);
+                        Helper.WriteFloat(result, uv[3 + i * 2]);
+                    }
+                    index++;
                 }
             }
             return result.ToArray();

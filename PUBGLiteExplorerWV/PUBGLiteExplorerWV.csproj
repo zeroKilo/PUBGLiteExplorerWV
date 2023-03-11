@@ -86,6 +86,12 @@
     <Compile Include="Unreal\UStaticMesh.cs" />
     <Compile Include="Unreal\UStaticMeshLOD.cs" />
     <Compile Include="Unreal\UTexture2D.cs" />
+    <Compile Include="UVChannelSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UVChannelSelector.Designer.cs">
+      <DependentUpon>UVChannelSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="UVFormatSelector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,6 +119,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UVChannelSelector.resx">
+      <DependentUpon>UVChannelSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UVFormatSelector.resx">
       <DependentUpon>UVFormatSelector.cs</DependentUpon>
     </EmbeddedResource>
