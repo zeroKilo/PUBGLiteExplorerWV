@@ -1282,12 +1282,86 @@ namespace PUBGLiteExplorerWV
             new UVFormatSelector().ShowDialog();
         }
 
+        private int[] FindMaterialAndUVChannels()
+        {
+            int[] result = new int[] { 1, 2, 3, 16, 24, 25, 22, 27 };
+            try
+            {
+                UArrayProperty arr = (UArrayProperty)currentStatMesh.props[0].prop;
+                UStructProperty str = (UStructProperty)arr.subProps[0].prop;
+                UObjectProperty matInterface = (UObjectProperty)str.subProps[0].prop;
+                UImport import0 = currentAsset.importTable[-matInterface.value - 1];
+                string name = import0._name;
+                UImport import1 = null;
+                foreach(UImport imp in currentAsset.importTable)
+                    if(imp._className == "Package" && imp._name.Contains(name))
+                    {
+                        import1 = imp;
+                        break;
+                    }
+                string path1 = "ShadowTrackerExtra/Content/" + import1._name.Substring(6) + ".uasset";
+                string path2 = "ShadowTrackerExtra/Content/" + import1._name.Substring(6) + ".uexp";
+                PAKFile pakfile = null;
+                PAKFileEntry pakFileAsset = null;
+                PAKFileEntry pakFileExp = null;
+                foreach (PAKFile file in files)
+                    if (file.header.isValid)
+                        foreach (PAKFileEntry entry in file.table.entries)
+                            if (entry.path == path1)
+                            {
+                                pakfile = file;
+                                pakFileAsset = entry;
+                                if (pakFileAsset != null && pakFileExp != null)
+                                    break;
+                            }
+                            else if (entry.path == path2)
+                            {
+                                pakfile = file;
+                                pakFileExp = entry;
+                                if (pakFileAsset != null && pakFileExp != null)
+                                    break;
+                            }
+                UAsset asset = new UAsset(new MemoryStream(pakfile.getEntryData(pakFileAsset)), new MemoryStream(pakfile.getEntryData(pakFileExp)), null);
+                foreach (UExport exp in asset.exportTable)
+                    if (exp._name == name)
+                    {
+                        MemoryStream s = new MemoryStream(exp._data);
+                        List<UProperty> props = new List<UProperty>();
+                        while (true)
+                        {
+                            UProperty p = new UProperty(s, asset);
+                            if (p.name == "None")
+                                break;
+                            props.Add(p);
+                        }
+                        UArrayProperty vpv = null;
+                        foreach(UProperty p in props)
+                            if(p.name == "VectorParameterValues")
+                            {
+                                vpv = (UArrayProperty)p.prop;
+                                break;
+                            }
+                        for (int i = 0; i < 2; i++)
+                        {
+                            UStructProperty substr = (UStructProperty)vpv.subProps[i].prop;
+                            UStructProperty linearColor = (UStructProperty)substr.subProps[1].prop;
+                            MemoryStream s2 = new MemoryStream(linearColor.data);
+                            for (int j = 0; j < 4; j++)
+                                result[i * 4 + j] = (int)Helper.ReadFloat(s2);
+                        }
+                        break;
+                    }
+            }
+            catch { }
+            return result;
+        }
+
         private void staticMesh4x8AsPSKToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (currentStatMesh == null || currentStatMesh.lods.Count == 0)
                 return;
             UVChannelSelector uvsel = new UVChannelSelector();
-            uvsel.channels = new int[] { 1, 2, 3, 16, 24, 25, 22, 27 };
+            uvsel.channels = FindMaterialAndUVChannels();
             uvsel.ShowDialog();
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.psk|*.psk";
