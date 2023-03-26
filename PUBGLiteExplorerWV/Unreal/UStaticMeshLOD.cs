@@ -178,7 +178,8 @@ namespace PUBGLiteExplorerWV
             {
                 tmpVerts.Add(vertices[u]);
                 tmpUVs.Add(uvs[u]);
-                tmpColors.Add(colors[u]);
+                if(channels != null)
+                    tmpColors.Add(colors[u]);
                 for (byte i = 0; i < matInfo.Count; i++)
                     if (u >= matInfo[i].start && u <= matInfo[i].end)
                     {
