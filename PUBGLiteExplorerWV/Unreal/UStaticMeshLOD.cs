@@ -227,9 +227,10 @@ namespace PUBGLiteExplorerWV
             for (int i = 0; i < sections[0].Length / 3; i++)
             {
                 byte matIdx = tmpMatIndex[currIdx];
-                Helper.WriteU16(result, currIdx++);
-                Helper.WriteU16(result, currIdx++);
-                Helper.WriteU16(result, currIdx++);
+                Helper.WriteU16(result, currIdx);
+                Helper.WriteU16(result, (ushort)(currIdx + 2));
+                Helper.WriteU16(result, (ushort)(currIdx + 1));
+                currIdx += 3;
                 result.WriteByte(matIdx);
                 result.WriteByte(0);
                 Helper.WriteU32(result, 1);
