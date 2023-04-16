@@ -158,7 +158,8 @@ namespace PUBGLiteExplorerWV
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("\t\tInstances:");
-            sb.Append(ProcessNode(0, myLocation));
+            if(nodes.Count > 0)
+                sb.Append(ProcessNode(0, myLocation));
             return sb.ToString();
         }
     }

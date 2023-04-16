@@ -206,7 +206,7 @@ namespace PUBGLiteExplorerWV
                             UInstancedFoliageActor ifa = new UInstancedFoliageActor(new MemoryStream(exp._data), myAsset, myBulk);
                             sb.AppendLine(ifa.GetDetails());
                             foreach(UInstancedFoliageActor.FoliageInfo info in ifa.foliageInfo)
-                                if(info.hismc != null)
+                                if(info.hismc != null && info.hismc.nodes.Count > 0)
                                     info.hismc.ProcessNodeForRaw(0, info.hismc.myLocation, rawData, info.name, exp._name);
                             lastPos = new float[3];
                             break;
