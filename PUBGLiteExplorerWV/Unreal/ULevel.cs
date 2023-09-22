@@ -239,7 +239,8 @@ namespace PUBGLiteExplorerWV
                             break;
                         default:
                             m = new MemoryStream(exp._data);
-                            int defaultSceneRoot= -1;
+                            int defaultSceneRoot = -1;
+                            int rootComponent = -1;
                             while (true)
                             {
                                 UProperty p = new UProperty(m, myAsset);
@@ -247,19 +248,35 @@ namespace PUBGLiteExplorerWV
                                     break;
                                 if (p.name == "DefaultSceneRoot")
                                     defaultSceneRoot = ((UObjectProperty)p.prop).value;
+                                if (p.name == "RootComponent")
+                                    rootComponent = ((UObjectProperty)p.prop).value;
                                 else AddDetail(p, sb);
                             }
-                            if (defaultSceneRoot < 1)
-                                break;
-                            sb.AppendLine(" ->DefaultSceneRoot");
-                            UExport expDSR = myAsset.exportTable[defaultSceneRoot - 1];
-                            m = new MemoryStream(expDSR._data);
-                            while (true)
+                            if (defaultSceneRoot != -1)
                             {
-                                UProperty p = new UProperty(m, myAsset);
-                                if (p.name == "None")
-                                    break;
-                                else AddDetail(p, sb);
+                                sb.AppendLine(" ->DefaultSceneRoot");
+                                UExport expDSR = myAsset.exportTable[defaultSceneRoot - 1];
+                                m = new MemoryStream(expDSR._data);
+                                while (true)
+                                {
+                                    UProperty p = new UProperty(m, myAsset);
+                                    if (p.name == "None")
+                                        break;
+                                    else AddDetail(p, sb);
+                                }
+                            }
+                            if (rootComponent != -1)
+                            {
+                                sb.AppendLine(" ->RootComponent");
+                                UExport expDSR = myAsset.exportTable[rootComponent - 1];
+                                m = new MemoryStream(expDSR._data);
+                                while (true)
+                                {
+                                    UProperty p = new UProperty(m, myAsset);
+                                    if (p.name == "None")
+                                        break;
+                                    else AddDetail(p, sb);
+                                }
                             }
                             break;
                     }

@@ -147,6 +147,7 @@ namespace PUBGLiteExplorerWV
             switch (structType)
             {
                 case "Vector":
+                case "Rotator":
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m) + "; ");
                     sb.Append(Helper.ReadFloat(m));
