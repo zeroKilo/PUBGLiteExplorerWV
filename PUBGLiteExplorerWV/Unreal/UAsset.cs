@@ -84,7 +84,7 @@ namespace PUBGLiteExplorerWV
             _isValid = true;
         }
 
-        public string ParseProperties(UExport ex, UAsset asset)
+        public string ParseProperties(UExport ex)
         {
             MemoryStream m = new MemoryStream(ex._data);
             StringBuilder sb = new StringBuilder();
@@ -99,7 +99,7 @@ namespace PUBGLiteExplorerWV
                     sb.AppendLine("Error parsing at 0x" + pos.ToString("X") + " Name=" + p.name + " Type=" + p.type);
                     break;
                 }
-                sb.Append(p.prop.ToDetails(0, p._offset, p.name, asset));
+                sb.Append(p.prop.ToDetails(0, p._offset, p.name, this));
             }
             return sb.ToString();
         }

@@ -38,7 +38,7 @@ namespace PUBGLiteExplorerWV
         {
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pak|*.pak";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 files = new List<PAKFile>();
                 files.Add(new PAKFile(d.FileName));
@@ -53,7 +53,7 @@ namespace PUBGLiteExplorerWV
                 fbd.SelectedPath = File.ReadAllText("last_path.txt").Trim();
             else
                 fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
-            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (fbd.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllText("last_path.txt", fbd.SelectedPath);
                 string[] paths = Directory.GetFiles(fbd.SelectedPath, "*.pak", SearchOption.TopDirectoryOnly);
@@ -371,7 +371,7 @@ namespace PUBGLiteExplorerWV
                 if (file.header.isValid)
                     foreach (PAKFileEntry entry in file.table.entries)
                         if (entry.path == exportName)
-                            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            if (d.ShowDialog() == DialogResult.OK)
                             {
                                 File.WriteAllBytes(d.FileName, file.getEntryData(entry));
                                 MessageBox.Show("Done.");
@@ -383,7 +383,7 @@ namespace PUBGLiteExplorerWV
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
-            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (fbd.ShowDialog() == DialogResult.OK)
             {
                 ExportDialog ex = new ExportDialog();
                 ex.Show();
@@ -437,7 +437,7 @@ namespace PUBGLiteExplorerWV
             try
             {
                 hb2.ByteProvider = new DynamicByteProvider(ex._data);
-                rtb1.Text = currentAsset.ParseProperties(ex, currentAsset);
+                rtb1.Text = currentAsset.ParseProperties(ex);
                 if (currentAsset.GetName(ex.classIdx) == "Texture2D")
                 {
                     byte[] ubulkData = currentAsset._ubulkData;
@@ -536,7 +536,7 @@ namespace PUBGLiteExplorerWV
             SaveFileDialog d = new SaveFileDialog();
             d.Filter = "*.bin|*.bin";
             d.FileName = currentAsset.exportTable[n]._name + ".bin";
-            if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (d.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllBytes(d.FileName, currentAsset.exportTable[n]._data);
                 MessageBox.Show("Done.");
@@ -656,7 +656,7 @@ namespace PUBGLiteExplorerWV
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
-            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (fbd.ShowDialog() == DialogResult.OK)
             {
                 ExportDialog ex = new ExportDialog();
                 ex.Show();
@@ -790,7 +790,7 @@ namespace PUBGLiteExplorerWV
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
-            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (fbd.ShowDialog() == DialogResult.OK)
             {
                 ExportDialog ex = new ExportDialog();
                 ex.Show();
@@ -1370,6 +1370,70 @@ namespace PUBGLiteExplorerWV
             {
                 File.WriteAllBytes(d.FileName, currentStatMesh.lods[0].MakePSK(uvsel.channels));
                 MessageBox.Show("Done.");
+            }
+        }
+
+        private void dumpVehicleDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if (File.Exists("last_path.txt"))
+                fbd.SelectedPath = File.ReadAllText("last_path.txt").Trim();
+            else
+                fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
+            if (fbd.ShowDialog() == DialogResult.OK)
+            {
+                string baseFolder = fbd.SelectedPath;
+                if (!baseFolder.EndsWith("\\"))
+                    baseFolder += "\\";
+                StringBuilder sb = new StringBuilder();                
+                UAsset asset;
+                int count = 0;
+                foreach (PAKFile file in files)
+                    foreach (PAKFileEntry entry in file.table.entries)
+                        count++;
+                pb1.Maximum = count;
+                int idx = 0;
+                foreach (PAKFile file in files)
+                    foreach (PAKFileEntry entry in file.table.entries)
+                    {
+                        idx++;
+                        if (!entry.path.EndsWith(".uasset") || !entry.path.Contains("Vehicle"))
+                            continue;
+                        if (idx % 100 == 0)
+                        {
+                            status.Text = "Processing... " + entry.path;
+                            pb1.Value = idx;
+                            Application.DoEvents();
+                        }
+                        asset = LoadAsset(file, entry, true);
+                        if (asset != null && asset._isValid)
+                            foreach (UExport export in asset.exportTable)
+                                if (asset.GetName(export.classIdx) == "STExtraVehicleMovementComponent4W")
+                                {
+                                    MemoryStream s = new MemoryStream(export._data);
+                                    List<UProperty> props = new List<UProperty>();
+                                    while (true)
+                                    {
+                                        UProperty p = new UProperty(s, asset);
+                                        if (p.name == "None")
+                                            break;
+                                        props.Add(p);
+                                    }
+                                    string details = asset.ParseProperties(export);
+                                    string path = baseFolder + entry.path.Replace("/", "\\").Replace(".uasset", ".txt");
+                                    string dir = Path.GetDirectoryName(path);
+                                    if (!Directory.Exists(dir))
+                                        Directory.CreateDirectory(dir);
+                                    File.WriteAllText(path, details);
+                                    sb.AppendLine(path);
+                                }
+                    }
+                pb1.Value = 0;
+                status.Text = "";
+                AnalysisResult ar = new AnalysisResult();
+                ar.rtb1.Text = sb.ToString();
+                ar.ShowDialog();
             }
         }
     }

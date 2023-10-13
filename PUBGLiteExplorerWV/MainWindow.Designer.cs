@@ -50,6 +50,7 @@
             this.dumpPersistentMapDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpSplatMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.materialGraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.staticMesh4x8AsPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analyzeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findReferencedTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -104,7 +105,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.staticMesh4x8AsPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dumpVehicleDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -243,7 +244,8 @@
             this.dumpPersistentMapDataToolStripMenuItem,
             this.dumpSplatMapToolStripMenuItem,
             this.materialGraphToolStripMenuItem,
-            this.staticMesh4x8AsPSKToolStripMenuItem});
+            this.staticMesh4x8AsPSKToolStripMenuItem,
+            this.dumpVehicleDataToolStripMenuItem});
             this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
             this.dumpToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.dumpToolStripMenuItem.Text = "Dump";
@@ -313,6 +315,13 @@
             this.materialGraphToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.materialGraphToolStripMenuItem.Text = "Material Graph...";
             this.materialGraphToolStripMenuItem.Click += new System.EventHandler(this.materialGraphToolStripMenuItem_Click);
+            // 
+            // staticMesh4x8AsPSKToolStripMenuItem
+            // 
+            this.staticMesh4x8AsPSKToolStripMenuItem.Name = "staticMesh4x8AsPSKToolStripMenuItem";
+            this.staticMesh4x8AsPSKToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.staticMesh4x8AsPSKToolStripMenuItem.Text = "Static Mesh 4x8 as PSK...";
+            this.staticMesh4x8AsPSKToolStripMenuItem.Click += new System.EventHandler(this.staticMesh4x8AsPSKToolStripMenuItem_Click);
             // 
             // analyzeToolStripMenuItem
             // 
@@ -911,12 +920,12 @@
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(0, 17);
             // 
-            // staticMesh4x8AsPSKToolStripMenuItem
+            // dumpVehicleDataToolStripMenuItem
             // 
-            this.staticMesh4x8AsPSKToolStripMenuItem.Name = "staticMesh4x8AsPSKToolStripMenuItem";
-            this.staticMesh4x8AsPSKToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.staticMesh4x8AsPSKToolStripMenuItem.Text = "Static Mesh 4x8 as PSK...";
-            this.staticMesh4x8AsPSKToolStripMenuItem.Click += new System.EventHandler(this.staticMesh4x8AsPSKToolStripMenuItem_Click);
+            this.dumpVehicleDataToolStripMenuItem.Name = "dumpVehicleDataToolStripMenuItem";
+            this.dumpVehicleDataToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.dumpVehicleDataToolStripMenuItem.Text = "Dump Vehicle Data...";
+            this.dumpVehicleDataToolStripMenuItem.Click += new System.EventHandler(this.dumpVehicleDataToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -1061,5 +1070,6 @@
         private System.Windows.Forms.ToolStripMenuItem findReferencedTexturesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uVFormatSelectorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem staticMesh4x8AsPSKToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dumpVehicleDataToolStripMenuItem;
     }
 }
