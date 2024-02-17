@@ -564,10 +564,11 @@ namespace PUBGLiteExplorerWV
             foreach (UExport exp in currentAsset.exportTable)
                 if (currentAsset.GetName(exp.classIdx) == "LandscapeComponent")
                     lcs.Add(new ULandscapeComponent(new MemoryStream(exp._data), currentAsset));
-            if ((lcs.Count != 16 && lcs.Count != 4) || lcs[0].data.Length != 0x7E02)
+            if ((lcs.Count != 25 && lcs.Count != 16 && lcs.Count != 4) ||
+                (lcs[0].data.Length != 0x7E02 && lcs[0].data.Length != 0x1F02))
             {
                 if(lcs.Count > 0)
-                    MessageBox.Show("Cant export,\nexpected lcs=16 or 4, found=" + lcs.Count + "\nexpected datasize=0x7E02, actual size=0x" + lcs[0].data.Length.ToString("X4"));
+                    MessageBox.Show("Cant export,\nexpected lcs=16 or 4, found=" + lcs.Count + "\n, actual size=0x" + lcs[0].data.Length.ToString("X4"));
                 else
                     MessageBox.Show("Cant export,\nexpected lcs=16 or 4, found=" + lcs.Count);
                 return;
@@ -575,6 +576,11 @@ namespace PUBGLiteExplorerWV
             int sideLen = 4;
             if (lcs.Count == 4)
                 sideLen = 2;
+            if (lcs.Count == 25)
+                sideLen = 5;
+            int subLen = 127;
+            if (lcs[0].data.Length == 0x1F02)
+                subLen = 63;
             while (true)
             {
                 bool found = false;
@@ -614,11 +620,11 @@ namespace PUBGLiteExplorerWV
             {
                 MemoryStream result = new MemoryStream();
                 for (int ty = 0; ty < sideLen; ty++)
-                    for (int y = 0; y < 127; y++)
+                    for (int y = 0; y < subLen; y++)
                         for (int tx = 0; tx < sideLen; tx++)
                         {
                             ULandscapeComponent lc = lcs[ty * sideLen + tx];
-                            result.Write(lc.data, 254 * y, 254);
+                            result.Write(lc.data, subLen * 2 * y, subLen * 2);
                         }
                 File.WriteAllBytes(d.FileName, result.ToArray());
                 MessageBox.Show("Done.");
