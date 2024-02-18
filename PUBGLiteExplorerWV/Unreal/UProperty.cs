@@ -78,6 +78,9 @@ namespace PUBGLiteExplorerWV
                 case "LazyObjectProperty":
                     prop = new ULazyObjectProperty(s, asset);
                     break;
+                case "MulticastDelegateProperty":
+                    prop = new UMulticastDelegateProperty(s, asset);
+                    break;
                 default:
                     return false;
             }
@@ -509,6 +512,30 @@ namespace PUBGLiteExplorerWV
             foreach (byte b in value)
                 sb.Append(b.ToString("X2") + " ");
             sb.AppendLine("}");
+            return sb.ToString();
+        }
+    }
+
+    public class UMulticastDelegateProperty : UProp
+    {
+        public byte[] value;
+
+        public UMulticastDelegateProperty(Stream s, UAsset asset)
+        {
+            ReadSizeAndFlags(s);
+            s.ReadByte();
+            value = new byte[size];
+            s.Read(value, 0, (int)size);
+        }
+
+        public override string ToDetails(int tabs, long offset, string name, UAsset asset)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(MakeTabs(tabs));
+            sb.Append(offset.ToString("X8") + " : " + name + " MulticastDelegateProperty = {");
+            foreach (byte b in value)
+                sb.Append(b.ToString("X2") + " ");
+            sb.AppendLine( "}");
             return sb.ToString();
         }
     }
