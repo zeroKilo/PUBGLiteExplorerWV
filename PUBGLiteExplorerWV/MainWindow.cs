@@ -573,11 +573,11 @@ namespace PUBGLiteExplorerWV
                     MessageBox.Show("Cant export,\nexpected lcs=16 or 4, found=" + lcs.Count);
                 return;
             }
-            int sideLen = 4;
+            int tileSideLen = 4;
             if (lcs.Count == 4)
-                sideLen = 2;
+                tileSideLen = 2;
             if (lcs.Count == 25)
-                sideLen = 5;
+                tileSideLen = 5;
             int subLen = 127;
             if (lcs[0].data.Length == 0x1F02)
                 subLen = 63;
@@ -619,13 +619,21 @@ namespace PUBGLiteExplorerWV
             if (d.ShowDialog() == DialogResult.OK)
             {
                 MemoryStream result = new MemoryStream();
-                for (int ty = 0; ty < sideLen; ty++)
-                    for (int y = 0; y < subLen; y++)
-                        for (int tx = 0; tx < sideLen; tx++)
+                for (int tileY = 0; tileY < tileSideLen; tileY++)
+                {
+                    int rowCount = subLen;
+                    if (tileY < tileSideLen - 1)
+                        rowCount--;
+                    for (int y = 0; y < rowCount; y++)
+                        for (int tileX = 0; tileX < tileSideLen; tileX++)
                         {
-                            ULandscapeComponent lc = lcs[ty * sideLen + tx];
-                            result.Write(lc.data, subLen * 2 * y, subLen * 2);
+                            ULandscapeComponent lc = lcs[tileY * tileSideLen + tileX];
+                            if (tileX < tileSideLen - 1)
+                                result.Write(lc.data, subLen * 2 * y, (subLen - 1) * 2);
+                            else
+                                result.Write(lc.data, subLen * 2 * y, subLen * 2);
                         }
+                }
                 File.WriteAllBytes(d.FileName, result.ToArray());
                 MessageBox.Show("Done.");
             }
