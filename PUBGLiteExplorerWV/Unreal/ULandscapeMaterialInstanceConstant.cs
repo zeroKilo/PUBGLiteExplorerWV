@@ -26,14 +26,15 @@ namespace PUBGLiteExplorerWV
         public int FindChannelIndex(string layerName)
         {
             int[] remap = { 1, 2, 3, 0 };
-            layerName = layerName.Replace("_LayerInfo", "");
+            layerName = layerName.Replace("_LayerInfo", "").ToLower();
             UArrayProperty vpv = (UArrayProperty)Helper.FindPropByName(props, "VectorParameterValues");
             int layerCount = vpv.subProps.Count;
             for (int i = 0; i < layerCount; i++)
             {
                 UStructProperty struc = (UStructProperty)vpv.subProps[i].prop;
-                UNameProperty name = (UNameProperty)struc.subProps[0].prop;
-                if(name.value.Replace("LayerMask_", "") == layerName)
+                UNameProperty nameProp = (UNameProperty)struc.subProps[0].prop;
+                string name = nameProp.value.Replace("LayerMask_", "").ToLower();
+                if (layerName.Contains(name))
                 {
                     UStructProperty vector = (UStructProperty)struc.subProps[1].prop;
                     for (int j = 0; j < 4; j++)
