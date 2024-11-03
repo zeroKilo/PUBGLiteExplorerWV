@@ -252,7 +252,7 @@ namespace PUBGLiteExplorerWV
                                     rootComponent = ((UObjectProperty)p.prop).value;
                                 else AddDetail(p, sb);
                             }
-                            if (defaultSceneRoot != -1)
+                            if (defaultSceneRoot > 0)
                             {
                                 sb.AppendLine(" ->DefaultSceneRoot");
                                 UExport expDSR = myAsset.exportTable[defaultSceneRoot - 1];
@@ -265,7 +265,7 @@ namespace PUBGLiteExplorerWV
                                     else AddDetail(p, sb);
                                 }
                             }
-                            if (rootComponent != -1)
+                            if (rootComponent > 0)
                             {
                                 sb.AppendLine(" ->RootComponent");
                                 UExport expDSR = myAsset.exportTable[rootComponent - 1];

@@ -837,61 +837,33 @@ namespace PUBGLiteExplorerWV
                             }
                             if (entry.path.EndsWith(".umap"))
                             {
-                                string exportPath = fbd.SelectedPath + "\\" + Path.GetDirectoryName(entry.path) + "\\";
-                                byte[] data = file.getEntryData(entry);
-                                UAsset asset = null;
-                                PAKFileEntry uexp = null;
-                                string uexpPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".uexp";
-                                uexpPath = uexpPath.Replace("\\", "/");
-                                foreach (PAKFileEntry en in file.table.entries)
-                                    if (en.path == uexpPath)
+                                UAsset asset = LoadAsset(file, entry, true);
+                                ULevel level = null;
+                                foreach (UExport export in asset.exportTable)
+                                    if (asset.GetName(export.classIdx) == "Level")
                                     {
-                                        uexp = en;
+                                        byte[] ubulkData = asset._ubulkData;
+                                        if (ubulkData != null)
+                                            level = new ULevel(new MemoryStream(export._data), asset, new MemoryStream(ubulkData));
+                                        else
+                                            level = new ULevel(new MemoryStream(export._data), asset, null);
                                         break;
                                     }
-                                byte[] uexpData = null;
-                                if (uexp != null)
-                                    uexpData = file.getEntryData(uexp);
-                                PAKFileEntry ubulk = null;
-                                string ubulkPath = Path.GetDirectoryName(entry.path) + "\\" + Path.GetFileNameWithoutExtension(entry.path) + ".ubulk";
-                                ubulkPath = ubulkPath.Replace("\\", "/");
-                                foreach (PAKFileEntry en in file.table.entries)
-                                    if (en.path == ubulkPath)
-                                    {
-                                        ubulk = en;
-                                        break;
-                                    }
-                                byte[] ubulkData = null;
-                                if (ubulk != null)
-                                    ubulkData = file.getEntryData(ubulk);
-                                if (uexpData != null && ubulkData != null)
-                                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), new MemoryStream(ubulkData));
-                                else if (uexpData != null)
-                                    asset = new UAsset(new MemoryStream(data), new MemoryStream(uexpData), null);
-                                else
-                                    asset = new UAsset(new MemoryStream(data), null, null);
-                                if (asset != null && asset._isValid)
+                                if (level != null)
                                 {
-                                    foreach (UExport exp in asset.exportTable)
-                                        if (asset.GetName(exp.classIdx) == "Level")
-                                            try
-                                            {
-                                                ULevel level;
-                                                if (ubulkData == null)
-                                                    level = new ULevel(new MemoryStream(exp._data), asset, null);
-                                                else
-                                                    level = new ULevel(new MemoryStream(exp._data), asset, new MemoryStream(ubulkData));
-                                                string fileName = fbd.SelectedPath + "\\" + entry.path.Replace("/", "\\") + ".txt";
-                                                string dir = Path.GetDirectoryName(fileName);
-                                                if (!Directory.Exists(dir))
-                                                    Directory.CreateDirectory(dir);
-                                                try
-                                                {
-                                                    File.WriteAllText(fileName, level.GetDetails());
-                                                }
-                                                catch { }
-                                            }
-                                            catch { }
+                                    string output = fbd.SelectedPath + "\\" + entry.path.Replace("/", "\\");
+                                    output = output.Replace(".umap", ".txt");
+                                    Directory.CreateDirectory(Path.GetDirectoryName(output));
+                                    try
+                                    {
+                                        File.WriteAllText(output, level.GetDetails());
+                                        output = output.Replace(".txt", ".wvm");
+                                        File.WriteAllBytes(output, level.rawData.ToArray());
+                                    }
+                                    catch
+                                    {
+                                        File.WriteAllText(output, "ERROR");
+                                    }
                                 }
                             }
                         }
